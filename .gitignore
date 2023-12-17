@@ -21,3 +21,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Ignore node_modules directory
+node_modules/
+
+# Ignore Yarn lock file
+yarn.lock
+
+# Ignore npm lock file
+package-lock.json
