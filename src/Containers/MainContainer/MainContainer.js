@@ -29,6 +29,9 @@ const MainContainer =  ({ Children }) => {
         fetchData();
     }, []);
 
+    const getFirstLetter = str => {
+        return str.charAt(0).toUpperCase();
+    }
 
     return (
         <div className="main-container">
@@ -47,12 +50,16 @@ const MainContainer =  ({ Children }) => {
                         <p onClick={''}> <IoSettingsOutline className="navIcon"/> <span>Settings</span> </p>
                         <p onClick={''}> <RiLogoutCircleLine className="navIcon"/> <span>Logout</span> </p>
                     </div>
-                    <div className="navBottomTwo">
-                        <div className="mailName">A</div>
+                    <div>
                         {userDetail.map(user => (
-                            <div key={user.userId}>
-                                <p>{user.user}</p>
-                                <p>{user.email}</p>
+                            <div key={user.userId} className="navBottomTwo">
+                                <div className="mailLogo">
+                                    {getFirstLetter(user.user)}
+                                </div>
+                                <div className="mailName">
+                                    <p>{user.user}</p>
+                                    <p style={{ color: '#71839B' }}>{user.email}</p>
+                                </div>
                             </div>
                         ))}
                     </div>

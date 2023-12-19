@@ -6,7 +6,7 @@ import { FaRegCircleCheck } from 'react-icons/fa6';
 import { MdOutlineCancel } from 'react-icons/md';
 import { RiFileUserFill } from 'react-icons/ri';
 import { MdOutlineClear } from 'react-icons/md';
-// import messageIcon from './Images/message.jpg';
+import { MdMailOutline } from 'react-icons/md';
 
 const OnBoarders = () => {
     const [ userData, setUserData ] = useState([]);
@@ -183,7 +183,7 @@ const OnBoarders = () => {
                 <div className="containerone">
                     <div className="flex-container">
                         <div className="flex-column">
-                            <h5>Onboarders</h5>
+                            <p>Onboarders</p>
                             <span>All Members</span>
                         </div>
                         <div className="containerone-one">
@@ -234,12 +234,7 @@ const OnBoarders = () => {
                                     {user.status === 'Pending' ? (
                                         <RiFileUserFill className="iconuser" />
                                     ) : (
-                                        // <img
-                                        //     src={messageIcon}
-                                        //     alt="Message Icon"
-                                        //     className="iconmessage"
-                                        // />
-                                        <RiFileUserFill className="iconuser" />
+                                        <MdMailOutline className="iconmessage" />
                                     )}
                                     <FaRegCircleCheck
                                         onClick={() => handleAcceptance(user)}
@@ -355,7 +350,7 @@ const OnBoarders = () => {
                     </div>
                 )}
                 <span>
-                    <p>Showing data 1 to 8 of 150 entries</p> <p></p>
+                    <p className="bottom-row">Showing data 1 to 8 of 150 entries</p> <p></p>
                 </span>
             </div>
         </div>
