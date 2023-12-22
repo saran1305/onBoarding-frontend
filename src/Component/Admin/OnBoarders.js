@@ -110,9 +110,8 @@ const OnBoarders = () => {
             try {
                 await axios.post(`${Endpoint.API_ENDPOINT}/userId`, {
                     userId: selectedUser.userId,
-                    mailId: selectedUser.mailId
+                    mailId: selectedUser.officialMailId
                 });
-                console.log('User accepted:', selectedUser);
             } catch (error) {
                 console.error('Error accepting user:', error);
             }

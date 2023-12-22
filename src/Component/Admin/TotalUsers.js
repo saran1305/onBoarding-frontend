@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 import '../../Styles/admin_screen.css';
 import { MdOutlineClear } from 'react-icons/md';
 import { RiFileUserFill } from 'react-icons/ri';
 import { MdLocalPrintshop } from 'react-icons/md';
+import { MdAddBox } from 'react-icons/md';
+import { FaSquareMinus } from 'react-icons/fa6';    
 
 const TotalUsers = () => {
     const [ userData, setUserData ] = useState([]);
     const [ searchInput, setSearchInput ] = useState('');
+    const [ showDropdown, setShowDropdown ] = useState(false);
+    const [ selectedOption, setSelectedOption ] = useState(null);
+    const [ selectedUser, setSelectedUser ] = useState({
+        name: '',
+        mailId: ''
+    });
+    const [ validation, setValidation ] = useState({
+        name: '',
+        mailId: ''
+    });
 
     const filterData = (data, search) => {
         let filtered = data;
-    
+
         if (search.length >= 3) {
             filtered = filtered.filter(user =>
                 user.name.toLowerCase().includes(search.toLowerCase())
@@ -49,6 +62,48 @@ const TotalUsers = () => {
         setUserData(sortedData);
     };
 
+    const addValidUser = () => {
+        const validUser = { name: '', mailId: '' };
+
+        if (!selectedUser.name) {
+            validUser.name = 'Name is required.';
+        }
+        if (!selectedUser.mailId) {
+            validUser.mailId = 'Email address is required';
+        }
+
+        setValidation(validUser);
+        return Object.values(validUser).every(value => value === '');
+    };
+
+    const handleAcceptPopup = async () => {
+        if (addValidUser()) {
+            try {
+                await axios.post(`${Endpoint.API_ENDPOINT}/inviteUser`, {
+                    name: selectedUser.name,
+                    mailId: selectedUser.mailId
+                });
+                console.log('User accepted:', selectedUser);
+            } catch (error) {
+                console.error('Error accepting user:', error);
+            }
+            handleClosePopup();
+        }
+    };
+
+    const clear = currentField => {
+        setValidation({
+            ...validation,
+            [currentField]: ''
+        });
+    };
+
+    const handleClosePopup = () => {
+        setSelectedUser({ name: '', mailId: '' });
+        setValidation({ name: '', mailId: '' });
+        setSelectedOption(null);
+    };
+
     const handleSearch = event => {
         setSearchInput(event.target.value);
     };
@@ -57,9 +112,265 @@ const TotalUsers = () => {
         setSearchInput('');
     };
 
+    const handleAddUser = () => {
+        setShowDropdown(!showDropdown);
+    };
+
+    const handleAddUserPopup = option => {
+        setSelectedOption(option);
+        // setShowDropdown(!showDropdown);
+    };
+
+    const handlePopupClose = () => {
+        setSelectedOption(null);
+        setShowDropdown(!showDropdown);
+    };
+    const handleMultipleAddUser = () => {
+        return (
+            <div className="popup-user">
+                <div className="head-popup">Invite Multiple User</div>
+                <div className="body-popup2">
+                    <div>
+                        <p>
+                            Name<span className="validation">*</span>
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            onChange={event => {
+                                setSelectedUser({
+                                    ...selectedUser,
+                                    name: event.target.value
+                                });
+                                clear('name');
+                            }}
+                        />
+                        {validation && (
+                            <span className="validation">{validation.name}</span>
+                        )}
+                    </div>
+                    <div><MdAddBox className="iconMinus"/></div>
+                    <div>
+                        <p>
+                            Email<span className="validation">*</span>{' '}
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="Email ID"
+                            value={selectedUser.mailId}
+                            onChange={event => {
+                                setSelectedUser({
+                                    ...selectedUser,
+                                    mailId: event.target.value
+                                });
+                                clear('mailId');
+                            }}
+                        />
+                        {validation && (
+                            <span className="validation">{validation.mailId}</span>
+                        )}
+                    </div>
+                </div>
+                <hr />
+                <div className="body-popup2">
+                    <div>
+                        <p>
+                            Name<span className="validation">*</span>
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            onChange={event => {
+                                setSelectedUser({
+                                    ...selectedUser,
+                                    name: event.target.value
+                                });
+                                clear('name');
+                            }}
+                        />
+                        {validation && (
+                            <span className="validation">{validation.name}</span>
+                        )}
+                    </div>
+                    <div><FaSquareMinus className="iconMinus"/></div>
+                    <div>
+                        <p>
+                            Email<span className="validation">*</span>{' '}
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="Email ID"
+                            value={selectedUser.mailId}
+                            onChange={event => {
+                                setSelectedUser({
+                                    ...selectedUser,
+                                    mailId: event.target.value
+                                });
+                                clear('mailId');
+                            }}
+                        />
+                        {validation && (
+                            <span className="validation">{validation.mailId}</span>
+                        )}
+                    </div>
+                </div>
+                <hr />
+                <div>
+                    <button className="close-popup" onClick={handleClosePopup}>
+                        Cancel
+                    </button>
+                    <button className="accept-popup" onClick={handleAcceptPopup}>
+                        Send
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
+    const InviteUserPopup = () => (
+        <div className="popup-user">
+            <div className="head-popup">Invite User</div>
+            <div className="body-popup2">
+                <div>
+                    <p>
+                        Name<span className="validation">*</span>
+                    </p>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        onChange={event => {
+                            setSelectedUser({
+                                ...selectedUser,
+                                name: event.target.value
+                            });
+                            clear('name');
+                        }}
+                    />
+                    {validation && (
+                        <span className="validation">{validation.name}</span>
+                    )}
+                </div>
+                <div>
+                    <p>
+                        Email<span className="validation">*</span>{' '}
+                    </p>
+                    <input
+                        type="text"
+                        placeholder="Email ID"
+                        value={selectedUser.mailId}
+                        onChange={event => {
+                            setSelectedUser({
+                                ...selectedUser,
+                                mailId: event.target.value
+                            });
+                            clear('mailId');
+                        }}
+                    />
+                    {validation && (
+                        <span className="validation">{validation.mailId}</span>
+                    )}
+                </div>
+            </div>
+            <hr />
+            <div>
+                <button className="close-popup" onClick={handleClosePopup}>
+                    Cancel
+                </button>
+                <button className="accept-popup" onClick={handleAcceptPopup}>
+                    Send
+                </button>
+            </div>
+        </div>
+
+    );    
+      
+    const InviteMultipleUserPopup = () => (
+        <div className="popup-user">
+            <div className="head-popup">Invite Multiple User</div>
+            <div className="body-popup2">
+                <div>
+                    <p>
+                        Name<span className="validation">*</span>
+                    </p>
+                    <input
+                        type="text"
+                        placeholder="Name"
+                        onChange={event => {
+                            setSelectedUser({
+                                ...selectedUser,
+                                name: event.target.value
+                            });
+                            clear('name');
+                        }}
+                    />
+                    {validation && (
+                        <span className="validation">{validation.name}</span>
+                    )}
+                </div>
+                <div>
+                    <MdAddBox className="iconAdd" onClick={handleMultipleAddUser}/>
+                </div>
+                <div>
+                    <p>
+                        Email<span className="validation">*</span>{' '}
+                    </p>
+                    <input
+                        type="text"
+                        placeholder="Email ID"
+                        value={selectedUser.mailId}
+                        onChange={event => {
+                            setSelectedUser({
+                                ...selectedUser,
+                                mailId: event.target.value
+                            });
+                            clear('mailId');
+                        }}
+                    />
+                    {validation && (
+                        <span className="validation">{validation.mailId}</span>
+                    )}
+                </div>
+            </div>
+            <hr />
+            <div>
+                <button className="close-popup" onClick={handleClosePopup}>
+                    Cancel
+                </button>
+                <button className="accept-popup" onClick={handleAcceptPopup}>
+                    Send
+                </button>
+            </div>
+        </div>
+    );
+    
+
+    const AddUserDirectly = () => (
+        <div className="popup">
+            <p>Add User Directly Popup Content</p>
+        </div>
+    );
+
+    const AddMultipleUserDirectly = () => (
+        <div className="popup">
+            <p>Add Multiple User Directly Popup Content</p>
+        </div>
+    );  
+
     return (
         <div className="container">
-            <div><button className="add-user">Add User</button></div>
+            <div className="dropdown">
+                <button className="add-user" onClick={handleAddUser} >
+                    Add User
+                </button>
+                {showDropdown && (
+                    <div className="dropdown-content">
+                        <p onClick={() => handleAddUserPopup('inviteUser')}>Invite user</p>
+                        <p onClick={() => handleAddUserPopup('inviteMultipleUser')}>Invite Multiple user</p>
+                        <p onClick={() => handleAddUserPopup('addUserDirectly')}>Add user Directly</p>
+                        <p onClick={() => handleAddUserPopup('addMultipleUserDirectly')}>Add Multiple user Directly</p>
+                    </div>
+                )}
+            </div>
             <div className="card">
                 <div className="containerone">
                     <div className="flex-container">
@@ -119,6 +430,10 @@ const TotalUsers = () => {
                     <p className="bottom-row">Showing data 1 to 8 of 150 entries</p> <p></p>
                 </span>
             </div>
+            {selectedOption === 'inviteUser' && <InviteUserPopup onClose={handlePopupClose} />}
+            {selectedOption === 'inviteMultipleUser' && <InviteMultipleUserPopup onClose={handlePopupClose} />}
+            {selectedOption === 'addUserDirectly' && <AddUserDirectly onClose={handlePopupClose} />}
+            {selectedOption === 'addMultipleUserDirectly' && <AddMultipleUserDirectly onClose={handlePopupClose} />} 
         </div>
     );
 };

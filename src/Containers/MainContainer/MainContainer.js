@@ -39,23 +39,38 @@ const MainContainer =  ({ Children }) => {
                 <div>
                     <img src={ideassionImage} alt="Ideassion Image" className="ideaImage"/>
                     <div className="navbarTwo">
-                        <p onClick={''}> <TbUserSquareRounded className="navIcon"/> <span>Onboarders</span></p>
-                        <p onClick={''}> <IoIosPeople className="navIcon"/> <span>TotalUsers</span></p>
+                        <div className="navTextItem">
+                            <p className="navIconLayout"><TbUserSquareRounded className="navIcon"/></p>
+                            <p className="para">Onboarders</p>
+                        </div>                        
+                        <div className="navTextItem">
+                            <p className="navIconLayout"><IoIosPeople className="navIcon"/></p>
+                            <p className="para">TotalUsers</p></div>
                     </div>
                 </div>
                 <div className="navBottom">
                     <div className="navBottomOne">
-                        <p onClick={''}> <BsChatSquare className="navIcon" /> <span>Messages</span> </p>
-                        <p onClick={''}> <TiBell className="navIcon"  /> <span>Notifications</span>  </p>
-                        <p onClick={''}> <IoSettingsOutline className="navIcon"/> <span>Settings</span> </p>
-                        <p onClick={''}> <RiLogoutCircleLine className="navIcon"/> <span>Logout</span> </p>
+                        <div className="navTextItem" onClick={''}>  <p className="navIconLayout"> <BsChatSquare className="navIcon" /></p> 
+                            <p className="para">Messages</p> 
+                            <p className="notification" style={{ marginLeft: '38px' }}>2</p> 
+                        </div>
+                        <div className="navTextItem">  <p className="navIconLayout"> <TiBell className="navIcon"  /></p> 
+                            <p className="para">Notifications</p> 
+                            <p className="notification" style={{ marginLeft: '15px' }}>2</p> 
+                        </div>
+                        <div className="navTextItem">  <p className="navIconLayout"> <IoSettingsOutline className="navIcon"/></p>
+                            <p className="para">Settings</p> 
+                        </div>
+                        <div className="navTextItem">  <p className="navIconLayout"> <RiLogoutCircleLine className="navIcon"/></p> 
+                            <p className="para">Logout</p> 
+                        </div>
                     </div>
                     <div>
                         {userDetail.map(user => (
                             <div key={user.userId} className="navBottomTwo">
-                                <div className="mailLogo">
+                                <div className="mailLogoLayout"><p className="mailLogo">
                                     {getFirstLetter(user.user)}
-                                </div>
+                                </p></div>
                                 <div className="mailName">
                                     <p>{user.user}</p>
                                     <p style={{ color: '#71839B' }}>{user.email}</p>
