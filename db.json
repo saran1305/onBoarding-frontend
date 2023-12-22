@@ -130,8 +130,15 @@
   "userDetails": [
     {
       "userId": "",
-      "user":"Aprova",
+      "user": "Aprova",
       "email": "Aprova@ideassion.com"
+    }
+  ],
+  "inviteUser": [
+    {
+      "name": "Abilashini",
+      "mailId": "abi@gmail.com",
+      "id": 1
     }
   ]
 }

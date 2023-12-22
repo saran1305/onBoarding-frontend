@@ -10,6 +10,7 @@
     display: flex;
     flex-direction: column;
     position: fixed;
+    background: #FFFFFF;
 }
 .navBottom{
     width: 196px;
@@ -19,46 +20,63 @@
     width: 180px;
     height: 85px;
 }
-.navBottomOne p,
-.navbarTwo p{
-   width: 196px;
-   height: 30px;
-   color: #324054;
-   text-align: left;
-   border-radius: 4px;
+.navBottomOne div,
+.navbarTwo div{
    margin-left: 15px;
+   width: 170px;
+   height: 44px;
 }
-.navbarTwo span,
-.navBottomOne span{
-    font-size: 16px;
-    font-weight: 500;
-    letter-spacing: 0em;
-    margin-left: 16px;
+.navBottomOne{
+    margin-top: 20px;
+}
+.navIconLayout{
+   width: 20px;
+   height: 20px;
+}
+.navTextItem{
+   display: inline-flex;
+   width:196px;
+   height:44px;
+   border-radius: 4px;
+}
+.para{
+   margin-left: 16px;
+   font-size: 16px;
+   font-weight: 500;
+   line-height: 20px;
+   color: #324054;
 }
 .navIcon{
-    color: #2c323b;
-    width: 20px;
-    height: 20px;
+   width: 20px;
+   height: 20px;
+   color: #2c323b;
+   padding: 1px;
+   text-align: center;
 }
 .navBottomTwo{
-    display:flex;
-    column-gap:4px;
-    margin-top: 12px;
+   display:flex;
+   column-gap:4px;
+   margin-top: 12px;
+}
+.mailLogoLayout{
+   width: 40px;
+   height: 40px;
 }
 .mailLogo{
     width: 20px;
     height: 20px;
-    padding: 15px;
+    padding: 10px;
     border-radius: 4000px;
     border: 2px solid #2D68FE;
     background: #2D68FE;
     color: #FFFFFF;
     text-align: center;
-    margin-top: 5px;
+    margin-top: 12px;
 }
 .mailName{
    text-align: left;
-   margin-left: 4px;
+   margin-left: 5px;
+   margin-top: 2px;
    word-wrap: break-word;
    font-size: 13px;
    font-weight: 400;
@@ -66,5 +84,23 @@
    letter-spacing: 0em;
    width: 135px;
    height: 48px;
-   gap: 4px
+}
+.notification{
+   display: inline-block;
+   width: 15px;
+   height: 15px;
+   padding: 1px;
+   border-radius: 2000px;
+   background: #FF472E;
+   color: #FFFFFF;
+   font-size: 12px;
+   font-weight: 300;
+   text-align: center;
+   margin-top: 18px;
+}
+.navbarTwo :hover,
+.navBottomOne :hover{
+   color: #2D68FE;
+   background: #EFF6FF;
+   border-radius: 4px;
 }

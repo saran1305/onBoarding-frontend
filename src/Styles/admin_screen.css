@@ -169,9 +169,9 @@ th {
   height: 26px;
   border-radius: 100px;
   margin-left: 25px;
-  margin-top: 59px;
+  margin-top: 69px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 15px;
   letter-spacing: 0em;
   text-align: center;
@@ -210,8 +210,10 @@ th {
 .popup {
   width: 500px;
   height: 509px;
-  position: absolute;
-  margin-left: 380px;
+  position: fixed;
+  top: 52%;
+  left: 55%;
+  transform: translate(-50%, -50%);
   border-radius: 10px;
   border: 1px solid #2d68fe;
   gap: 99px;
@@ -219,7 +221,7 @@ th {
 }
 .popup hr {
   width: 384px;
-  margin-top: 150px;
+  margin-top: 160px;
   margin-left: 58px;
   border: 1px solid #23262b66;
   color: #71839b66;
@@ -239,11 +241,12 @@ th {
 }
 .body-popup {
   background: #ffffff;
+  border-radius: 5px;
 }
 .body-popup1 {
   width: 160px;
   height: 30px;
-  margin-top: 29px;
+  margin-top: 24px;
   margin-left: 171px;
   font-size: 20px;
   font-weight: 500;
@@ -302,7 +305,8 @@ th {
 .close-popup {
   width: 147px;
   height: 45px;
-  margin-top: 32px;
+  margin-top: 19px;
+  margin-bottom: 5px;
   margin-left: 58px;
   padding: 10px, 20px, 10px, 20px;
   border-radius: 5px;
@@ -332,13 +336,64 @@ th {
   color: red;
 }
 .add-user{
-  width:130px;
+  width: 149px;
   height: 40px;
   margin-top: 40px;
-  margin-left:1130px;
+  margin-left:1120px;
   padding: 10px, 20px, 10px, 20px;
   border-radius: 5px;
   border: 2px solid #2D68FE;
   background: #2D68FE;
   color: #ffffff;
 }
+.dropdown-content{
+width: 149px;
+height: 171px;
+top: 80px;
+margin-left:  1120px;
+border-radius: 4px;
+border: 1px solid #DADADA;
+box-shadow: 0px 4px 16px 0px #5454541F;
+background-color: #FFFFFF;
+position: absolute;
+}
+.dropdown-content p{
+margin-left: 10px;
+font-size: 14px;
+font-weight: 400;
+line-height: 18px;
+letter-spacing: 0em;
+}
+.popup-user{
+  background-color: #FFFFFF;
+  width: 500px;
+  height: 449px;
+  border-radius: 10px;
+  gap: 99px;
+  position: fixed;
+  top: 52%;
+  left: 55%;
+  transform: translate(-50%, -50%);  
+  border: 1px solid #2D68FE;
+}
+.popup-user hr{ 
+    width: 384px;
+    margin-top: 160px;
+    margin-left: 58px;
+    border: 1px solid #71839B66;
+    color:#71839B66;
+}
+.popup-user .close-popup {
+  width: 147px;
+  height: 45px;
+  margin-top: 5px;
+  margin-left: 58px;
+}
+.iconAdd{
+  width: 25px;
+  height: 25px;
+  margin-left: 372px;
+  color: #2D68FE;
+  position: absolute;
+}
+
