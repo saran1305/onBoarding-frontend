@@ -3,16 +3,20 @@ import { useEffect, useState } from 'react';
 import propTypes from 'prop-types'
 import '../../Styles/common.css'
 import * as Endpoint from '../../Entities/Endpoint';
-import ideassionImage from '../../Images/Idea.jpg';
+import IdeassionLogo from '../../Assets/IdeassionLogo.jpg';
 import { TbUserSquareRounded } from 'react-icons/tb';
 import { IoIosPeople } from 'react-icons/io';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { RiLogoutCircleLine } from 'react-icons/ri';
 import { TiBell } from 'react-icons/ti';
 import { BsChatSquare } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
+import * as RoutePath from '../../Entities/RoutePath'
+import * as MainContainerTypes from '../../Entities/MainContainerTypes'
 
 const MainContainer =  ({ Children }) => {
-    const [ userDetail, setUserDetail ] = useState([]);
+    const [ userDetail, setUserDetail ] = useState([])
+    const Navigate = useNavigate()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -33,35 +37,44 @@ const MainContainer =  ({ Children }) => {
         return str.charAt(0).toUpperCase();
     }
 
+    const handleClickNavOptions = selectedNavOption => {
+
+        if (selectedNavOption === MainContainerTypes.ON_BOARDERS_TYPE) {
+            Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.ON_BOARDERS.URI)
+        } else if (selectedNavOption === MainContainerTypes.TOTAL_USERS_TYPE) {
+            Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.TOTAL_USERS.URI)
+        }
+    }
+
     return (
         <div className="main-container">
             <div className="navbar">
                 <div>
-                    <img src={ideassionImage} alt="Ideassion Image" className="ideaImage"/>
+                    <img src={IdeassionLogo} alt="Ideassion Image" className="ideaImage"/>
                     <div className="navbarTwo">
-                        <div className="navTextItem">
+                        <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.ON_BOARDERS_TYPE)}>
                             <p className="navIconLayout"><TbUserSquareRounded className="navIcon"/></p>
                             <p className="para">Onboarders</p>
                         </div>                        
-                        <div className="navTextItem">
+                        <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.TOTAL_USERS_TYPE)}>
                             <p className="navIconLayout"><IoIosPeople className="navIcon"/></p>
                             <p className="para">TotalUsers</p></div>
                     </div>
                 </div>
                 <div className="navBottom">
                     <div className="navBottomOne">
-                        <div className="navTextItem" onClick={''}>  <p className="navIconLayout"> <BsChatSquare className="navIcon" /></p> 
+                        <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.MESSAGES_TYPE)}>  <p className="navIconLayout"> <BsChatSquare className="navIcon" /></p> 
                             <p className="para">Messages</p> 
                             <p className="notification" style={{ marginLeft: '38px' }}>2</p> 
                         </div>
-                        <div className="navTextItem">  <p className="navIconLayout"> <TiBell className="navIcon"  /></p> 
+                        <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.NOTIFICATIONS_TYPE)}>  <p className="navIconLayout"> <TiBell className="navIcon"  /></p> 
                             <p className="para">Notifications</p> 
                             <p className="notification" style={{ marginLeft: '15px' }}>2</p> 
                         </div>
-                        <div className="navTextItem">  <p className="navIconLayout"> <IoSettingsOutline className="navIcon"/></p>
+                        <div className="navTextItem" onClick={() => (handleClickNavOptions)(MainContainerTypes.SETTINGS_TYPE)}>  <p className="navIconLayout"> <IoSettingsOutline className="navIcon"/></p>
                             <p className="para">Settings</p> 
                         </div>
-                        <div className="navTextItem">  <p className="navIconLayout"> <RiLogoutCircleLine className="navIcon"/></p> 
+                        <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.LOGOUT_TYPE)}>  <p className="navIconLayout"> <RiLogoutCircleLine className="navIcon"/></p> 
                             <p className="para">Logout</p> 
                         </div>
                     </div>
