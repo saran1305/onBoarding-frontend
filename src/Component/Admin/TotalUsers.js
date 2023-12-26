@@ -1,3 +1,5 @@
+/* eslint-disable max-statements */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 3] }] */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';

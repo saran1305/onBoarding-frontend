@@ -5,14 +5,14 @@ import MainContainer  from './Containers/MainContainer/MainContainer'
 import OnBoarders from './Component/Admin/OnBoarders'
 import TotalUsers from './Component/Admin/TotalUsers'
 import Login from './Containers/Login/Login'
-
+import IdeassionTech from './Containers/IdeassionTech'
 const Router = () => {
     // need to change the rout for inital render in line number 15
     return (
         <BrowserRouter>
             <Routes>
+                <Route path={RoutePath.LOGO.URI} element={<IdeassionTech />} />
                 <Route path={RoutePath.LOGIN.URI} element={<Login />} />
-                <Route path={RoutePath.INIT.URI} element={<Login />} /> 
                 <Route path={RoutePath.MAIN_CONTAINER.URI} element={<MainContainer Children={
                     <Routes>
                         <Route>
