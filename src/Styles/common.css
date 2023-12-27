@@ -3,7 +3,7 @@
 }
 .navbar {
     width: 200px;
-    height: 624px;
+    height: 100vh;
     padding: 15px;
     justify-content: space-between;
     box-shadow: 0px 2px 4px 0px #00000040; 
@@ -25,9 +25,6 @@
    margin-left: 15px;
    width: 170px;
    height: 44px;
-}
-.navBottomOne{
-    margin-top: 20px;
 }
 .navIconLayout{
    width: 20px;
