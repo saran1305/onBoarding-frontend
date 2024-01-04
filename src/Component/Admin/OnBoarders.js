@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 import '../../Styles/admin_screen.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaRegCircleCheck } from 'react-icons/fa6';
 import { MdOutlineCancel } from 'react-icons/md';
 import { RiFileUserFill } from 'react-icons/ri';
@@ -19,41 +20,44 @@ const OnBoarders = () => {
     const [ comments, setComments ] = useState('');
     const [ selectedUser, setSelectedUser ] = useState({
         userId: '',
-        officialMailId: ''
+        mailId: ''
     });
     const [ validation, setValidation ] = useState({
         userId: '',
-        officialMailId: ''
+        mailId: ''
     });
-  
+
+    const fetchData = async status => {
+        let response;
+
+        if (status === 'Pending') {
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/pending`);
+        } else if (status === 'Invited') {
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/invited`);
+        } else if (status === 'Expired') {
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/expired`);
+        }
+
+        setUserData(response.data);
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${Endpoint.API_ENDPOINT}/users`);
-                const data = await response.json();
-                const pending = data.filter(user => user.status === 'Pending');
-
-                setUserData(pending);
-                filterData(data, activeKey, searchInput);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-  
-        const filterData = (data, status, search) => {
-            let filtered = data.filter(user => user.status === status);
-  
-            if (search.length >= 3) {
-                filtered = filtered.filter(user =>
-                    user.name.toLowerCase().includes(search.toLowerCase())
-                );
-            }
-            setUserData(filtered);
-        };
+        fetchData(activeKey);
     }, [ activeKey, searchInput ]);
-  
+
+
+    const filterData = search => {
+        let filteredData = [...userData];
+
+        if (search.length >= 3) {
+            filteredData = filteredData.filter(user =>
+                user.name.toLowerCase().includes(search.toLowerCase())
+            );
+        }
+
+        setUserData(filteredData);
+    };
+
     const handleSort = event => {
         const selectedOption = event.target.value;
         const sortedData = [...userData].sort((firstUser, secondUser) => {
@@ -79,12 +83,14 @@ const OnBoarders = () => {
   
     const handleSearch = event => {
         setSearchInput(event.target.value);
+        filterData(event.target.value);
     };
   
     const filterTag = status => {
         setActiveKey(status);
+        fetchData(status);
     };
-  
+
     const handleClearIcon = () => {
         setSearchInput('');
     };
@@ -99,7 +105,8 @@ const OnBoarders = () => {
         setShowAcceptance(false);
         setShowRejection(false);
         setComments('');
-        setSelectedUser({ userId: '', officialMailId: '' });
+        setSelectedUser({ userId: '', mailId: '' });
+        setValidation({ userId: '', mailId: '' });
     };
   
     const handleRejection = () => {
@@ -109,28 +116,23 @@ const OnBoarders = () => {
   
     const handleAcceptPopup = async () => {
         if (addValidUser()) {
-            try {
-                await axios.post(`${Endpoint.API_ENDPOINT}/userId`, {
-                    userId: selectedUser.userId,
-                    mailId: selectedUser.officialMailId
-                });
-            } catch (error) {
-                console.error('Error accepting user:', error);
-            }
+        
+            await axios.post(`${Endpoint.API_ENDPOINT}/userAccept`, {
+                userId: selectedUser.userId,
+                mailId: selectedUser.mailId
+            });
+            
             handleClosePopup();
         }
     };
-  
+
     const handleRejectionPopup = async () => {
         if (addValidUser()) {
-            try {
-                await axios.post(`${Endpoint.API_ENDPOINT}/comments`, {
-                    userId: selectedUser.userId,
-                    comments: comments
-                });
-            } catch (error) {
-                console.error('Error storing comments:', error);
-            }
+            await axios.post(`${Endpoint.API_ENDPOINT}/comments`, {
+                // userId: selectedUser.userId,
+                comments: comments
+            });
+    
             handleClosePopup();
         }
     };
@@ -143,20 +145,20 @@ const OnBoarders = () => {
     };
     const addValidUser = () => {
         const validUser = { userId: '', mailId: '', comments: '' };
-  
+    
         if (!selectedUser.userId) {
             validUser.userId = 'User ID is required.';
         }
         if (!selectedUser.mailId) {
             validUser.mailId = 'Email address is required';
         }
-        if (!comments) {
+        if (!comments && showRejection) {
             validUser.comments = 'Please enter comments';
         }
-  
+    
         setValidation(validUser);
         return Object.values(validUser).every(value => value === '');
-    };
+    };    
   
     return (
         <div className="container">
@@ -242,14 +244,14 @@ const OnBoarders = () => {
                                         className={`iconcorrect ${user.status === 'Invited' || user.status === 'Expired'
                                             ? 'disabled'
                                             : ''
-                                            }`}
+                                        }`}
                                     />
                                     <MdOutlineCancel
-                                        onClick={handleRejection}
+                                        onClick={() => handleRejection(user)}
                                         className={`iconwrong ${user.status === 'Invited' || user.status === 'Expired'
                                             ? 'disabled'
                                             : ''
-                                            }`}
+                                        }`}
                                     />
                                 </td>
                             </tr>
@@ -283,7 +285,7 @@ const OnBoarders = () => {
                                 </div>
                                 <div>
                                     <p>
-                                        Official Mail Id<span className="validation">*</span>{' '}
+                                        Mail Id<span className="validation">*</span>{' '}
                                     </p>
                                     <input
                                         type="text"

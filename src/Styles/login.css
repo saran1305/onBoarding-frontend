@@ -1,0 +1,93 @@
+/*  Login.css */
+
+.content{
+    margin-top: 10%;
+    margin-left: 25%;
+    width: 50%;
+    height: 50%;
+    border: 3px solid #5882C11C;
+    border-radius: 40px;
+    background: #5882C11C;
+    color: #FFFFFF;
+  }
+  .content p{
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 38px;
+  letter-spacing: -0.01em;
+  text-align: left;
+  margin-top: 10%;
+  }
+  .logo{
+    width: 55px;
+  height: 88px;
+  margin-top: 20px;
+  margin-left: 45%;
+  }
+  .girl{
+    width: 280px;
+  height: 394px;
+  margin-left: 100px;
+  }
+  .iconnotepad{
+    margin-left: 20%;
+    position: absolute;
+  }
+  .iconcup{
+    margin-top: 25%;
+    margin-left: 5%;
+    position: absolute;
+  }
+  .group{
+    width: 103.92px;
+    height: 100px;
+    position: absolute;
+    opacity: 1;
+    top: 52%;
+    left: 55%;
+    transform: translate(-205%, 200%);
+  }
+  Form.Label{
+    color: #71839B;
+  }
+  .box{
+    width: 105px;
+    height: 90px;
+  }
+.container{
+    height: 100vh;
+}
+.title{
+    margin-top: 20px;
+font-size: 22px;
+font-weight: 600;
+line-height: 29px;
+letter-spacing: -0.01em;
+text-align: center;
+}
+.body{
+    margin-left: 10%;
+}
+.label{
+    margin-top: 20px;
+    color: #71839B;
+font-size: 16px;
+font-weight: 600;
+line-height: 24px;
+letter-spacing: 0em;
+}
+.control{
+    width: 340px;
+    border: 1px solid #71839B66
+}
+.checking{
+    margin-top: 20px;
+}
+.button-login{
+    width: 340px; 
+    margin-top: 25px;
+}
+.background{
+    height: 100vh;
+    background: linear-gradient(180deg, #2D68FE 0%, rgba(9, 7, 149, 0.66) 100%);
+}
