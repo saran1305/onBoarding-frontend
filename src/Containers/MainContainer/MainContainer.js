@@ -13,8 +13,9 @@ import { BsChatSquare } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import * as RoutePath from '../../Entities/RoutePath'
 import * as MainContainerTypes from '../../Entities/MainContainerTypes'
+import { ToastContainer } from 'react-toastify';
 
-const MainContainer =  ({ Children }) => {
+const MainContainer =  ({ Children }) => {  
     const [ userDetail, setUserDetail ] = useState([])
     const Navigate = useNavigate()
 
@@ -25,7 +26,7 @@ const MainContainer =  ({ Children }) => {
             const data = await response.json();
 
             setUserDetail(data);
-           
+
         };
 
         fetchData();
@@ -91,6 +92,12 @@ const MainContainer =  ({ Children }) => {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar
+                style={{ minWidth: '300px', zIndex: 9999 }}
+            />
             <div>
                 {Children}
             </div>

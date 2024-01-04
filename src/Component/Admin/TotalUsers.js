@@ -22,6 +22,10 @@ const TotalUsers = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
+            // const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
+            // const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
+            // const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
+            
             const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/pending`);
             const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/invited`);
             const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/expired`);
@@ -133,57 +137,7 @@ const TotalUsers = () => {
         setSelectedOption(null);
         setShowDropdown(!showDropdown);
     };
-
-    // const InviteUserPopup = () => (
-    //     <div className="popup-user">
-    //         <div className="head-popup">
-    //             {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
-    //         </div>
-    //         <div className="body-popup2">
-    //             {selectedUsers.map((user, index) => (
-    //                 <div key={index}>
-    //                     <div>
-    //                         <p>Name<span className="validation">*</span></p>
-    //                         <input
-    //                             type="text"
-    //                             placeholder="Name"
-    //                             value={user.name}
-    //                             onChange={event =>
-    //                                 handleUserInputChange(index, 'name', event.target.value)
-    //                             }
-    //                         />
-    //                         {validation && (
-    //                             <span className="validation">{validation.name}</span>
-    //                         )}
-    //                     </div>
-    //                     {isInviteMultiple && (
-    //                         <div><MdAddBox className="iconAdd" onClick={handleAddUserInput} /> </div>
-    //                     )}
-    //                     <div>
-    //                         <p>Email<span className="validation">*</span>{' '}</p>
-    //                         <input
-    //                             type="text"
-    //                             placeholder="Email ID"
-    //                             value={user.mailId}
-    //                             onChange={event =>
-    //                                 handleUserInputChange(index, 'mailId', event.target.value)
-    //                             }
-    //                         />
-    //                         {validation && (
-    //                             <span className="validation">{validation.mailId}</span>
-    //                         )}
-    //                     </div>
-    //                 </div>
-    //             ))}
-    //         </div>
-    //         <hr />
-    //         <div>
-    //             <button className="close-popup" onClick={handleClosePopup}>Cancel</button>
-    //             <button className="accept-popup" onClick={handleAcceptPopup}>Send</button>
-    //         </div>
-    //     </div>
-    // );
-
+    
     const InviteUserPopup = () => (
         <Modal show={true}>
             <Modal.Header>
@@ -228,7 +182,6 @@ const TotalUsers = () => {
                     </div>
                 ))}
             </Modal.Body>
-            <hr />
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClosePopup}>
                     Cancel
@@ -241,15 +194,15 @@ const TotalUsers = () => {
     );
 
     const AddUserDirectly = () => (
-        <div className="popup">
+        <Modal>
             <p>Add User Directly Popup Content</p>
-        </div>
+        </Modal>
     );
 
     const AddMultipleUserDirectly = () => (
-        <div className="popup">
+        <Modal>
             <p>Add Multiple User Directly Popup Content</p>
-        </div>
+        </Modal>
     );
 
     return (

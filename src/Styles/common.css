@@ -2,9 +2,8 @@
     display: flex;
 }
 .navbar {
-    width: 200px;
+    width: 220px;
     height: 100vh;
-    padding: 15px;
     justify-content: space-between;
     box-shadow: 0px 2px 4px 0px #00000040; 
     display: flex;
@@ -12,19 +11,17 @@
     position: fixed;
     background: #FFFFFF;
 }
-.navBottom{
-    width: 196px;
-    height: 270px;
-}
 .ideaImage{
     width: 180px;
     height: 85px;
+    margin-left: 10px;
 }
 .navBottomOne div,
 .navbarTwo div{
-   margin-left: 15px;
-   width: 170px;
-   height: 44px;
+   margin-left: 25px;
+}
+.navbarTwo{
+   margin-top: 15px;
 }
 .navIconLayout{
    width: 20px;
@@ -40,7 +37,6 @@
    margin-left: 16px;
    font-size: 16px;
    font-weight: 500;
-   line-height: 20px;
    color: #324054;
 }
 .navIcon{
@@ -58,42 +54,34 @@
 .mailLogoLayout{
    width: 40px;
    height: 40px;
+   margin-left: 10px;
 }
 .mailLogo{
-    width: 20px;
-    height: 20px;
-    padding: 10px;
-    border-radius: 4000px;
-    border: 2px solid #2D68FE;
-    background: #2D68FE;
-    color: #FFFFFF;
-    text-align: center;
-    margin-top: 12px;
+   width: 40px;
+   height: 40px;
+   border-radius: 4000px;
+   background: #2D68FE;
+   color: #FFFFFF;
+   text-align: center;
 }
 .mailName{
    text-align: left;
-   margin-left: 5px;
-   margin-top: 2px;
+   margin-left: 2px;
    word-wrap: break-word;
    font-size: 13px;
    font-weight: 400;
-   line-height: 14px;
-   letter-spacing: 0em;
-   width: 135px;
-   height: 48px;
 }
 .notification{
    display: inline-block;
-   width: 15px;
-   height: 15px;
-   padding: 1px;
+   width: 18px;
+   height: 18px;
    border-radius: 2000px;
    background: #FF472E;
    color: #FFFFFF;
    font-size: 12px;
    font-weight: 300;
    text-align: center;
-   margin-top: 18px;
+   margin-top: 1px;
 }
 .navbarTwo :hover,
 .navBottomOne :hover{
