@@ -137,14 +137,13 @@ const OnBoarders = () => {
     const handleRejectionPopup = async () => {
         if (addValidUser()) {
             await axios.post(`${Endpoint.API_ENDPOINT}/comments`, {
-                // userId: selectedUser.userId,
+                userId: selectedUser.userId,
                 comments: comments
             });
-    
             handleClosePopup();
         }
     };
-  
+    
     const clear = currentField => {
         setValidation({
             ...validation,
@@ -324,7 +323,7 @@ const OnBoarders = () => {
                         <Modal.Header className="head-popup" closeButton>
                             <Modal.Title >Are you sure to reject?</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body>
+                        <Modal.Body style={{ overflow: 'auto' }} className="modalBody">
                             <p>
                                 Write Comments<span className="validation">*</span>
                             </p>

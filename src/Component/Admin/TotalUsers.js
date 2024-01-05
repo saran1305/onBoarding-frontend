@@ -8,6 +8,7 @@ import { MdOutlineClear } from 'react-icons/md';
 import { RiFileUserFill } from 'react-icons/ri';
 import { MdLocalPrintshop } from 'react-icons/md';
 import { MdAddBox } from 'react-icons/md';
+import { FaSquareMinus } from 'react-icons/fa6';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Form } from 'react-bootstrap';
 
@@ -125,14 +126,23 @@ const TotalUsers = () => {
 
     const handleUserInputChange = (index, field, value) => {
         setSelectedUsers(prevUsers => {
-            const updatedUsers = [...prevUsers];
-
-            updatedUsers[index][field] = value;
-            return updatedUsers;
+            return prevUsers.map((user, i) => {
+                if (i === index) {
+                    return {
+                        ...user,
+                        [field]: value
+                    };
+                    
+                }
+                return user;
+            });
         });
     };
     
-
+    const handleRemoveUserInput = index => {
+        setSelectedUsers(prevUsers => prevUsers.filter((user, i) => i !== index));
+    };
+    
     const handlePopupClose = () => {
         setSelectedOption(null);
         setShowDropdown(!showDropdown);
@@ -162,8 +172,11 @@ const TotalUsers = () => {
                                 <Form.Text className="text-danger">{validation.name}</Form.Text>
                             )}
                         </Form.Group>
-                        {isInviteMultiple && (
+                        {index === 0 && isInviteMultiple && (
                             <MdAddBox className="iconAdd" onClick={handleAddUserInput} />
+                        )}
+                        {index > 0 && (
+                            <FaSquareMinus className="iconMinus" onClick={() => handleRemoveUserInput(index)} />
                         )}
                         <Form.Group>
                             <Form.Label>Email<span className="validation">*</span>{' '}</Form.Label>
@@ -182,11 +195,11 @@ const TotalUsers = () => {
                     </div>
                 ))}
             </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClosePopup}>
+            <Modal.Footer className="button-footer">
+                <Button className="close-popup" onClick={handleClosePopup}>
                     Cancel
                 </Button>
-                <Button variant="primary" onClick={handleAcceptPopup}>
+                <Button className="accept-popup" onClick={handleAcceptPopup}>
                     Send
                 </Button>
             </Modal.Footer>
