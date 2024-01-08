@@ -8,6 +8,7 @@ import { MdOutlineClear } from 'react-icons/md';
 import { RiFileUserFill } from 'react-icons/ri';
 import { MdLocalPrintshop } from 'react-icons/md';
 import { MdAddBox } from 'react-icons/md';
+import { FaSquareMinus } from 'react-icons/fa6';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Form } from 'react-bootstrap';
 
@@ -22,6 +23,10 @@ const TotalUsers = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
+            // const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
+            // const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
+            // const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
+            
             const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/pending`);
             const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/invited`);
             const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/expired`);
@@ -121,69 +126,28 @@ const TotalUsers = () => {
 
     const handleUserInputChange = (index, field, value) => {
         setSelectedUsers(prevUsers => {
-            const updatedUsers = [...prevUsers];
-
-            updatedUsers[index][field] = value;
-            return updatedUsers;
+            return prevUsers.map((user, i) => {
+                if (i === index) {
+                    return {
+                        ...user,
+                        [field]: value
+                    };
+                    
+                }
+                return user;
+            });
         });
     };
     
-
+    const handleRemoveUserInput = index => {
+        setSelectedUsers(prevUsers => prevUsers.filter((user, i) => i !== index));
+    };
+    
     const handlePopupClose = () => {
         setSelectedOption(null);
         setShowDropdown(!showDropdown);
     };
-
-    // const InviteUserPopup = () => (
-    //     <div className="popup-user">
-    //         <div className="head-popup">
-    //             {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
-    //         </div>
-    //         <div className="body-popup2">
-    //             {selectedUsers.map((user, index) => (
-    //                 <div key={index}>
-    //                     <div>
-    //                         <p>Name<span className="validation">*</span></p>
-    //                         <input
-    //                             type="text"
-    //                             placeholder="Name"
-    //                             value={user.name}
-    //                             onChange={event =>
-    //                                 handleUserInputChange(index, 'name', event.target.value)
-    //                             }
-    //                         />
-    //                         {validation && (
-    //                             <span className="validation">{validation.name}</span>
-    //                         )}
-    //                     </div>
-    //                     {isInviteMultiple && (
-    //                         <div><MdAddBox className="iconAdd" onClick={handleAddUserInput} /> </div>
-    //                     )}
-    //                     <div>
-    //                         <p>Email<span className="validation">*</span>{' '}</p>
-    //                         <input
-    //                             type="text"
-    //                             placeholder="Email ID"
-    //                             value={user.mailId}
-    //                             onChange={event =>
-    //                                 handleUserInputChange(index, 'mailId', event.target.value)
-    //                             }
-    //                         />
-    //                         {validation && (
-    //                             <span className="validation">{validation.mailId}</span>
-    //                         )}
-    //                     </div>
-    //                 </div>
-    //             ))}
-    //         </div>
-    //         <hr />
-    //         <div>
-    //             <button className="close-popup" onClick={handleClosePopup}>Cancel</button>
-    //             <button className="accept-popup" onClick={handleAcceptPopup}>Send</button>
-    //         </div>
-    //     </div>
-    // );
-
+    
     const InviteUserPopup = () => (
         <Modal show={true}>
             <Modal.Header>
@@ -208,8 +172,11 @@ const TotalUsers = () => {
                                 <Form.Text className="text-danger">{validation.name}</Form.Text>
                             )}
                         </Form.Group>
-                        {isInviteMultiple && (
+                        {index === 0 && isInviteMultiple && (
                             <MdAddBox className="iconAdd" onClick={handleAddUserInput} />
+                        )}
+                        {index > 0 && (
+                            <FaSquareMinus className="iconMinus" onClick={() => handleRemoveUserInput(index)} />
                         )}
                         <Form.Group>
                             <Form.Label>Email<span className="validation">*</span>{' '}</Form.Label>
@@ -228,12 +195,11 @@ const TotalUsers = () => {
                     </div>
                 ))}
             </Modal.Body>
-            <hr />
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClosePopup}>
+            <Modal.Footer className="button-footer">
+                <Button className="close-popup" onClick={handleClosePopup}>
                     Cancel
                 </Button>
-                <Button variant="primary" onClick={handleAcceptPopup}>
+                <Button className="accept-popup" onClick={handleAcceptPopup}>
                     Send
                 </Button>
             </Modal.Footer>
@@ -241,15 +207,15 @@ const TotalUsers = () => {
     );
 
     const AddUserDirectly = () => (
-        <div className="popup">
+        <Modal>
             <p>Add User Directly Popup Content</p>
-        </div>
+        </Modal>
     );
 
     const AddMultipleUserDirectly = () => (
-        <div className="popup">
+        <Modal>
             <p>Add Multiple User Directly Popup Content</p>
-        </div>
+        </Modal>
     );
 
     return (

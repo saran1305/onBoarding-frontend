@@ -10,6 +10,7 @@ import { MdOutlineCancel } from 'react-icons/md';
 import { RiFileUserFill } from 'react-icons/ri';
 import { MdOutlineClear } from 'react-icons/md';
 import { MdMailOutline } from 'react-icons/md';
+import { Modal, Button } from 'react-bootstrap'; 
 
 const OnBoarders = () => {
     const [ userData, setUserData ] = useState([]);
@@ -38,6 +39,13 @@ const OnBoarders = () => {
             response = await axios.get(`${Endpoint.API_ENDPOINT}/expired`);
         }
 
+        // if (status === 'Pending') {
+        //     response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
+        // } else if (status === 'Invited') {
+        //     response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
+        // } else if (status === 'Expired') {
+        //     response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
+        // }
         setUserData(response.data);
     };
 
@@ -129,14 +137,13 @@ const OnBoarders = () => {
     const handleRejectionPopup = async () => {
         if (addValidUser()) {
             await axios.post(`${Endpoint.API_ENDPOINT}/comments`, {
-                // userId: selectedUser.userId,
+                userId: selectedUser.userId,
                 comments: comments
             });
-    
             handleClosePopup();
         }
     };
-  
+    
     const clear = currentField => {
         setValidation({
             ...validation,
@@ -259,96 +266,90 @@ const OnBoarders = () => {
                     </tbody>
                 </table>
                 {showAcceptance && (
-                    <div className="popup">
-                        <div className="head-popup">Acceptance</div>
-                        <div className="body-popup">
+                    <Modal show={showAcceptance} onHide={handleClosePopup} className="popup">
+                        <Modal.Header className="head-popup" closeButton>
+                            <Modal.Title >Acceptance</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body className="body-popup">
                             <div className="body-popup1">Create ID & Email </div>
-                            <div className="body-popup2">
-                                <div>
-                                    <p>
-                                        User ID<span className="validation">*</span>
-                                    </p>
-                                    <input
-                                        type="number"
-                                        placeholder="User ID"
-                                        onChange={event => {
-                                            setSelectedUser({
-                                                ...selectedUser,
-                                                userId: event.target.value
-                                            });
-                                            clear('userId');
-                                        }}
-                                    />
-                                    {validation && (
-                                        <span className="validation">{validation.userId}</span>
-                                    )}
-                                </div>
-                                <div>
-                                    <p>
-                                        Mail Id<span className="validation">*</span>{' '}
-                                    </p>
-                                    <input
-                                        type="text"
-                                        placeholder="Mail ID"
-                                        value={selectedUser.mailId}
-                                        onChange={event => {
-                                            setSelectedUser({
-                                                ...selectedUser,
-                                                mailId: event.target.value
-                                            });
-                                            clear('mailId');
-                                        }}
-                                    />
-                                    {validation && (
-                                        <span className="validation">{validation.mailId}</span>
-                                    )}
-                                </div>
-                            </div>
-                            <hr />
-                            <div>
-                                <button className="close-popup" onClick={handleClosePopup}>
-                                    Cancel
-                                </button>
-                                <button className="accept-popup" onClick={handleAcceptPopup}>
-                                    Accept
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                            <p>
+                                User ID<span className="validation">*</span>
+                            </p>
+                            <input
+                                type="number"
+                                placeholder="User ID"
+                                onChange={event => {
+                                    setSelectedUser({
+                                        ...selectedUser,
+                                        userId: event.target.value
+                                    });
+                                    clear('userId');
+                                }}
+                            />
+                            {validation && (
+                                <span className="validation">{validation.userId}</span>
+                            )}
+                            <p>
+                                Mail Id<span className="validation">*</span>{' '}
+                            </p>
+                            <input
+                                type="text"
+                                placeholder="Mail ID"
+                                value={selectedUser.mailId}
+                                onChange={event => {
+                                    setSelectedUser({
+                                        ...selectedUser,
+                                        mailId: event.target.value
+                                    });
+                                    clear('mailId');
+                                }}
+                            />
+                            {validation && (
+                                <span className="validation">{validation.mailId}</span>
+                            )}
+                        </Modal.Body>
+                        <Modal.Footer className="button-footer">
+                            <Button className="close-popup" onClick={handleClosePopup}>
+                                Cancel
+                            </Button>
+                            <Button className="accept-popup" onClick={handleAcceptPopup}>
+                                Accept
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>    
                 )}
                 {showRejection && (
-                    <div className="popup">
-                        <div className="head-popup">Are you sure to reject ?</div>
-                        <div className="body-popup">
-                            <div className="reject">
-                                <p>
-                                    Write Comments<span className="validation">*</span>
-                                </p>
-                                <input
-                                    className="comment"
-                                    type="text"
-                                    placeholder="Comments"
-                                    value={comments}
-                                    onChange={event => {
-                                        setComments(event.target.value);
-                                        clear('comments');
-                                    }}
-                                />
-                                {validation && (
-                                    <span className="validation">{validation.comments}</span>
-                                )}
-                            </div>
-                        </div>
-                        <hr />
-                        <div>
-                            <button className="close-popup" onClick={handleClosePopup}>
+                    <Modal show={showRejection} onHide={handleClosePopup} className="popup">
+                        <Modal.Header className="head-popup" closeButton>
+                            <Modal.Title >Are you sure to reject?</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body style={{ overflow: 'auto' }} className="modalBody">
+                            <p>
+                                Write Comments<span className="validation">*</span>
+                            </p>
+                            <input
+                                className="comment"
+                                type="text"
+                                placeholder="Comments"
+                                value={comments}
+                                onChange={event => {
+                                    setComments(event.target.value);
+                                    clear('comments');
+                                }}
+                            />
+                            {validation && (
+                                <span className="validation">{validation.comments}</span>
+                            )}
+                        </Modal.Body>
+                        <Modal.Footer className="button-footer">
+                            <Button className="close-popup" onClick={handleClosePopup}>
                                 Cancel
-                            </button>
-                            <button className="accept-popup" onClick={handleRejectionPopup}>
+                            </Button>
+                            <Button className="accept-popup" onClick={handleRejectionPopup}>
                                 Submit
-                            </button>
-                        </div>
-                    </div>
+                            </Button> 
+                        </Modal.Footer>
+                    </Modal>
                 )}
                 <span>
                     <p className="bottom-row">Showing data 1 to 8 of 150 entries</p> <p></p>

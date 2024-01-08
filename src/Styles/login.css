@@ -1,93 +1,104 @@
-/*  Login.css */
+ /* Login.css */
 
+.container {
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
 .content{
-    margin-top: 10%;
-    margin-left: 25%;
-    width: 50%;
-    height: 50%;
-    border: 3px solid #5882C11C;
-    border-radius: 40px;
-    background: #5882C11C;
-    color: #FFFFFF;
-  }
-  .content p{
-  font-size: 32px;
+  margin-top: 10%;
+  margin-left: 25%;
+  width: 50%;
+  min-height: 50vh;
+  border: 3px solid #5882C11C;
+  border-radius: 40px;
+  background: #5882C11C;
+  color: #FFFFFF;
+}
+.content p{
+  font-size: 28px;
   font-weight: 500;
   line-height: 38px;
   letter-spacing: -0.01em;
   text-align: left;
   margin-top: 10%;
-  }
-  .logo{
-    width: 55px;
+}
+.logo{
+  width: 55px;
   height: 88px;
   margin-top: 20px;
   margin-left: 45%;
-  }
-  .girl{
-    width: 280px;
-  height: 394px;
-  margin-left: 100px;
-  }
-  .iconnotepad{
-    margin-left: 20%;
-    position: absolute;
-  }
-  .iconcup{
-    margin-top: 25%;
-    margin-left: 5%;
-    position: absolute;
-  }
-  .group{
-    width: 103.92px;
-    height: 100px;
-    position: absolute;
-    opacity: 1;
-    top: 52%;
-    left: 55%;
-    transform: translate(-205%, 200%);
-  }
-  Form.Label{
-    color: #71839B;
-  }
-  .box{
-    width: 105px;
-    height: 90px;
-  }
-.container{
-    height: 100vh;
+}
+.girl{
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  margin-left: 20px;
+}
+.iconnotepad{
+  margin-left: 300px;
+  position: absolute;
+}
+.iconcup{
+  margin-top: 25%;
+  margin-left: 5%;
+  position: absolute;
+}
+.group{
+  position: absolute;
+  opacity: 1;
+  top: 50%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+}
+Form.Label{
+  color: #71839B;
+}
+.box{
+  width: 105px;
+  height: 90px;
 }
 .title{
-    margin-top: 20px;
-font-size: 22px;
-font-weight: 600;
-line-height: 29px;
-letter-spacing: -0.01em;
-text-align: center;
+  margin-top: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 29px;
+  letter-spacing: -0.01em;
+  text-align: center;
 }
 .body{
-    margin-left: 10%;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 .label{
-    margin-top: 20px;
-    color: #71839B;
-font-size: 16px;
-font-weight: 600;
-line-height: 24px;
-letter-spacing: 0em;
+  margin-top: 20px;
+  color: #71839B;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0em;
 }
 .control{
-    width: 340px;
-    border: 1px solid #71839B66
+  width: 100%;
+  max-width: 340px;
+  border: 1px solid #71839B66
 }
 .checking{
-    margin-top: 20px;
+  margin-top: 20px;
 }
 .button-login{
-    width: 340px; 
-    margin-top: 25px;
+  width: 100%;
+  max-width: 340px;
+  margin-top: 25px;
+  margin-bottom: 20px;
 }
-.background{
-    height: 100vh;
-    background: linear-gradient(180deg, #2D68FE 0%, rgba(9, 7, 149, 0.66) 100%);
+.column-2{
+  height: 100vh;
+  background: linear-gradient(180deg, #2D68FE 0%, rgba(9, 7, 149, 0.66) 100%);
+}
+.column-1{
+  width: 50%;
+}
+.column{
+  max-height: 100vh;
 }
