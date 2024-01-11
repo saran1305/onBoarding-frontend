@@ -1,0 +1,95 @@
+.cardfull , .cardfull th, .cardfull td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.cardfull th, .cardfull td {
+    padding: 10px;
+}
+.cardfull{
+    /* font-size: 12px; */
+    overflow-x: auto;
+    overflow-y: auto;
+    height: 87vh;
+}
+.container1, .container2, .container3, .container4{
+    /* width: 210mm; 
+    height: 297mm;  */
+    height: 390mm;
+    padding-right: 20px;
+    padding-left: 20px;
+    border: 2px solid #00000040;
+}
+.photo{
+    height: 140px;
+    width: 120px;
+    margin-right: 15px;
+}
+.cardfull .tableone{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+.table-align th{
+  width: 130px;
+}
+.table-align td{
+    width: 280px;
+}
+.table{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.resumebutton1{
+    border:2px solid #2d68fe;
+    border-radius: 5px;
+    background: none;
+    color: #2d68fe;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+.resumebutton2{
+    color: #2d68fe;
+    background: none;
+    border: none;
+}
+.resumeicon{
+    width: 25px;
+    height: 25px;
+}
+.backicon{
+    width: 20px;
+    height: 20px;
+}
+.resume{
+    display: flex;
+    justify-content: space-between;
+}
+.ideaimage{
+    width: 130px;
+    height: 55px;
+    margin-left: auto;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.hobbies td, .hobbies th{
+    width: 50%;
+}
+.container4 hr{
+    width: 150px;
+    border: 1px solid rgb(0, 0, 0);
+}
+.line{
+    display: flex;
+    justify-content: space-around
+}
+.line h6{
+    text-align: center;
+}
+.text{
+    text-align: end;
+    /* position: fixed;
+    bottom: 20;
+    right: 20;
+    margin: 10px;  */
+}
