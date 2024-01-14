@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
+import * as RoutePath from '../../Entities/RoutePath';
 import '../../Styles/admin_screen.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaRegCircleCheck } from 'react-icons/fa6';
@@ -11,6 +12,7 @@ import { RiFileUserFill } from 'react-icons/ri';
 import { MdOutlineClear } from 'react-icons/md';
 import { MdMailOutline } from 'react-icons/md';
 import { Modal, Button } from 'react-bootstrap'; 
+import { useNavigate } from 'react-router';
 
 const OnBoarders = () => {
     const [ userData, setUserData ] = useState([]);
@@ -27,6 +29,14 @@ const OnBoarders = () => {
         userId: '',
         mailId: ''
     });
+
+    const Navigate = useNavigate();
+    const handleNavClick = () => {
+        const _url = 'user-details'; 
+        const mainContainerURI = RoutePath.MAIN_CONTAINER.URI.replace('*', _url);
+
+        Navigate(mainContainerURI);
+    };
 
     const fetchData = async status => {
         let response;
@@ -242,7 +252,7 @@ const OnBoarders = () => {
                                 </td>
                                 <td className="actions">
                                     {user.status === 'Pending' ? (
-                                        <RiFileUserFill className="iconuser" />
+                                        <RiFileUserFill className="iconuser" onClick={handleNavClick}/>
                                     ) : (
                                         <MdMailOutline className="iconmessage" />
                                     )}
@@ -266,8 +276,8 @@ const OnBoarders = () => {
                     </tbody>
                 </table>
                 {showAcceptance && (
-                    <Modal show={showAcceptance} onHide={handleClosePopup} className="popup">
-                        <Modal.Header className="head-popup" closeButton>
+                    <Modal show={showAcceptance} className="popup">
+                        <Modal.Header className="head-popup" >
                             <Modal.Title >Acceptance</Modal.Title>
                         </Modal.Header>
                         <Modal.Body className="body-popup">
@@ -319,8 +329,8 @@ const OnBoarders = () => {
                     </Modal>    
                 )}
                 {showRejection && (
-                    <Modal show={showRejection} onHide={handleClosePopup} className="popup">
-                        <Modal.Header className="head-popup" closeButton>
+                    <Modal show={showRejection} className="popup">
+                        <Modal.Header className="head-popup" >
                             <Modal.Title >Are you sure to reject?</Modal.Title>
                         </Modal.Header>
                         <Modal.Body style={{ overflow: 'auto' }} className="modalBody">
