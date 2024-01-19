@@ -1,0 +1,74 @@
+.existingbank h4{
+    font-size: 16px;
+    margin-bottom: 42px;
+    color: #324054;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.existingbank h6{
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #324054;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.existingbank .textbox{
+    width:  220px;
+    height:  40px;
+    padding: 8px, 12px, 8px, 12px;
+    border-radius: 2px;
+    column-gap: 10px;
+    border: 2px solid #71839B66;
+}
+.existingbank .radiospace{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+.existingbank .radiodesign{
+    border: 2px solid #2D68FE;
+    margin-right: 3px;
+    width: 15px;
+    height: 15px;
+}
+.existingbank .typography p{
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: auto;
+    color: #324054;
+}
+.existingbank .filetext {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    text-align: right;
+    color: #CFCFCF;
+}
+.existingbank .doc-box{
+    border: 2px dashed #71839B66;
+    padding: 10px;
+    margin-top: 10px;
+    width: 250px;
+    height: 90px;
+    border-radius: 10px;
+}
+.existingbank .checkbox-container div {
+    margin-bottom: 10px;
+}
+.existingbank .checkbox {
+    margin-right: 10px;
+}
+.existingbank .checkbox{
+    width: 15px;
+    height: 15px;
+}
+

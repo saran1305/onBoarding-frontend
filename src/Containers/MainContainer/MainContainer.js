@@ -6,6 +6,8 @@ import * as Endpoint from '../../Entities/Endpoint';
 import IdeassionLogo from '../../Assets/IdeassionLogo.jpg';
 import { TbUserSquareRounded } from 'react-icons/tb';
 import { IoIosPeople } from 'react-icons/io';
+import { FaWpforms } from 'react-icons/fa' ;
+import { FiHome } from 'react-icons/fi';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { RiLogoutCircleLine } from 'react-icons/ri';
 import { TiBell } from 'react-icons/ti';
@@ -42,6 +44,10 @@ const MainContainer =  ({ Children }) => {
             Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.ON_BOARDERS.URI)
         } else if (selectedNavOption === MainContainerTypes.TOTAL_USERS_TYPE) {
             Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.TOTAL_USERS.URI)
+        } else if (selectedNavOption === MainContainerTypes.HOME_TYPE) {
+            Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.HOME.URI)
+        } else if (selectedNavOption === MainContainerTypes.USER_ONBOARDINGS_TYPE) {
+            Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.USER_ONBOARDINGS.URI)
         }
     }
 
@@ -57,7 +63,16 @@ const MainContainer =  ({ Children }) => {
                         </div>                        
                         <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.TOTAL_USERS_TYPE)}>
                             <p className="navIconLayout"><IoIosPeople className="navIcon"/></p>
-                            <p className="para">TotalUsers</p></div>
+                            <p className="para">TotalUsers</p>
+                        </div>
+                        <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.HOME_TYPE)}>
+                            <p className="navIconLayout"><FiHome className="navIcon" /></p>
+                            <p className="para">Home</p>
+                        </div>
+                        <div className="navTextItem" onClick={() => handleClickNavOptions(MainContainerTypes.USER_ONBOARDINGS_TYPE)}>
+                            <p className="navIconLayout"><FaWpforms className="navIcon" /></p>
+                            <p className="para">Onboardings</p>
+                        </div>
                     </div>
                 </div>
                 <div className="navBottom">

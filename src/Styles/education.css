@@ -1,0 +1,29 @@
+.education h4{
+font-size: 16px;
+margin-bottom: 42px;
+color: #324054;
+font-weight: 700;
+line-height: 24px;
+letter-spacing: 0em;
+text-align: left;
+}
+.education .textbox{
+width: 105px;
+height: 40px;
+padding: 8px, 16px, 8px, 16px;
+border-radius: 2px;
+column-gap: 10px;
+border: 2px solid #71839B66;
+}
+.education .choosefile{
+width: 109px;
+height: 30px;
+padding: 5px, 10px, 5px, 10px;
+border-radius: 5px;
+background: #2D68FE;
+color: #ffffff;
+border: none;
+}
+.education .buttonrow{
+padding: 0px;
+}
