@@ -1,0 +1,102 @@
+.onBoardings .navbars {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  box-shadow: 0px 2px 4px 0px #00000040;
+  width: 1090px;
+  height: 74px;
+  margin: 26px 19px;
+}
+.onBoardings .nav-item {
+  padding: 10px;
+  cursor: pointer;
+  color:#71839B;
+}
+.onBoardings .card{
+  border: none;
+  border-radius: 0px;
+  border-top: 2px solid #324054; 
+  border-bottom: 2px solid #324054; 
+  padding: 20px;
+  margin: 20px;
+  width: 1080px;
+  height: 470px;
+  overflow-y: auto;
+}
+.label{
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0em;
+  text-align: left;
+  margin-bottom: 10px;
+}
+.row {
+  margin-bottom: 25px;
+}
+.typography p{
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: -0.01em;
+  color:#CFCFCF;
+}
+.checkbox input{
+  width: 5px;
+  height: 5px;
+  border-color:skyblue;
+}
+.family {
+  margin-top: 20px;
+}
+.family table {
+  width: 100%;
+}
+.family thead{
+  box-shadow: 0px 2px 4px 0px #00000040;
+}
+.family th {
+  text-align: center;
+  font-size: 14px;
+  color: #324054;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0em;
+  padding: 10px;
+}
+.family tr {
+  margin-bottom: 10px;
+}
+.family td {
+  padding: 10px;
+}
+.family input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  margin: 0;
+}
+.family .addanother{
+  width:  100%;
+  height:  40px;
+  padding: 8px, 12px, 8px, 12px;
+  border-radius: 2px;
+  border: 2px solid #71839B66;
+}
+.nav-item.active {
+  background: #eff6ff;
+  color: #2d68fe;
+}
+.nav-item{
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0em;
+}
+.uploadIcon{
+  width: 30px;
+  height: 30px;
+}

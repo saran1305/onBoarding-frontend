@@ -1,0 +1,75 @@
+.healthInfo h4{
+    font-size: 16px;
+    margin-bottom: 42px;
+    color: #324054;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.healthInfo h6{
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #324054;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.healthInfo .textbox{
+    width:400px;
+    height:177px;
+    padding: 8px, 16px, 8px, 16px;
+    border-radius: 2px;
+    column-gap: 10px;
+    border: 2px solid #71839B66;
+}
+.healthInfo .radiospace{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.healthInfo .radiospace2{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;
+}
+.healthInfo .textbox2{
+    width:400px;
+    height:100px;
+    padding: 8px, 16px, 8px, 16px;
+    border-radius: 2px;
+    column-gap: 10px;
+    border: 2px solid #71839B66;
+}
+.healthInfo .radiodesign{
+    border: 2px solid #2D68FE;
+    margin-right: 3px;
+}
+.healthInfo .typography p{
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: auto;
+    color: #324054;
+}
+.healthInfo .filetext {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    text-align: right;
+    color: #CFCFCF;
+}
+.healthInfo .doc-box{
+    border: 2px dashed #71839B66;
+    padding: 10px;
+    margin-top: 10px;
+    width: 250px;
+    height: 90px;
+    border-radius: 10px;
+}

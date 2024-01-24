@@ -1,0 +1,32 @@
+.userDashBoard .card{
+    width: 200px;
+    height: 211px;
+    margin-left: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 1px 4px 0px #00000040;
+ }
+ .outerlayout{
+    margin-top: 43px;
+    margin-left: 55px;
+    width: 81px;
+    height: 73.71px;
+ }
+ .card p{
+    font-weight: 600;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+ }
+ .innerlayout{
+     width: 24px;
+     height: 24px;
+     padding: 2px;
+     margin-left: 120px;
+ }
+ .insidelayout{
+     background: #E6C10A;
+     width: 20px;
+     height: 20px;
+     color: white;
+     border-radius: 10px;
+ }

@@ -1,0 +1,100 @@
+.personalinfo h4{
+    font-size: 16px;
+    margin-bottom: 42px;
+    color: #324054;
+    font-weight: 700;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.personalinfo h6{
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #324054;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+.personalinfo .textbox{
+    width:  220px;
+    height:  40px;
+    padding: 8px 12px;    
+    border-radius: 2px;
+    border: 2px solid #71839B66;
+}
+.personalinfo .textbox2{
+    width:  fit-content;
+    height:  40px;
+    padding: 8px, 12px, 8px, 12px;
+    border-radius: 2px;
+    border: 2px solid #71839B66;
+    align-items: center;
+    white-space: normal;
+}
+.personalinfo .profile-box {
+    border: 2px dashed #71839B66;
+    padding: 10px;
+    margin-left: 20px;
+    margin-top: 10px;
+    width: 130px;
+    height: 140px;
+    border-radius: 10px;
+}
+.personalinfo  .profile-box p {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+.personalinfo .hobbie{
+    width:  280px;
+    height:  90px;
+    padding: 8px;
+    border-radius: 2px;
+    border: 2px solid #71839B66;
+    overflow: hidden;
+}
+.personalinfo col{
+    column-gap: 30px;
+}
+.personalinfo .generalinfo{
+    justify-content: space-between;
+}
+.personalinfo .doc-box{
+    border: 2px dashed #71839B66;
+    padding: 10px;
+    margin-top: 10px;
+    width: 250px;
+    height: 60px;
+    border-radius: 10px;
+}
+.personalinfo .typography p{
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: auto;
+    color: #324054;
+}
+.personalinfo .filetext {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: -0.01em;
+    text-align: right;
+    color: #CFCFCF;
+}
+.personalinfo .doc-box{
+    border: 2px dashed #71839B66;
+    padding: 10px;
+    margin-top: 10px;
+    width: 250px;
+    height: 90px;
+    border-radius: 10px;
+}
+.personalinfo .checkbox {
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+}
