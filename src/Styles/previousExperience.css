@@ -33,3 +33,7 @@
 .previousExp .checkbox{
     margin-right: 10px ;
 }
+.previousExp .addIcon{
+    width: 14px;
+    height: 14px;
+  }

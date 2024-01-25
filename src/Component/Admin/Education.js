@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import '../../Styles/education.css';
+import axios from 'axios';
+import * as Endpoint from '../../Entities/Endpoint';
+import { IoMdAdd } from 'react-icons/io';
+import { TiTick } from 'react-icons/ti';
 
 const Education = () => {
     const [ educationDetails, setEducationDetails ] = useState([
@@ -28,6 +32,7 @@ const Education = () => {
             }
         ]);
     };
+    const [ draftSaved, setDraftSaved ] = useState(false);
 
     const handleInputChange = (index, field, value) => {
         setEducationDetails(prevDetails => {
@@ -36,6 +41,22 @@ const Education = () => {
             newDetails[index][field] = value;
             return newDetails;
         });
+    };
+    const handleSave = async () => {
+        try {
+            axios.post(`${Endpoint.API_ENDPOINT}/education`, educationDetails)
+                .then(response => {
+                    console.log('Data saved successfully:', response.data);
+                    setDraftSaved(true);
+                })
+                .catch(error => { 
+                    console.error('Error saving data:', error);
+                        
+                });
+            
+        } catch (error) {
+            console.error('Error posting data to the API', error);
+        }
     };
 
     return (
@@ -142,11 +163,13 @@ const Education = () => {
                     </tbody>
                     <tr><td colSpan="8" className= "buttonrow"><hr /></td></tr>
                     <tr>
-                        <td colSpan="8" className= "buttonrow"><button className="addanother" onClick={handleAddEducation}>+</button></td>
+                        <td colSpan="8" className= "buttonrow"><button className="addanother" onClick={handleAddEducation}><IoMdAdd className="addIcon"/></button></td>
                     </tr >
                     <tr><td colSpan="8" className= "buttonrow"><hr /></td></tr>
                 </table>
-            </div>  
+            </div>
+            {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
+            <button onClick={handleSave}>Save</button>  
         </div>
     );
 };

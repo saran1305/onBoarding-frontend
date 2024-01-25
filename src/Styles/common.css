@@ -27,7 +27,7 @@
    width: 20px;
    height: 20px;
 }
-.navTextItem{
+.navbarTwo .nav-item, .navBottomOne .nav-item{
    display: inline-flex;
    width:196px;
    height:44px;
@@ -83,9 +83,8 @@
    text-align: center;
    margin-top: 1px;
 }
-.navbarTwo :hover,
-.navBottomOne :hover{
-   color: #2D68FE;
-   background: #EFF6FF;
-   border-radius: 4px;
-}
+.navbarTwo .nav-item.active, 
+.navBottomOne .nav-item.active {
+   background: #eff6ff;
+   color: #2d68fe;
+ }

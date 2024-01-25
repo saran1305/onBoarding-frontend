@@ -1,18 +1,177 @@
 import React, { useState } from 'react';
 import '../../Styles/personalInformation.css'
+import axios from 'axios';
+import * as Endpoint from '../../Entities/Endpoint';
+import propTypes from 'prop-types';
 import { LiaCloudUploadAltSolid } from 'react-icons/lia';
+import { IoMdAdd } from 'react-icons/io';
+import { TiTick } from 'react-icons/ti';
 
 const PersonalInformation = () => {
 
-    const [ familyMembers, setFamilyMembers ] = useState([
-        { relationship: 'Father', name: '', dob: '', role: '', number: '' },
-        { relationship: 'Mother', name: '', dob: '', role: '', number: '' },
-        { relationship: 'Spouse', name: '', dob: '', role: '', number: '' },
-        { relationship: 'Child 1', name: '', dob: '', role: '', number: '' }
-    ]);
-    const [ childCount, setChildCount ] = useState(1);
-    const [ employees, setEmployees ] = useState([{ empId: '', name: '', location: '' }]);
-    const [ relations, setRelations ] = useState([{ relationship: 'Spouse/Partner', name: '', number: '', location: '' }]);
+    const [ personalDetails, setPersonalDetails ] = useState({
+        generalInfo: {
+            fullName: '',
+            dateOfBirth: '',
+            nationality: '',
+            gender: 'male',
+            maritalStatus: 'single',
+            marriageDate: '',
+            bloodGroup: 'A+',
+            email: '',
+            mobileNumber: '',
+            presentAddress: {
+                addressLine1: '',
+                addressLine2: '',
+                country: 'India',
+                state: 'Tamil Nadu',
+                city: 'Chennai',
+                zipCode: '',
+                sameAsPermanent: false
+            },
+            permanentAddress: {
+                addressLine1: '',
+                addressLine2: '',
+                country: 'India',
+                state: 'Tamil Nadu',
+                city: 'Chennai',
+                zipCode: ''
+            }
+        },
+        familyMembers: [
+            { relationship: 'Father', name: '', dob: '', role: '', number: '' },
+            { relationship: 'Mother', name: '', dob: '', role: '', number: '' },
+            { relationship: 'Spouse', name: '', dob: '', role: '', number: '' },
+            { relationship: 'Child 1', name: '', dob: '', role: '', number: '' }
+        ],
+        childCount: 1,
+        employees: [{ empId: '', name: '', location: '' }],
+        relations: [{ relationship: 'Spouse/Partner', name: '', number: '', location: '' }],
+        hobbies: {
+            memberOfProfessionalBody: false,
+            professionalBodyName: '',
+            hobbiesAndInterests: ''
+        },
+        friendsColleagues: [{ empId: '', name: '', location: '' }],
+        emergencyContacts: [
+            { relationship: 'Spouse/Partner', name: '', number: '', location: '' },
+            { relationship: 'Father', name: '', number: '', location: '' },
+            { relationship: 'Mother', name: '', number: '', location: '' },
+            { relationship: 'Siblings', name: '', number: '', location: '' },
+            { relationship: 'Guardian', name: '', number: '', location: '' }
+        ],
+        requiredDocuments: {
+            aadhar: null,
+            pan: null,
+            driverLicense: null,
+            passport: null
+        }
+    })
+    const [ validation, setValidation ] = useState({
+        fullName: '',
+        dateOfBirth: '',
+        nationality: '',
+        email: '',
+        mobileNumber: '',
+        gender: '',
+        maritalStatus: '',
+        marriageDate: '',
+        bloodGroup: '',
+        addressLine1: '',
+        addressLine2: '',
+        country: '',
+        state: '',
+        city: '',
+        zipCode: '',
+        aadhar: '',
+        pan: '',
+        driverLicense: '',
+        passport: ''
+    });
+    const [ draftSaved, setDraftSaved ] = useState(false);
+
+    const validateField = (fieldName, value) => {
+        switch (fieldName) {
+        case 'fullName':
+            return value.trim() === '' ? 'Full Name is required' : '';
+        case 'dateOfBirth':
+            return value.trim() === '' ? 'Date of Birth is required' : '';
+        case 'nationality':
+            return value.trim() === '' ? 'Nationality is required' : '';
+        case 'gender':
+            return value.trim() === '' ? 'Gender is required' : '';
+        case 'email':
+            return /^\S+@\S+\.\S+$/.test(value) ? '' : 'Invalid email address';
+        case 'mobileNumber':
+            return /^\d{10}$/.test(value) ? '' : 'Invalid mobile number';
+        default:
+            return '';
+        }
+    };
+    const handleSave = () => {
+        const allValidations = Object.keys(validation).map(field => validateField(field, personalDetails.generalInfo[field]));
+    
+        if (allValidations.some(error => error !== '')) {
+            setValidation(prevErrors => ({
+                ...prevErrors,
+                ...Object.fromEntries(allValidations.map((error, index) => [ Object.keys(validation)[index], error ]))
+            }));
+            
+            return;
+        }
+        axios.post(`${Endpoint.API_ENDPOINT}/personalinfo`, personalDetails)
+            .then(response => {
+                console.log('Data saved successfully:', response.data);
+                setDraftSaved(true);
+            })
+            .catch(error => { 
+                console.error('Error saving data:', error);
+                
+            });
+    };
+
+    const handleInputChange = (field, value) => {
+        const updatedDetails = { ...personalDetails };
+        const error = validateField(field, value);
+
+        setValidation(prevErrors => ({
+            ...prevErrors,
+            [field]: error
+        }));
+
+        updatedDetails.generalInfo[field] = value;
+        setPersonalDetails(updatedDetails);
+    };
+
+    const { familyMembers, childCount, employees, relations } = personalDetails;
+
+    const setFamilyMembers = updatedFamilyMembers => {
+        setPersonalDetails(prevDetails => ({
+            ...prevDetails,
+            familyMembers: updatedFamilyMembers
+        }));
+    };
+
+    const setChildCount = newCount => {
+        setPersonalDetails(prevDetails => ({
+            ...prevDetails,
+            childCount: newCount
+        }));
+    };
+
+    const setEmployees = updatedEmployees => {
+        setPersonalDetails(prevDetails => ({
+            ...prevDetails,
+            employees: updatedEmployees
+        }));
+    };
+
+    const setRelations = updatedRelations => {
+        setPersonalDetails(prevDetails => ({
+            ...prevDetails,
+            relations: updatedRelations
+        }));
+    };
 
     const handleAddMember = () => {
         const newFamilyMember = {
@@ -65,36 +224,59 @@ const PersonalInformation = () => {
                 <div className="col-9">
                     <div className="row">
                         <div className="col-4">
-                            <h6>Full Name</h6>
-                            <input type="text" className="textbox" />
+                            <h6>Full Name<span className="error"> * </span></h6>
+                            <input
+                                type="text"
+                                className="textbox"
+                                value={personalDetails.generalInfo.fullName}
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, fullName: event.target.value } }))}/>
+                            <span className="error">{validation.fullName}</span>
                         </div>
                         <div className="col-4">
-                            <h6>Date of Birth</h6>
+                            <h6>Date of Birth<span className="error"> * </span></h6>
                             <div>
-                                <input type="date" className="textbox"/>
+                                <input type="date" className="textbox"
+                                    value={personalDetails.generalInfo.dateOfBirth}
+                                    onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, dateOfBirth: event.target.value } }))}/>
+                                <span className="error">{validation.dateOfBirth}</span>
                             </div>
                         </div>
                         <div className="col-4">
-                            <h6 htmlFor="nationality">Nationality</h6>
-                            <input type="text" className="textbox" />
+                            <h6 htmlFor="nationality">Nationality<span className="error"> * </span></h6>
+                            <input type="text" className="textbox"
+                                value={personalDetails.generalInfo.nationality}
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, nationality: event.target.value } }))}/>
+                            <span className="error">{validation.nationality}</span>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-4">
-                            <h6>Gender</h6> 
-                            <select className="textbox">
+                            <h6>Gender<span className="error"> * </span></h6>
+                            <select className="textbox"
+                                value={personalDetails.generalInfo.gender}
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, gender: event.target.value } }))}>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>
+                            <span className="error">{validation.gender}</span>
                         </div>
                         <div className="col-4">
-                            <h6>Marital Status</h6>
-                            <select className="textbox">
+                            <h6>Marital Status<span className="error"> * </span></h6>
+                            <select
+                                className="textbox"
+                                value={personalDetails.generalInfo.maritalStatus}
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails,
+                                    generalInfo: { ...prevDetails.generalInfo, maritalStatus: event.target.value
+                                    }
+                                }))
+                                }
+                            >
                                 <option value="single">Single</option>
                                 <option value="married">Married</option>
                                 <option value="divorced">Divorced</option>
                                 <option value="widowed">Widowed</option>
                             </select>
+                            <span className="error">{validation.maritalStatus}</span>
                         </div>
                         <div className="col-4">
                             <h6>Marriage Date (if applicable)</h6>
@@ -102,23 +284,21 @@ const PersonalInformation = () => {
                         </div>
                     </div>
                 </div>
-                
-                {/* <div className="col-3"></div> */}
                 <div className="col-3">
-                    <div className="col typography">
-                        <h6>Profile Picture</h6>
-                        <div className="profile-box">
+                    <div className="col">
+                        <h6>Profile Picture<span className="error"> * </span></h6>
+                        <div className="profile-box typography">
+                            <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
                         </div>
-                        <p>JPG, JPNG or PNG</p>
+                        <p className="filetext">JPG, PNG or JPNG</p>
                     </div>
                 </div>
-                
             </div>
             <div className="col-3">
-                <h6>Blood Group</h6>
-                <select defaultValue="select" className="textbox">
+                <h6>Blood Group<span className="error"> * </span></h6>
+                <select defaultValue={personalDetails.generalInfo.bloodGroup} className="textbox">
                     <option value="A+">A+</option>
                     <option value="A-">A-</option>
                     <option value="B+">B+</option>
@@ -128,39 +308,52 @@ const PersonalInformation = () => {
                     <option value="O+">O+</option>
                     <option value="O-">O-</option>
                 </select>
+                <span className="error">{validation.bloodGroup}</span>
             </div>
             <hr />
             <h4>Contact details</h4>
             <div className="contact">
                 <div className="row">
                     <div className="col-3">
-                        <h6>Email</h6>
-                        <input type="text" className="textbox"/>
+                        <h6>Email<span className="error"> * </span></h6>
+                        <input
+                            type="text"
+                            className="textbox"
+                            value={personalDetails.generalInfo.email}
+                            onChange={event => handleInputChange('email', event.target.value)}
+                        />
+                        <span className="error">{validation.email}</span>
                     </div>
                     <div className="col-3">
-                        <h6>Mobile No.</h6>
-                        <input type="number" className="textbox" />
+                        <h6>Mobile No<span className="error"> * </span></h6>
+                        <input
+                            type="text"
+                            className="textbox"
+                            value={personalDetails.generalInfo.mobileNumber}
+                            onChange={event => handleInputChange('mobileNumber', event.target.value)}
+                        />
+                        <span className="error">{validation.mobileNumber}</span>
                     </div>
                 </div>
                 <div>
                     <h4>Present Address</h4>
                     <div className="row">
                         <div className="col-3">
-                            <h6>Address Line 1</h6>
+                            <h6>Address Line 1<span className="error"> * </span></h6>
                             <input type="text" className="textbox"/>
                         </div>
                         <div className="col-3">
-                            <h6>Address Line 1</h6>
+                            <h6>Address Line 2<span className="error"> * </span></h6>
                             <input type="text" className="textbox"/>
                         </div>
                         <div className="col-3">
-                            <h6>Country</h6>
+                            <h6>Country<span className="error"> * </span></h6>
                             <select className="textbox">
                                 <option>India</option>
                             </select>
                         </div>
                         <div className="col-3">
-                            <h6>State</h6>
+                            <h6>State<span className="error"> * </span></h6>
                             <select className="textbox">
                                 <option>Tamil Nadu</option>
                             </select>
@@ -168,18 +361,29 @@ const PersonalInformation = () => {
                     </div>
                     <div className="row">
                         <div className="col-3">
-                            <h6>City</h6>
+                            <h6>City<span className="error"> * </span></h6>
                             <select className="textbox">
                                 <option>Chennai</option>
                             </select>
                         </div>
                         <div className="col-3">
-                            <h6>Zip Code</h6>
+                            <h6>Zip Code<span className="error"> * </span></h6>
                             <input type="number" className="textbox"/>
                         </div>
                         <div className="col-6">
                             <h6>
-                                <input type="checkbox" className="checkbox"/>Present address same as permanent address  
+                                <input
+                                    type="checkbox" className="checkbox"
+                                    checked={personalDetails.generalInfo.presentAddress.sameAsPermanent}
+                                    onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails,
+                                        generalInfo: { ...prevDetails.generalInfo,
+                                            presentAddress: { ...prevDetails.generalInfo.presentAddress,
+                                                sameAsPermanent: event.target.checked }
+                                        }
+                                    }))
+                                    }
+                                />
+                                Present address same as permanent address
                             </h6>
                         </div>
                     </div>
@@ -187,21 +391,21 @@ const PersonalInformation = () => {
                 <h4>Permanent Address</h4>
                 <div className="row">
                     <div className="col-3">
-                        <h6>Address Line 1</h6>
+                        <h6>Address Line 1<span className="error"> * </span></h6>
                         <input type="text" className="textbox" />
                     </div>
                     <div className="col-3">
-                        <h6>Address Line 1</h6>
+                        <h6>Address Line 2<span className="error"> * </span></h6>
                         <input type="text" className="textbox"/>
                     </div>
                     <div className="col-3">
-                        <h6>Country</h6>
+                        <h6>Country<span className="error"> * </span></h6>
                         <select className="textbox">
                             <option>India</option>
                         </select>
                     </div>
                     <div className="col-3">
-                        <h6>State</h6>
+                        <h6>State<span className="error"> * </span></h6>
                         <select className="textbox">
                             <option>Tamil Nadu</option>
                         </select>
@@ -209,13 +413,13 @@ const PersonalInformation = () => {
                 </div>
                 <div className="row">
                     <div className="col-3">
-                        <h6>City</h6>
+                        <h6>City<span className="error"> * </span></h6>
                         <select className="textbox">
                             <option>Chennai</option>
                         </select>
                     </div>
                     <div className="col-3">
-                        <h6>Zip Code</h6>
+                        <h6>Zip Code<span className="error"> * </span></h6>
                         <input type="number" className="textbox"/>
                     </div>
                 </div>
@@ -241,7 +445,7 @@ const PersonalInformation = () => {
                             </tr>
                         ))}
                         <tr>
-                            <td colSpan="5"><button className="addanother" onClick={handleAddMember}>+</button></td>
+                            <td colSpan="5"><button className="addanother" onClick={handleAddMember}><IoMdAdd className="addIcon"/></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -251,13 +455,15 @@ const PersonalInformation = () => {
             <div className="row">
                 <div className="col-4">
                     <div>Are you a member of any professional body</div>
-                    <div >
-                        <h6>
-                            <input type="radio" name="professionalMember" /> Yes
-                        </h6>
-                        <h6>
-                            <input type="radio" name="professionalMember" /> No
-                        </h6>
+                    <div className="radiospace col-6">
+                        <div>
+                            <input type="radio" name="professionalMember" id="yes" className="radiodesign" />
+                            <h6 htmlFor="yes">Yes</h6>
+                        </div>
+                        <div>
+                            <input type="radio" name="professionalMember" id="no" className="radiodesign"/>
+                            <h6 htmlFor="no">No</h6>
+                        </div>
                     </div>
                 </div>
 
@@ -267,7 +473,17 @@ const PersonalInformation = () => {
                 </div>
                 <div className="col-4">
                     <div>Hobbies & Interests</div>
-                    <textarea type="text" className="hobbie" placeholder="Hobbies"/>
+                    <textarea
+                        type="text"
+                        className="hobbie"
+                        placeholder="Name"
+                        value={personalDetails.hobbies.professionalBodyName}
+                        onChange={event =>
+                            setPersonalDetails(prevDetails => ({ ...prevDetails,
+                                hobbies: { ...prevDetails.hobbies, professionalBodyName: event.target.value }
+                            }))
+                        }
+                    />
                 </div>
             </div>
             <hr />
@@ -288,7 +504,7 @@ const PersonalInformation = () => {
                             </tr>
                         ))}
                         <tr>
-                            <td colSpan="3"><button className="addanother" onClick={handleAddEmployee}>+</button></td>
+                            <td colSpan="3"><button className="addanother" onClick={handleAddEmployee}><IoMdAdd className="addIcon"/></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -321,7 +537,7 @@ const PersonalInformation = () => {
                             </tr>
                         ))}
                         <tr>
-                            <td colSpan="4"><button className="addanother" onClick={handleAddRelation}>+</button></td>
+                            <td colSpan="4"><button className="addanother" onClick={handleAddRelation}><IoMdAdd className="addIcon"/></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -331,26 +547,41 @@ const PersonalInformation = () => {
             <div className="row">
                 <div className="row">
                     <div className="col-4 ">
-                        <div>Aadhar</div>
+                        <h6>Aadhar<span className="error"> * </span></h6>
                         <div className="doc-box typography">
+                            <input
+                                type="file"
+                                accept=".doc, .pdf, .img"
+                                onChange={event => handleInputChange('aadhar', event.target.files[0])}
+                            />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                            <p>Upload</p>
                             <p>You can drag and drop too</p>
                         </div>
-                        <p className="filetext">File Type Accepted:doc,pdf & img</p>
+                        <p className="filetext">File Type Accepted: doc, pdf & img</p>
+                        <span className="error">{validation.aadhar}</span>
                     </div>
                     <div className="col-4 ">
-                        <div>PAN</div>
+                        <h6>PAN<span className="error"> * </span></h6>
                         <div className="doc-box typography">
+                            <input
+                                type="file"
+                                accept=".doc, .pdf, .img"
+                                onChange={event => handleInputChange('pan', event.target.files[0])}
+                            />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                            <p>Upload</p>
                             <p>You can drag and drop too</p>
                         </div>
-                        <p className="filetext">File Type Accepted:doc,pdf & img</p>
+                        <p className="filetext">File Type Accepted: doc, pdf & img</p>
+                        <span className="error">{validation.aadhar}</span>
                     </div>
                     <div className="col-4 ">
-                        <div>Driver License</div>
+                        <h6>Driver License<span className="error"> * </span></h6>
                         <div className="doc-box typography">
+                            <input
+                                type="file"
+                                accept=".doc, .pdf, .img"
+                                onChange={event => handleInputChange('driverLicense', event.target.files[0])}
+                            />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
@@ -360,8 +591,13 @@ const PersonalInformation = () => {
                 </div>
                 <div className="row">
                     <div className="col-4 ">
-                        <div>Passport</div>
+                        <h6>Passport<span className="error"> * </span></h6>
                         <div className="doc-box typography">
+                            <input
+                                type="file"
+                                accept=".doc, .pdf, .img"
+                                onChange={event => handleInputChange('passport', event.target.files[0])}
+                            />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
@@ -370,8 +606,14 @@ const PersonalInformation = () => {
                     </div>
                 </div>
             </div>
+            {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
+            <button onClick={handleSave}>Save</button>  
         </div>
     );
 };
 
+PersonalInformation.propTypes = {
+    onSave: propTypes.func.isRequired
+};
+  
 export default PersonalInformation;

@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import '../../Styles/certification.css'
+import axios from 'axios';
+import * as Endpoint from '../../Entities/Endpoint';
+import { IoMdAdd } from 'react-icons/io';
+import { TiTick } from 'react-icons/ti';
+
 
 const Certifications = () => {
     const [ certifications, setCertifications ] = useState([
@@ -25,6 +30,8 @@ const Certifications = () => {
             }
         ]);
     };
+    const [ draftSaved, setDraftSaved ] = useState(false);
+
     const handleInputChange = (index, field, value) => {
         setCertifications(prevDetails => {
             const newDetails = [...prevDetails];
@@ -32,6 +39,19 @@ const Certifications = () => {
             newDetails[index][field] = value;
             return newDetails;
         });
+        setDraftSaved(false);
+    };
+    const handleSave = () => {
+        const dataToSave = certifications;
+
+        axios.post(`${Endpoint.API_ENDPOINT}/certifications`, dataToSave)
+            .then(response => {
+                console.log('Data saved successfully:', response.data);
+                setDraftSaved(true);
+            })
+            .catch(error => {
+                console.error('Error saving data:', error.message || error);
+            });
     };
 
     return (
@@ -79,16 +99,6 @@ const Certifications = () => {
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={certifications.specialization}
-                                        onChange={event => handleInputChange(index, 'specialization', event.target.value)}
-                                    >
-                                        <option>Computer Science</option>
-                                        <option>Computer Application</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select
-                                        className="textbox"
                                         value={certifications.yearofCertifications}
                                         onChange={event => handleInputChange(index, 'yearofCertifications', event.target.value)}
                                     >
@@ -100,6 +110,16 @@ const Certifications = () => {
                                                 {year}
                                             </option>
                                         ))}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select
+                                        className="textbox"
+                                        value={certifications.specialization}
+                                        onChange={event => handleInputChange(index, 'specialization', event.target.value)}
+                                    >
+                                        <option>Computer Science</option>
+                                        <option>Computer Application</option>
                                     </select>
                                 </td>
                                 <td>
@@ -125,11 +145,13 @@ const Certifications = () => {
                     </tbody>
                     <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                     <tr>
-                        <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddCertifications}>+</button></td>
+                        <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddCertifications}><IoMdAdd className="addIcon"/></button></td>
                     </tr >
                     <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                 </table>
             </div>  
+            {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
+            <button onClick={handleSave}>Save</button>
         </div>
     );
 };
