@@ -237,113 +237,273 @@
     },
     {
       "email": "Abi@gmail.com",
-      "password": "Hello222",
+      "password": "123456",
       "id": 6
     },
     {
       "email": "Abi@gmail.com",
-      "password": "123123",
+      "password": "123456",
       "id": 7
     },
     {
       "email": "Abi@gmail.com",
       "password": "123456",
       "id": 8
+    }
+  ],
+  "personalinfo": [
+    {
+      "id": 1
     },
     {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 9
+      "id": 2
+    }
+  ],
+  "education": [
+    [
+      {
+        "qualification": "M.Sc",
+        "university": "Boston",
+        "institution": "Boston",
+        "degreeAchieved": "",
+        "specialization": "MBA(HR)",
+        "passedOutYear": "2024",
+        "percentageAchieved": "94"
+      },
+      {
+        "qualification": "",
+        "university": "",
+        "institution": "",
+        "degreeAchieved": "",
+        "specialization": "",
+        "passedOutYear": "",
+        "percentageAchieved": ""
+      }
+    ],
+    [
+      {
+        "qualification": "M.Sc",
+        "university": "Boston",
+        "institution": "Boston",
+        "degreeAchieved": "",
+        "specialization": "MBA(HR)",
+        "passedOutYear": "2024",
+        "percentageAchieved": "94"
+      },
+      {
+        "qualification": "",
+        "university": "",
+        "institution": "",
+        "degreeAchieved": "",
+        "specialization": "",
+        "passedOutYear": "",
+        "percentageAchieved": ""
+      }
+    ],
+    [
+      {
+        "qualification": "M.Sc",
+        "university": "cdf",
+        "institution": "adf",
+        "degreeAchieved": "M.Sc",
+        "specialization": "wfwe",
+        "passedOutYear": "",
+        "percentageAchieved": ""
+      }
+    ]
+  ],
+  "certifications": [
+    [
+      {
+        "name": "Abi",
+        "issue": "Great Learnng",
+        "valid": "2024-01-08",
+        "specialization": "",
+        "yearofCertifications": "2021",
+        "percentageAchieved": ""
+      }
+    ],
+    [
+      {
+        "name": "Abi",
+        "issue": "Great Learnng",
+        "valid": "2024-01-08",
+        "specialization": "",
+        "yearofCertifications": "2021",
+        "percentageAchieved": ""
+      }
+    ],
+    [
+      {
+        "name": "Abilashini",
+        "issue": "Abilashini",
+        "valid": "",
+        "specialization": "",
+        "yearofCertifications": "",
+        "percentageAchieved": ""
+      }
+    ],
+    [
+      {
+        "name": "",
+        "issue": "",
+        "valid": "",
+        "specialization": "",
+        "yearofCertifications": "",
+        "percentageAchieved": ""
+      }
+    ],
+    [
+      {
+        "name": "",
+        "issue": "",
+        "valid": "",
+        "specialization": "",
+        "yearofCertifications": "",
+        "percentageAchieved": ""
+      }
+    ],
+    [
+      {
+        "name": "",
+        "issue": "",
+        "valid": "",
+        "specialization": "",
+        "yearofCertifications": "",
+        "percentageAchieved": ""
+      }
+    ]
+  ],
+  "previousexperience": [
+    [
+      {
+        "name": "",
+        "designation": "",
+        "fromDate": "",
+        "toDate": "",
+        "reporting": "",
+        "reasonforleaving": "",
+        "location": "",
+        "proofofattachments": ""
+      }
+    ],
+    [
+      {
+        "name": "",
+        "designation": "",
+        "fromDate": "",
+        "toDate": "",
+        "reporting": "",
+        "reasonforleaving": "",
+        "location": "",
+        "proofofattachments": ""
+      }
+    ],
+    [
+      {
+        "name": "",
+        "designation": "",
+        "fromDate": "",
+        "toDate": "",
+        "reporting": "",
+        "reasonforleaving": "",
+        "location": "",
+        "proofofattachments": ""
+      }
+    ],
+    [
+      {
+        "name": "",
+        "designation": "",
+        "fromDate": "",
+        "toDate": "",
+        "reporting": "",
+        "reasonforleaving": "",
+        "location": "",
+        "proofofattachments": ""
+      }
+    ],
+    [
+      {
+        "name": "",
+        "designation": "",
+        "fromDate": "",
+        "toDate": "",
+        "reporting": "",
+        "reasonforleaving": "",
+        "location": "",
+        "proofofattachments": "",
+        "reference": {
+          "name": "",
+          "designation": "",
+          "companyName": "",
+          "contact": "",
+          "emailId": ""
+        }
+      }
+    ]
+  ],
+  "healthinfo": [
+    {
+      "id": 1
     },
     {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 10
+      "id": 2
     },
     {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 11
+      "specificHealthCondition": "",
+      "allergies": "",
+      "recentSurgery": false,
+      "surgeryExplanation": "",
+      "workInRotationalShifts": false,
+      "disabilities": false,
+      "disabilityExplanation": "",
+      "vaccinationStatus": "",
+      "vaccineCertificate": null,
+      "healthRelatedDocuments": null,
+      "id": 3
+    }
+  ],
+  "existingbankinfo": [
+    {
+      "nameOnBankAccount": "",
+      "bankName": "",
+      "bankBranchLocation": "",
+      "bankAccountNumber": "",
+      "bankIFSCCode": "",
+      "isJointAccount": false,
+      "bankRelatedDocuments": "",
+      "id": 1
     },
     {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 12
+      "nameOnBankAccount": "",
+      "bankName": "",
+      "bankBranchLocation": "",
+      "bankAccountNumber": "",
+      "bankIFSCCode": "",
+      "isJointAccount": false,
+      "bankRelatedDocuments": "",
+      "id": 2
     },
     {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 13
+      "nameOnBankAccount": "",
+      "bankName": "",
+      "bankBranchLocation": "",
+      "bankAccountNumber": "",
+      "bankIFSCCode": "",
+      "isJointAccount": false,
+      "bankRelatedDocuments": "",
+      "id": 3
     },
     {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 14
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "Hello11",
-      "id": 15
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "1234556",
-      "id": 16
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123123",
-      "id": 17
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 18
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 19
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 20
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 21
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 22
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 23
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 24
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 25
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 26
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 27
+      "nameOnBankAccount": "",
+      "bankName": "",
+      "bankBranchLocation": "",
+      "bankAccountNumber": "",
+      "bankIFSCCode": "",
+      "isJointAccount": true,
+      "bankRelatedDocuments": "",
+      "id": 4
     }
   ]
 }

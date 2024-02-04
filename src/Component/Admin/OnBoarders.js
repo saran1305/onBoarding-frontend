@@ -276,7 +276,7 @@ const OnBoarders = () => {
                     </tbody>
                 </table>
                 {showAcceptance && (
-                    <Modal show={showAcceptance} className="popup">
+                    <Modal show={showAcceptance} className="popup" centered>
                         <Modal.Header className="head-popup" >
                             <Modal.Title >Acceptance</Modal.Title>
                         </Modal.Header>

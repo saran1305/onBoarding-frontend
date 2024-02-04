@@ -191,16 +191,12 @@
 .iconclear {
   opacity: 0;
 }
-.modal {
-  margin-top: 28%;
-  margin-left: 55%;
-  transform: translate(-50%, -50%);
-  border-radius: 10px;
+.popup .modal {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.modal-header {
+.popup .modal-header, .invite-popup .modal-header{
   background: #2d68fe;
   font-size: 24px;
   font-weight: 600;
@@ -209,11 +205,11 @@
   color: #ffffff; 
   text-align: center;
 }
-.body-popup {
+.popup .body-popup {
   background: #ffffff;
   border-radius: 5px;
 }
-.body-popup1 {
+.popup .body-popup1 {
   width: 160px;
   height: 30px;
   margin-top: 24px;
@@ -226,12 +222,12 @@
   text-align: center;
   color: #324054;
 }
-.modal-body {
+.popup .modal-body , .invite-popup .modal-body{
   margin-left: 50px;
   max-height: 65vh; 
   overflow-y: auto;
 }
-.modal-body p {
+.popup .modal-body p {
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
@@ -240,18 +236,18 @@
   margin-left: 0px;
   color: #324054;
 }
-.modal-body input {
+.popup .modal-body input, .invite-popup input {
   width: 347px;
   border-radius: 2px;
   border: 2px solid #71839b66;
- }
- .modalBody input{
+}
+.popup .modalBody input{
   width:347px;
   height:145px;
- }
- .modalBody{
+}
+.popup .modalBody{
   padding: 30px;
- }
+}
 .button-footer{
  text-align: left;
 } 
@@ -307,7 +303,7 @@ margin-left: 10px;
 font-size: 14px;
 font-weight: 400;
 }
-.popup-user{
+/* .popup-user{
   background-color: #FFFFFF;
   width: 500px;
   height: 449px;
@@ -332,7 +328,7 @@ font-weight: 400;
   height: 45px;
   margin-top: 5px;
   margin-left: 58px;
-}
+} */
 .iconAdd{
   width: 25px;
   height: 25px;

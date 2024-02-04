@@ -27,3 +27,7 @@ border: none;
 .education .buttonrow{
 padding: 0px;
 }
+.education .addIcon{
+  width: 14px;
+  height: 14px;
+}

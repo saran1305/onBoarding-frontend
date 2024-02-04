@@ -149,8 +149,8 @@ const TotalUsers = () => {
     };
     
     const InviteUserPopup = () => (
-        <Modal show={true}>
-            <Modal.Header>
+        <Modal show={true} className="invite-popup">
+            <Modal.Header >
                 <Modal.Title>
                     {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
                 </Modal.Title>

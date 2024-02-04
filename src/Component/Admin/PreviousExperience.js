@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import '../../Styles/previousExperience.css'
+import axios from 'axios';
+import * as Endpoint from '../../Entities/Endpoint';
+import '../../Styles/previousExperience.css';
+import { IoMdAdd } from 'react-icons/io';
+import { TiTick } from 'react-icons/ti';
 
 const PreviousExperience = () => {
     const [ previousExperience, setPreviousExperience ] = useState([
@@ -11,9 +15,17 @@ const PreviousExperience = () => {
             reporting: '',
             reasonforleaving: '',
             location: '',
-            proofofattachments: ''
+            proofofattachments: '',
+            reference: {
+                name: '',
+                designation: '',
+                companyName: '',
+                contact: '',
+                emailId: ''
+            }
         }
     ]);
+
     const handleAddPreviousExperience = () => {
         setPreviousExperience(prevDetails => [
             ...prevDetails,
@@ -25,60 +37,74 @@ const PreviousExperience = () => {
                 reporting: '',
                 reasonforleaving: '',
                 location: '',
-                proofofattachments: ''
+                proofofattachments: '',
+                reference: {
+                    name: '',
+                    designation: '',
+                    companyName: '',
+                    contact: '',
+                    emailId: ''
+                }
             }
         ]);
     };
-    const handleInputChange = (index, field, value) => {
+    
+    const [ draftSaved, setDraftSaved ] = useState(false);
+
+    const handleInputChange = (index, field, value, type = 'previousExperience') => {
         setPreviousExperience(prevDetails => {
             const newDetails = [...prevDetails];
 
-            if (field === 'fromDate') {
-                newDetails[index][field] = value;
-            } else if (field === 'toDate') {
-                newDetails[index][field] = value;
-            } else {
-                newDetails[index][field] = value;
+            if (type === 'previousExperience') {
+                if (field === 'fromDate' || field === 'toDate') {
+                    newDetails[index][field] = value;
+                } else {
+                    newDetails[index][field] = value;
+                }
+            } else if (type === 'reference') {
+                newDetails[index].reference[field] = value;
             }
 
             return newDetails;
         });
     };
+    
 
-    // const getAllExperienceData = async () => {
-    //     try {
-    //         const allExperienceData = previousExperience.map(experience => ({
-    //             name: experience.name,
-    //             designation: experience.designation,
-    //             fromDate: experience.fromDate,
-    //             toDate: experience.toDate,
-    //             reporting: experience.reporting,
-    //             reasonforleaving: experience.reasonforleaving,
-    //             location: experience.location,
-    //             proofofattachments: experience.proofofattachments
-    //         }));
-    //         const apiUrl = 'https://example.com/api/your-endpoint';
-    //         const response = await fetch(apiUrl, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(allExperienceData)
-    //         });
+    const handleSave = async () => {
+        try {
+            const allExperienceData = previousExperience.map(experience => ({
+                name: experience.name,
+                designation: experience.designation,
+                fromDate: experience.fromDate,
+                toDate: experience.toDate,
+                reporting: experience.reporting,
+                reasonforleaving: experience.reasonforleaving,
+                location: experience.location,
+                proofofattachments: experience.proofofattachments,
+                reference: {
+                    name: experience.reference.name,
+                    designation: experience.reference.designation,
+                    companyName: experience.reference.companyName,
+                    contact: experience.reference.contact,
+                    emailId: experience.reference.emailId
+                }
+            }));
 
-    //         if (response.ok) {
-    //             console.log('Data successfully posted to the API');
-    //         } else {
-    //             console.error('Failed to post data to the API');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error posting data to the API', error);
-    //     }
-    // };
+            axios.post(`${Endpoint.API_ENDPOINT}/previousexperience`, allExperienceData)
+                .then(response => {
+                    console.log('Data saved successfully:', response.data);
+                    setDraftSaved(true);
+                })
+                .catch(error => {
+                    console.error('Error saving data:', error);
+                });
 
-    // <button className="getalldata" onClick={getAllExperienceData}>
-    //         Get All Data & Post to API
-    //       </button>
+        } catch (error) {
+            console.error('Error posting data to the API', error);
+        }
+    };
+        
+
     return (
         <div className="previousExp">
             <h4>Previous Experience</h4>
@@ -94,13 +120,13 @@ const PreviousExperience = () => {
                         <th>Proof of Attachments</th>
                     </thead>
                     <tbody>
-                        {previousExperience.map((previousExperience, index) => (
+                        {previousExperience.map((experience, index) => (
                             <tr key={index}>
                                 <td>
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={previousExperience.name}
+                                        value={experience.name}
                                         placeholder="Name"
                                         onChange={event => handleInputChange(index, 'name', event.target.value)}/>
                                 </td>
@@ -108,7 +134,7 @@ const PreviousExperience = () => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={previousExperience.designation}
+                                        value={experience.designation}
                                         placeholder="Name"
                                         onChange={event => handleInputChange(index, 'designation', event.target.value)}/>
                                 </td>
@@ -116,7 +142,7 @@ const PreviousExperience = () => {
                                     <input
                                         className="textbox"
                                         type="date"
-                                        value={previousExperience.fromDate}
+                                        value={experience.fromDate}
                                         placeholder="From"
                                         onChange={event => handleInputChange(index, 'fromDate', event.target.value)}
                                     />
@@ -125,7 +151,7 @@ const PreviousExperience = () => {
                                     <input
                                         className="textbox"
                                         type="date"
-                                        value={previousExperience.toDate}
+                                        value={experience.toDate}
                                         placeholder="To"
                                         onChange={event => handleInputChange(index, 'toDate', event.target.value)}
                                     />
@@ -134,7 +160,7 @@ const PreviousExperience = () => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={previousExperience.reporting}
+                                        value={experience.reporting}
                                         placeholder="Name"
                                         onChange={event => handleInputChange(index, 'reporting', event.target.value)}/>
                                 </td>
@@ -142,7 +168,7 @@ const PreviousExperience = () => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={previousExperience.reasonforleaving}
+                                        value={experience.reasonforleaving}
                                         placeholder="Reason"
                                         onChange={event => handleInputChange(index, 'reasonforleaving', event.target.value)}/>
                                 </td>
@@ -150,7 +176,7 @@ const PreviousExperience = () => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={previousExperience.location}
+                                        value={experience.location}
                                         placeholder="Name"
                                         onChange={event => handleInputChange(index, 'location', event.target.value)}/>
                                 </td>
@@ -159,7 +185,7 @@ const PreviousExperience = () => {
                         ))}
                         <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                         <tr>
-                            <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddPreviousExperience}>+</button></td>
+                            <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddPreviousExperience}><IoMdAdd className="addIcon"/></button></td>
                         </tr >
                         <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                     </tbody>
@@ -177,18 +203,52 @@ const PreviousExperience = () => {
                         <th>Email ID</th>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input type="text" className="textbox" placeholder="Name" /></td>
-                            <td><input type="text" className="textbox" placeholder="role" /></td>
-                            <td><input type="text" className="textbox" placeholder="Name" /></td>
-                            <td><input type="number" className="textbox" placeholder="Mobile no" /></td>
-                            <td><input type="text" className="textbox" placeholder="Email ID"/></td>
-                        </tr>
+                        {previousExperience.map((experience, index) => (
+                            <tr key={index}>
+                                <td><input
+                                    className="textbox"
+                                    type="text"
+                                    value={experience.reference.name}
+                                    placeholder="Name"
+                                    onChange={event => handleInputChange(index, 'name', event.target.value, 'reference')}/>
+                                </td>
+                                <td><input
+                                    className="textbox"
+                                    type="text"
+                                    value={experience.reference.designation}
+                                    placeholder="Role"
+                                    onChange={event => handleInputChange(index, 'designation', event.target.value, 'reference')}/>
+                                </td>
+                                <td><input
+                                    className="textbox"
+                                    type="text"
+                                    value={experience.reference.companyName}
+                                    placeholder="Name"
+                                    onChange={event => handleInputChange(index, 'companyName', event.target.value, 'reference')}/>
+                                </td>
+                                <td><input
+                                    className="textbox"
+                                    type="number"
+                                    value={experience.reference.contact}
+                                    placeholder="Contact No."
+                                    onChange={event => handleInputChange(index, 'contact', event.target.value, 'reference')}/>
+                                </td>
+                                <td><input
+                                    className="textbox"
+                                    type="text"
+                                    value={experience.reference.emailId}
+                                    placeholder="Name"
+                                    onChange={event => handleInputChange(index, 'emailId', event.target.value, 'reference')}/>
+                                </td>
+                            </tr>
+                        ))}
                         <tr><td colSpan={5}><hr /></td></tr>
                     </tbody>
                 </table>
-                <div><input type="checkbox" className="checkbox" />I hearby authorize Ideassion Tech to connect with my reference or my background verification.</div>
+                <div><input type="checkbox" className="checkbox" />I hereby authorize Ideassion Tech to connect with my reference or my background verification.</div>
             </div> 
+            {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
+            <button onClick={handleSave}>Save</button>
         </div>
     );
 };

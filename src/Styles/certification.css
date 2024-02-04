@@ -27,3 +27,7 @@
 .certifications .buttonrow{
     padding: 0px;
 }
+.certifications .addIcon{
+    width: 14px;
+    height: 14px;
+  }
