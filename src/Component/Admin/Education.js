@@ -4,8 +4,9 @@ import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 import { IoMdAdd } from 'react-icons/io';
 import { TiTick } from 'react-icons/ti';
+import propTypes from 'prop-types';
 
-const Education = () => {
+const Education = ({ componentView , educationinfo }) => {
     const [ educationDetails, setEducationDetails ] = useState([
         {
             qualification: '',
@@ -43,20 +44,16 @@ const Education = () => {
         });
     };
     const handleSave = async () => {
-        try {
-            axios.post(`${Endpoint.API_ENDPOINT}/education`, educationDetails)
-                .then(response => {
-                    console.log('Data saved successfully:', response.data);
-                    setDraftSaved(true);
-                })
-                .catch(error => { 
-                    console.error('Error saving data:', error);
+        axios.post(`${Endpoint.API_ENDPOINT}/education`, educationDetails)
+            .then(response => {
+                console.log('Data saved successfully:', response.data);
+                setDraftSaved(true);
+            })
+            .catch(error => { 
+                console.error('Error saving data:', error);
                         
-                });
+            });
             
-        } catch (error) {
-            console.error('Error posting data to the API', error);
-        }
     };
 
     return (
@@ -80,8 +77,9 @@ const Education = () => {
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={education.qualification}
+                                        value={education.qualification || educationinfo?.qualification}
                                         onChange={event => handleInputChange(index, 'qualification', event.target.value)}
+                                        disabled={componentView}
                                     >
                                         <option>B.Sc.</option>
                                         <option>M.Sc</option>
@@ -91,25 +89,28 @@ const Education = () => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={education.university}
+                                        value={education.university|| educationinfo?.university}
                                         placeholder="University"
                                         onChange={event => handleInputChange(index, 'university', event.target.value)}
+                                        disabled={componentView}
                                     />
                                 </td>
                                 <td>
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={education.institution}
+                                        value={education.institution || educationinfo?.institution}
                                         placeholder="Institution"
                                         onChange={event => handleInputChange(index, 'institution', event.target.value)}
+                                        disabled={componentView}
                                     />
                                 </td>
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={education.degreeAchieved}
+                                        value={education.degreeAchieved|| educationinfo?.degreeAchieved}
                                         onChange={event => handleInputChange(index, 'degreeAchieved', event.target.value)}
+                                        disabled={componentView}
                                     >
                                         <option>B.Sc.</option>
                                         <option>M.Sc</option>
@@ -119,16 +120,18 @@ const Education = () => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={education.specialization}
+                                        value={education.specialization|| educationinfo?.specialization}
                                         placeholder="Specialization"
                                         onChange={event => handleInputChange(index, 'specialization', event.target.value)}
+                                        disabled={componentView}
                                     />
                                 </td>
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={education.passedOutYear}
+                                        value={education.passedOutYear|| educationinfo?.passedOutYear}
                                         onChange={event => handleInputChange(index, 'passedOutYear', event.target.value)}
+                                        disabled={componentView}
                                     >
                                         <option value="" disabled>
                                             Select Year
@@ -143,8 +146,9 @@ const Education = () => {
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={education.percentageAchieved}
+                                        value={education.percentageAchieved|| educationinfo?.percentageAchieved}
                                         onChange={event => handleInputChange(index, 'percentageAchieved', event.target.value)}
+                                        disabled={componentView}
                                     >
                                         <option value="" disabled>
                                             Select Percentage
@@ -163,15 +167,19 @@ const Education = () => {
                     </tbody>
                     <tr><td colSpan="8" className= "buttonrow"><hr /></td></tr>
                     <tr>
-                        <td colSpan="8" className= "buttonrow"><button className="addanother" onClick={handleAddEducation}><IoMdAdd className="addIcon"/></button></td>
+                        <td colSpan="8" className= "buttonrow"><button className="addanother" onClick={handleAddEducation} disabled={componentView}><IoMdAdd className="addIcon"/></button></td>
                     </tr >
                     <tr><td colSpan="8" className= "buttonrow"><hr /></td></tr>
                 </table>
             </div>
             {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-            <button onClick={handleSave}>Save</button>  
+            <button onClick={handleSave} disabled={componentView}>Save</button>  
         </div>
     );
 };
 
+Education.propTypes = {
+    educationinfo: propTypes.object.isRequired,
+    componentView: propTypes.bool.isRequired
+};
 export default Education;

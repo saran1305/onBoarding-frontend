@@ -203,4 +203,45 @@
    font-size: 16px;
    font-weight: 700;
  }
- 
+ .statusdesign h5{
+  margin-top:50px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 36px;
+  letter-spacing: 0em;
+ }
+.statusdesign{
+  text-align: center;
+  position: relative;
+}
+.statusdesign img{
+  width: 400px;
+height: 290px;
+}
+.iconFormLayout{
+  width: 60px;
+  height: 60px;
+  border-radius: 8.57px;
+  border: 1.71px solid #71839B;
+  position: absolute;
+  top: 30px;
+  right: 20px;
+  transform: translate(50%, -50%);
+}
+.iconForm{
+  width: 34.29px;
+  height: 34.29px;
+  margin-top: 10px;
+  color: #2D68FE;
+}
+.resubmitButton{
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 21px;
+}
+.iconreload{
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+}

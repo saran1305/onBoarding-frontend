@@ -4,9 +4,9 @@ import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 import { IoMdAdd } from 'react-icons/io';
 import { TiTick } from 'react-icons/ti';
+import propTypes from 'prop-types';
 
-
-const Certifications = () => {
+const Certifications = ({ componentView, certificationsinfo }) => {
     const [ certifications, setCertifications ] = useState([
         {
             name: '',
@@ -42,9 +42,8 @@ const Certifications = () => {
         setDraftSaved(false);
     };
     const handleSave = () => {
-        const dataToSave = certifications;
 
-        axios.post(`${Endpoint.API_ENDPOINT}/certifications`, dataToSave)
+        axios.post(`${Endpoint.API_ENDPOINT}/certifications`, certifications)
             .then(response => {
                 console.log('Data saved successfully:', response.data);
                 setDraftSaved(true);
@@ -75,33 +74,35 @@ const Certifications = () => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={certifications.name}
+                                        value={certifications.name || certificationsinfo?.name}
                                         placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'name', event.target.value)}/>
+                                        onChange={event => handleInputChange(index, 'name', event.target.value)}
+                                        disabled={componentView}/>
                                 </td>
                                 <td>
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={certifications.issue}
+                                        value={certifications.issue|| certificationsinfo?.issue}
                                         placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'issue', event.target.value)}/>
+                                        onChange={event => handleInputChange(index, 'issue', event.target.value)}
+                                        disabled={componentView}/>
                                 </td>
                                 <td>
                                     <input
                                         className="textbox"
                                         type="date"
-                                        value={certifications.valid}
+                                        value={certifications.valid|| certificationsinfo?.valid}
                                         placeholder="01/01/2024"
                                         onChange={event => handleInputChange(index, 'valid', event.target.value)}
-                                    />
+                                        disabled={componentView} />
                                 </td>
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={certifications.yearofCertifications}
+                                        value={certifications.yearofCertifications|| certificationsinfo?.yearofCertifications}
                                         onChange={event => handleInputChange(index, 'yearofCertifications', event.target.value)}
-                                    >
+                                        disabled={componentView}>
                                         <option value="" disabled>
                                             Select
                                         </option>
@@ -115,9 +116,9 @@ const Certifications = () => {
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={certifications.specialization}
+                                        value={certifications.specialization|| certificationsinfo?.specialization}
                                         onChange={event => handleInputChange(index, 'specialization', event.target.value)}
-                                    >
+                                        disabled={componentView}>
                                         <option>Computer Science</option>
                                         <option>Computer Application</option>
                                     </select>
@@ -125,9 +126,9 @@ const Certifications = () => {
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={certifications.percentageAchieved}
+                                        value={certifications.percentageAchieved|| certificationsinfo?.percentageAchieved}
                                         onChange={event => handleInputChange(index, 'percentageAchieved', event.target.value)}
-                                    >
+                                        disabled={componentView}>
                                         <option value="" disabled>
                                             Select
                                         </option>
@@ -138,22 +139,27 @@ const Certifications = () => {
                                         ))}
                                     </select>
                                 </td>
-                                <td><button className="choosefile">Choose File</button></td>
+                                <td><button className="choosefile" disabled={componentView}>Choose File</button></td>
                             </tr>
                         ))}
 
                     </tbody>
                     <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                     <tr>
-                        <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddCertifications}><IoMdAdd className="addIcon"/></button></td>
+                        <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddCertifications} disabled={componentView}><IoMdAdd className="addIcon"/></button></td>
                     </tr >
                     <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                 </table>
             </div>  
             {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-            <button onClick={handleSave}>Save</button>
+            <button onClick={handleSave} disabled={componentView}>Save</button>
         </div>
     );
+};
+
+Certifications.propTypes = {
+    certificationsinfo: propTypes.object.isRequired,
+    componentView: propTypes.bool.isRequired
 };
 
 export default Certifications;

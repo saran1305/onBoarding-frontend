@@ -5,8 +5,9 @@ import * as Endpoint from '../../Entities/Endpoint';
 import '../../Styles/previousExperience.css';
 import { LiaCloudUploadAltSolid } from 'react-icons/lia';
 import { TiTick } from 'react-icons/ti';
+import propTypes from 'prop-types';
 
-const ExistingBankInformation = () => {
+const ExistingBankInformation = ({ componentView, existingBankInfo }) => {
     const [ draftSaved, setDraftSaved ] = useState(false);
     const [ existingbank, setExistingbank ] = useState({
         nameOnBankAccount: '',
@@ -30,20 +31,15 @@ const ExistingBankInformation = () => {
             [field]: checked
         }));
     };
-    const handleSave = async () => {
-        try {
-
-            axios.post(`${Endpoint.API_ENDPOINT}/existingbankinfo`, existingbank)
-                .then(response => {
-                    console.log('Data saved successfully:', response.data);
-                    setDraftSaved(true);
-                })
-                .catch(error => {
-                    console.error('Error saving data:', error.message || error);
-                });
-        } catch {
-            console.log('Form validation failed.');
-        }
+    const handleSave = () => {
+        axios.post(`${Endpoint.API_ENDPOINT}/existingbankinfo`, existingbank)
+            .then(response => {
+                console.log('Data saved successfully:', response.data);
+                setDraftSaved(true);
+            })
+            .catch(error => {
+                console.error('Error saving data:', error.message || error);
+            });
     };
 
     return (
@@ -57,8 +53,9 @@ const ExistingBankInformation = () => {
                             type="text"
                             placeholder="Name"
                             className="textbox"
+                            value={existingBankInfo?.nameOnBankAccount}
                             onChange={event => handleInputChange('nameOnBankAccount', event.target.value)}
-                        />                    
+                            disabled={componentView}/>                    
                     </div>
                 </div>
                 <div className="col-3">
@@ -68,8 +65,9 @@ const ExistingBankInformation = () => {
                             type="text"
                             placeholder="Bank Name"
                             className="textbox"
+                            value={existingBankInfo?.bankName}
                             onChange={event => handleInputChange('bankName', event.target.value)}
-                        />                    
+                            disabled={componentView}/>                    
                     </div>
                 </div>
                 <div className="col-3">
@@ -79,8 +77,9 @@ const ExistingBankInformation = () => {
                             type="text"
                             placeholder="Bank Branch Location"
                             className="textbox"
+                            value={existingBankInfo?.bankBranchLocation}
                             onChange={event => handleInputChange('bankBranchLocation', event.target.value)}
-                        />                    
+                            disabled={componentView}/>                    
                     </div>
                 </div>
                 <div className="col-3">
@@ -90,8 +89,9 @@ const ExistingBankInformation = () => {
                             type="text"
                             placeholder="Account Number"
                             className="textbox"
+                            value={existingBankInfo?.bankAccountNumber}
                             onChange={event => handleInputChange('bankAccountNumber', event.target.value)}
-                        />                     
+                            disabled={componentView}/>                     
                     </div>
                 </div>
             </div>
@@ -105,29 +105,26 @@ const ExistingBankInformation = () => {
                                     type="text"
                                     placeholder="IFSC code"
                                     className="textbox"
+                                    value={existingBankInfo?.bankIFSCCode}
                                     onChange={event => handleInputChange('bankIFSCCode', event.target.value)}
-                                />    
+                                    disabled={componentView}/>    
                             </div>
                         </div>
                         <div className="col-6">
                             <h6>Joint Account?</h6>
                             <div className="radiospace col-6">
                                 <div>
-                                    <input
-                                        type="radio"
-                                        id="yes"
-                                        className="radiodesign"
-                                        onChange={event => handleCheckboxChange('isJointAccount', event.target.checked)}
-                                    />                                    
+                                    <input type="radio" name="professionalMember" id="yes" className="radiodesign"
+                                        checked={existingBankInfo?.isJointAccount}
+                                        onChange={event => handleCheckboxChange('isJointAccount', event.target.checked)} 
+                                        disabled={componentView}/>
                                     <h6 htmlFor="yes">Yes</h6>
                                 </div>
                                 <div>
-                                    <input 
-                                        type="radio" 
-                                        id="no" 
-                                        className="radiodesign"
+                                    <input type="radio" name="professionalMember" id="no" className="radiodesign"
+                                        checked={!existingBankInfo?.isJointAccount}
                                         onChange={event => handleCheckboxChange('isJointAccount', event.target.checked)}
-                                    />   
+                                        disabled={componentView}/>
                                     <h6 htmlFor="no">No</h6>
                                 </div>
                             </div>
@@ -149,20 +146,24 @@ const ExistingBankInformation = () => {
 
                     <div className="col-6">
                         <h6>Proof Submitted (To be updated by HR)</h6>
-                        <div className="checkbox-container">
-                            <div><input type="checkbox" className="checkbox"/>Cheque Leaf</div>
-                            <div><input type="checkbox" className="checkbox"/>Bank Statement</div>
-                            <div><input type="checkbox" className="checkbox"/>Passbook Copy</div>
-                            <div><input type="checkbox" className="checkbox"/>Cheque main page</div>
+                        <div className="checkbox-container" >
+                            <div><input type="checkbox" className="checkbox" disabled={componentView}/>Cheque Leaf</div>
+                            <div><input type="checkbox" className="checkbox" disabled={componentView}/>Bank Statement</div>
+                            <div><input type="checkbox" className="checkbox" disabled={componentView}/>Passbook Copy</div>
+                            <div><input type="checkbox" className="checkbox" disabled={componentView}/>Cheque main page</div>
                         </div>
                     </div>
                 </div>
             </div>
             <hr />
             {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-            <button onClick={handleSave}>Save</button>
+            <button onClick={handleSave} disabled={componentView}>Save</button>
         </div>
     );
 };
 
+ExistingBankInformation.propTypes = {
+    existingBankInfo: propTypes.object.isRequired,
+    componentView: propTypes.bool.isRequired
+};
 export default ExistingBankInformation;
