@@ -4,8 +4,9 @@ import { LiaCloudUploadAltSolid } from 'react-icons/lia';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 import { TiTick } from 'react-icons/ti';
+import propTypes from 'prop-types';
 
-const HealthInformation = () => {
+const HealthInformation = ({ componentView, healthInfo }) => {
     const [ healthInformationData, setHealthInformationData ] = useState({
         specificHealthCondition: '',
         allergies: '',
@@ -76,7 +77,6 @@ const HealthInformation = () => {
         if (validateVaccinationStatus() && validateVaccineCertificate()) {
             const formData = new FormData();
 
-            // Append data to formData
             formData.append('specificHealthCondition', healthInformationData.specificHealthCondition);
             formData.append('allergies', healthInformationData.allergies);
             formData.append('recentSurgery', healthInformationData.recentSurgery);
@@ -134,8 +134,9 @@ const HealthInformation = () => {
                             type="text"
                             placeholder="Answer"
                             className="textbox"
+                            value={healthInfo?.specificHealthCondition}
                             onChange={event => handleInputChange('specificHealthCondition', event.target.value)}
-                        />     
+                            disabled={componentView}/>     
                     </div>
                 </div>
                 <div className="col-6">
@@ -145,8 +146,9 @@ const HealthInformation = () => {
                             type="text"
                             placeholder="Answer"
                             className="textbox"
+                            value={healthInfo?.allergies}
                             onChange={event => handleInputChange('allergies', event.target.value)}
-                        />
+                            disabled={componentView}/>
                     </div>
                 </div>
             </div>
@@ -161,8 +163,8 @@ const HealthInformation = () => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={healthInformationData.recentSurgery}
-                            />
+                                checked={healthInformationData.recentSurgery||healthInfo?.recentSurgery}
+                                disabled={componentView}/>
                             <label htmlFor="yes">Yes</label>
                         </div>
                         <div>
@@ -172,8 +174,8 @@ const HealthInformation = () => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={!healthInformationData.recentSurgery}
-                            />
+                                checked={!healthInformationData.recentSurgery || !healthInfo?.recentSurgery}
+                                disabled={componentView} />
                             <label htmlFor="no">No</label>
                         </div>
                     </div>
@@ -187,8 +189,9 @@ const HealthInformation = () => {
                             type="text"
                             placeholder="About Surgery"
                             className="textbox2"
+                            value={healthInfo?.surgeryExplanation}
                             onChange={event => handleInputChange('surgeryExplanation', event.target.value)}
-                        />
+                            disabled={componentView} />
                     </div>
                 </div>
             </div>
@@ -203,8 +206,8 @@ const HealthInformation = () => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={healthInformationData.workInRotationalShifts}
-                            />
+                                checked={healthInformationData.workInRotationalShifts ||healthInfo?.workInRotationalShifts}
+                                disabled={componentView} />
                             <label htmlFor="yes">Yes</label>
                         </div>
                         <div>
@@ -214,8 +217,8 @@ const HealthInformation = () => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={!healthInformationData.workInRotationalShifts}
-                            />
+                                checked={!healthInformationData.workInRotationalShifts || !healthInfo?.workInRotationalShifts}
+                                disabled={componentView}/>
                             <label htmlFor="no">No</label>
                         </div>
                     </div>
@@ -232,8 +235,8 @@ const HealthInformation = () => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={healthInformationData.disabilities}
-                            />
+                                checked={healthInformationData.disabilities || healthInfo?.disabilities}
+                                disabled={componentView}/>
                             <label htmlFor="yes">Yes</label>
                         </div>
                         <div>
@@ -243,8 +246,8 @@ const HealthInformation = () => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={!healthInformationData.disabilities}
-                            />
+                                checked={!healthInformationData.disabilities || !healthInfo?.disabilities }
+                                disabled={componentView}/>
                             <label htmlFor="no">No</label>
                         </div>
                     </div>
@@ -256,8 +259,9 @@ const HealthInformation = () => {
                             type="text"
                             placeholder="About disability"
                             className="textbox2"
+                            value={healthInfo?.disabilityExplanation}
                             onChange={event => handleInputChange('disabilityExplanation', event.target.value)}
-                        />  
+                            disabled={componentView} />  
                     </div>
                 </div>
             </div>
@@ -266,15 +270,21 @@ const HealthInformation = () => {
                     <h6>COVID Vaccination Status <span className="validation">*</span></h6>
                     <div className="radiospace2 col-10">
                         <div>
-                            <input type="radio" name="vaccination" id="fully" className="radiodesign"  onChange={handleVaccinationStatusChange} />
+                            <input type="radio" name="vaccination" id="fully" className="radiodesign" 
+                                checked={healthInformationData.vaccinationStatus|| healthInfo?.vaccinationStatus}
+                                onChange={handleVaccinationStatusChange} disabled={componentView}/>
                             <h6 htmlFor="fully">Fully</h6>
                         </div>
                         <div>
-                            <input type="radio" name="vaccination" id="patially" className="radiodesign"  onChange={handleVaccinationStatusChange}/>
+                            <input type="radio" name="vaccination" id="patially" className="radiodesign"  
+                                checked={healthInformationData.vaccinationStatus|| healthInfo?.vaccinationStatus}
+                                onChange={handleVaccinationStatusChange} disabled={componentView}/>
                             <h6 htmlFor="patially">Partially</h6>
                         </div>
                         <div>
-                            <input type="radio" name="vaccination" id="not vaccinated" className="radiodesign"  onChange={handleVaccinationStatusChange}/>
+                            <input type="radio" name="vaccination" id="not vaccinated" className="radiodesign"  
+                                checked={healthInformationData.vaccinationStatus || healthInfo?.vaccinationStatus}
+                                onChange={handleVaccinationStatusChange}disabled={componentView}/>
                             <h6 htmlFor="not vaccinated">Not Vaccinated</h6>
                         </div>
                     </div>
@@ -287,7 +297,7 @@ const HealthInformation = () => {
                             <input
                                 type="file"
                                 onChange={handleVaccineCertificateChange}
-                            />
+                                disabled={componentView}/>
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
@@ -308,11 +318,16 @@ const HealthInformation = () => {
                     <p className="filetext">File Type Accepted:doc,pdf & img</p>
                 </div>
                 {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-                <button onClick={handleSave}>Save</button>
+                <button onClick={handleSave} disabled={componentView}>Save</button>
             </div>
             <hr />
         </div>
     );
+};
+
+HealthInformation.propTypes = {
+    healthInfo: propTypes.object.isRequired,
+    componentView: propTypes.bool.isRequired
 };
 
 export default HealthInformation;

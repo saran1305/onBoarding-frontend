@@ -7,16 +7,17 @@ import { LiaCloudUploadAltSolid } from 'react-icons/lia';
 import { IoMdAdd } from 'react-icons/io';
 import { TiTick } from 'react-icons/ti';
 
-const PersonalInformation = () => {
-
+const PersonalInformation = ({ componentView, personalinfo }) => {
+    // console.log('personalinfo in personalInfo:', personalinfo);
     const [ personalDetails, setPersonalDetails ] = useState({
-        generalInfo: {
+        generalInfo:{
             fullName: '',
             dateOfBirth: '',
             nationality: '',
             gender: 'male',
             maritalStatus: 'single',
             marriageDate: '',
+            profile: null,
             bloodGroup: 'A+',
             email: '',
             mobileNumber: '',
@@ -66,7 +67,7 @@ const PersonalInformation = () => {
             driverLicense: null,
             passport: null
         }
-    })
+    });  
     const [ validation, setValidation ] = useState({
         fullName: '',
         dateOfBirth: '',
@@ -228,24 +229,27 @@ const PersonalInformation = () => {
                             <input
                                 type="text"
                                 className="textbox"
-                                value={personalDetails.generalInfo.fullName}
-                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, fullName: event.target.value } }))}/>
+                                value={personalDetails.generalInfo.fullName ||  personalinfo?.generalInfo?.fullName}
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, fullName: event.target.value } }))}
+                                disabled={componentView}/>
                             <span className="error">{validation.fullName}</span>
                         </div>
                         <div className="col-4">
                             <h6>Date of Birth<span className="error"> * </span></h6>
                             <div>
                                 <input type="date" className="textbox"
-                                    value={personalDetails.generalInfo.dateOfBirth}
-                                    onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, dateOfBirth: event.target.value } }))}/>
+                                    value={personalDetails.generalInfo.dateOfBirth|| personalinfo?.generalInfo?.dateOfBirth}
+                                    onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, dateOfBirth: event.target.value } }))}
+                                    disabled={componentView}/>
                                 <span className="error">{validation.dateOfBirth}</span>
                             </div>
                         </div>
                         <div className="col-4">
                             <h6 htmlFor="nationality">Nationality<span className="error"> * </span></h6>
                             <input type="text" className="textbox"
-                                value={personalDetails.generalInfo.nationality}
-                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, nationality: event.target.value } }))}/>
+                                value={personalDetails.generalInfo.nationality || personalinfo?.generalInfo?.nationality}
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, nationality: event.target.value } }))}
+                                disabled={componentView}/>
                             <span className="error">{validation.nationality}</span>
                         </div>
                     </div>
@@ -253,8 +257,9 @@ const PersonalInformation = () => {
                         <div className="col-4">
                             <h6>Gender<span className="error"> * </span></h6>
                             <select className="textbox"
-                                value={personalDetails.generalInfo.gender}
-                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, gender: event.target.value } }))}>
+                                value={personalinfo?.generalInfo?.gender || ''}
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, gender: event.target.value } }))}
+                                disabled={componentView}>
                                 <option value="male">Male</option>
                                 <option value="female">Female</option>
                             </select>
@@ -264,13 +269,9 @@ const PersonalInformation = () => {
                             <h6>Marital Status<span className="error"> * </span></h6>
                             <select
                                 className="textbox"
-                                value={personalDetails.generalInfo.maritalStatus}
-                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails,
-                                    generalInfo: { ...prevDetails.generalInfo, maritalStatus: event.target.value
-                                    }
-                                }))
-                                }
-                            >
+                                value={personalinfo?.generalInfo?.maritalStatus || ''}                              
+                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalInfo: { ...prevDetails.generalInfo, maritalStatus: event.target.value } }))}
+                                disabled={componentView}>
                                 <option value="single">Single</option>
                                 <option value="married">Married</option>
                                 <option value="divorced">Divorced</option>
@@ -280,7 +281,7 @@ const PersonalInformation = () => {
                         </div>
                         <div className="col-4">
                             <h6>Marriage Date (if applicable)</h6>
-                            <input type="date" className="textbox"/>
+                            <input type="date" className="textbox" disabled={componentView}/>
                         </div>
                     </div>
                 </div>
@@ -288,6 +289,12 @@ const PersonalInformation = () => {
                     <div className="col">
                         <h6>Profile Picture<span className="error"> * </span></h6>
                         <div className="profile-box typography">
+                            <input
+                                type="file"
+                                accept=".doc, .pdf, .img"
+                                onChange={event => handleInputChange('profile', event.target.files[0])}
+                                disabled={componentView}
+                            />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
@@ -298,7 +305,12 @@ const PersonalInformation = () => {
             </div>
             <div className="col-3">
                 <h6>Blood Group<span className="error"> * </span></h6>
-                <select defaultValue={personalDetails.generalInfo.bloodGroup} className="textbox">
+                <select
+                    className="textbox"
+                    value={personalDetails.generalInfo.bloodGroup||personalinfo?.generalInfo?.bloodGroup}
+                    onChange={event => setPersonalDetails(prevDetails => 
+                        ({ ...prevDetails,generalInfo: { ...prevDetails.generalInfo, bloodGroup: event.target.value } }))} 
+                    disabled={componentView}>
                     <option value="A+">A+</option>
                     <option value="A-">A-</option>
                     <option value="B+">B+</option>
@@ -319,8 +331,9 @@ const PersonalInformation = () => {
                         <input
                             type="text"
                             className="textbox"
-                            value={personalDetails.generalInfo.email}
+                            value={personalDetails.generalInfo.email || personalinfo?.generalInfo?.email}
                             onChange={event => handleInputChange('email', event.target.value)}
+                            disabled={componentView}
                         />
                         <span className="error">{validation.email}</span>
                     </div>
@@ -329,8 +342,9 @@ const PersonalInformation = () => {
                         <input
                             type="text"
                             className="textbox"
-                            value={personalDetails.generalInfo.mobileNumber}
+                            value={personalDetails.generalInfo.mobileNumber || personalinfo?.generalInfo?.mobileNumber}
                             onChange={event => handleInputChange('mobileNumber', event.target.value)}
+                            disabled={componentView}
                         />
                         <span className="error">{validation.mobileNumber}</span>
                     </div>
@@ -340,21 +354,42 @@ const PersonalInformation = () => {
                     <div className="row">
                         <div className="col-3">
                             <h6>Address Line 1<span className="error"> * </span></h6>
-                            <input type="text" className="textbox"/>
-                        </div>
+                            <input
+                                type="text"
+                                className="textbox"
+                                value={personalDetails.generalInfo.presentAddress.addressLine1 || personalinfo?.generalInfo?.presentAddress?.addressLine1}
+                                onChange={event => handleInputChange('presentAddress.addressLine1', event.target.value)}
+                                disabled={componentView}
+                            />                        </div>
                         <div className="col-3">
                             <h6>Address Line 2<span className="error"> * </span></h6>
-                            <input type="text" className="textbox"/>
+                            <input
+                                type="text"
+                                className="textbox"
+                                value={personalDetails.generalInfo.presentAddress.addressLine2 || personalinfo?.generalInfo?.presentAddress?.addressLine2}
+                                onChange={event => handleInputChange('presentAddress.addressLine2', event.target.value)}
+                                disabled={componentView}
+                            />                        
                         </div>
                         <div className="col-3">
                             <h6>Country<span className="error"> * </span></h6>
-                            <select className="textbox">
+                            <select
+                                className="textbox"
+                                value={personalDetails.generalInfo.presentAddress.country || personalinfo?.generalInfo?.presentAddress?.country}
+                                onChange={event => handleInputChange('presentAddress.country', event.target.value)}
+                                disabled={componentView}
+                            >
                                 <option>India</option>
                             </select>
                         </div>
                         <div className="col-3">
                             <h6>State<span className="error"> * </span></h6>
-                            <select className="textbox">
+                            <select
+                                className="textbox"
+                                value={personalDetails.generalInfo.presentAddress.state|| personalinfo?.generalInfo?.presentAddress?.state}
+                                onChange={event => handleInputChange('presentAddress.state', event.target.value)}
+                                disabled={componentView}
+                            >
                                 <option>Tamil Nadu</option>
                             </select>
                         </div>
@@ -362,19 +397,30 @@ const PersonalInformation = () => {
                     <div className="row">
                         <div className="col-3">
                             <h6>City<span className="error"> * </span></h6>
-                            <select className="textbox">
+                            <select
+                                className="textbox"
+                                value={personalDetails.generalInfo.presentAddress.city || personalinfo?.generalInfo?.presentAddress?.city}
+                                onChange={event => handleInputChange('presentAddress.city', event.target.value)}
+                                disabled={componentView}
+                            >
                                 <option>Chennai</option>
                             </select>
                         </div>
                         <div className="col-3">
                             <h6>Zip Code<span className="error"> * </span></h6>
-                            <input type="number" className="textbox"/>
+                            <input
+                                type="number"
+                                className="textbox"
+                                value={personalDetails.generalInfo.presentAddress.zipCode || personalinfo?.generalInfo?.presentAddress?.zipCode}
+                                onChange={event => handleInputChange('presentAddress.zipCode', event.target.value)}
+                                disabled={componentView}
+                            />             
                         </div>
                         <div className="col-6">
                             <h6>
                                 <input
                                     type="checkbox" className="checkbox"
-                                    checked={personalDetails.generalInfo.presentAddress.sameAsPermanent}
+                                    checked={personalDetails.generalInfo.presentAddress.sameAsPermanent|| personalDetails?.generalInfo?.presentAddress?.sameAsPermanent}
                                     onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails,
                                         generalInfo: { ...prevDetails.generalInfo,
                                             presentAddress: { ...prevDetails.generalInfo.presentAddress,
@@ -382,6 +428,7 @@ const PersonalInformation = () => {
                                         }
                                     }))
                                     }
+                                    disabled={componentView}
                                 />
                                 Present address same as permanent address
                             </h6>
@@ -392,60 +439,66 @@ const PersonalInformation = () => {
                 <div className="row">
                     <div className="col-3">
                         <h6>Address Line 1<span className="error"> * </span></h6>
-                        <input type="text" className="textbox" />
+                        <input type="text" className="textbox" value={personalinfo?.generalInfo?.permanentAddress?.addressLine1}  disabled={componentView}/>
                     </div>
                     <div className="col-3">
                         <h6>Address Line 2<span className="error"> * </span></h6>
-                        <input type="text" className="textbox"/>
+                        <input type="text"className="textbox" value={personalinfo?.generalInfo?.permanentAddress?.addressLine2} disabled={componentView}/>
                     </div>
                     <div className="col-3">
                         <h6>Country<span className="error"> * </span></h6>
-                        <select className="textbox">
+                        <select className="textbox" value={personalinfo?.generalInfo?.permanentAddress?.country}  disabled={componentView}>
                             <option>India</option>
                         </select>
                     </div>
                     <div className="col-3">
                         <h6>State<span className="error"> * </span></h6>
-                        <select className="textbox">
+                        <select className="textbox"value={personalinfo?.generalInfo?.permanentAddress?.state} disabled={componentView}>
                             <option>Tamil Nadu</option>
+                            <option>Kerala</option>
                         </select>
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-3">
                         <h6>City<span className="error"> * </span></h6>
-                        <select className="textbox">
+                        <select className="textbox"value={personalinfo?.generalInfo?.permanentAddress?.city} disabled={componentView}>
                             <option>Chennai</option>
                         </select>
                     </div>
                     <div className="col-3">
                         <h6>Zip Code<span className="error"> * </span></h6>
-                        <input type="number" className="textbox"/>
+                        <input type="number" className="textbox"
+                            value={personalDetails.generalInfo.permanentAddress.zipCode || personalinfo?.generalInfo?.permanentAddress?.zipCode}
+                            onChange={event => handleInputChange('permanentAddress.zipCode', event.target.value)}
+                            disabled={componentView}
+                        />                     
                     </div>
                 </div>
                 <hr />
             </div>
+            <h4>Family details</h4>
             <div className="family">
                 <table>
                     <thead>
                         <th>Relationship</th>
                         <th>Name</th>
-                        <th>Date of Birth</th>
+                        <th>Date of Birth</th>  
                         <th>Occupation</th>
                         <th>Contact No</th>
                     </thead>
                     <tbody>
                         {familyMembers.map((member, index) => (
                             <tr key={index}>
-                                <th>{member.relationship}</th>
-                                <td><input type="text" className="textbox" placeholder="Name" onChange={event => handleChange(index, 'name', event.target.value)} /></td>
-                                <td><input type="date" className="textbox" onChange={event => handleChange(index, 'dob', event.target.value)} /></td>
-                                <td><input type="text" className="textbox" placeholder="role" onChange={event => handleChange(index, 'role', event.target.value)} /></td>
-                                <td><input type="number" className="textbox" placeholder="Number" onChange={event => handleChange(index, 'number', event.target.value)} /></td>
+                                <th>{member.relationship || member?.relationship}</th>
+                                <td><input type="text" className="textbox" placeholder="Name" value={member.name || member?.name} onChange={event => handleChange(index, 'name', event.target.value)} disabled={componentView} /></td>                                
+                                <td><input type="date" className="textbox" value={member.dob||member?.dob} onChange={event => handleChange(index, 'dob', event.target.value)}disabled={componentView} /></td>
+                                <td><input type="text" className="textbox" placeholder="role" value={member.role|| member?.role} onChange={event => handleChange(index, 'role', event.target.value)} disabled={componentView}/></td>
+                                <td><input type="number" className="textbox" placeholder="Number" value={member.number|| member?.number} onChange={event => handleChange(index, 'number', event.target.value)}disabled={componentView} /></td>
                             </tr>
                         ))}
                         <tr>
-                            <td colSpan="5"><button className="addanother" onClick={handleAddMember}><IoMdAdd className="addIcon"/></button></td>
+                            <td colSpan="5"><button className="addanother" onClick={handleAddMember}disabled={componentView}><IoMdAdd className="addIcon"/></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -457,11 +510,11 @@ const PersonalInformation = () => {
                     <div>Are you a member of any professional body</div>
                     <div className="radiospace col-6">
                         <div>
-                            <input type="radio" name="professionalMember" id="yes" className="radiodesign" />
+                            <input type="radio" name="professionalMember" id="yes" className="radiodesign" checked={personalinfo?.hobbies?.memberOfProfessionalBody} disabled={componentView} />
                             <h6 htmlFor="yes">Yes</h6>
                         </div>
                         <div>
-                            <input type="radio" name="professionalMember" id="no" className="radiodesign"/>
+                            <input type="radio" name="professionalMember" id="no" className="radiodesign"checked={!personalinfo?.hobbies?.memberOfProfessionalBody}disabled={componentView}/>
                             <h6 htmlFor="no">No</h6>
                         </div>
                     </div>
@@ -469,7 +522,14 @@ const PersonalInformation = () => {
 
                 <div className="col-4">
                     <div>If yes, Name of the Professionial Body</div>
-                    <textarea type="text" className="hobbie" placeholder="Name"/>
+                    <textarea type="text" className="hobbie"
+                        value={personalDetails.hobbies.professionalBodyName||personalinfo?.hobbies?.professionalBodyName}
+                        onChange={event =>
+                            setPersonalDetails(prevDetails => ({ ...prevDetails,
+                                hobbies: { ...prevDetails.hobbies, professionalBodyName: event.target.value }
+                            }))
+                        }
+                        placeholder="Name"disabled={componentView}/>
                 </div>
                 <div className="col-4">
                     <div>Hobbies & Interests</div>
@@ -477,12 +537,13 @@ const PersonalInformation = () => {
                         type="text"
                         className="hobbie"
                         placeholder="Name"
-                        value={personalDetails.hobbies.professionalBodyName}
+                        value={personalDetails.hobbies.hobbiesAndInterests||personalinfo?.hobbies?.hobbiesAndInterests}
                         onChange={event =>
                             setPersonalDetails(prevDetails => ({ ...prevDetails,
-                                hobbies: { ...prevDetails.hobbies, professionalBodyName: event.target.value }
+                                hobbies: { ...prevDetails.hobbies, hobbiesAndInterests: event.target.value }
                             }))
                         }
+                        disabled={componentView}
                     />
                 </div>
             </div>
@@ -498,13 +559,13 @@ const PersonalInformation = () => {
                     <tbody>
                         {employees.map((employee, index) => (
                             <tr key={index}>
-                                <td><input type="number" className="textbox2" placeholder="0000" onChange={event => handleEmployeeChange(index, 'empId', event.target.value)} /></td>
-                                <td><input type="text" className="textbox2" placeholder="Name" onChange={event=> handleEmployeeChange(index, 'name', event.target.value)} /></td>
-                                <td><input type="text" className="textbox2" placeholder="Eg. Chennai" onChange={event=> handleEmployeeChange(index, 'location', event.target.value)} /></td>
+                                <td><input type="number" className="textbox2" placeholder="0000" value={personalinfo?.friendsColleagues?.empId} onChange={event => handleEmployeeChange(index, 'empId', event.target.value)} disabled={componentView}/></td>
+                                <td><input type="text" className="textbox2" placeholder="Name" value={personalinfo?.friendsColleagues?.name} onChange={event=> handleEmployeeChange(index, 'name', event.target.value)} disabled={componentView} /></td>
+                                <td><input type="text" className="textbox2" placeholder="Eg. Chennai" value={personalinfo?.friendsColleagues?.location} onChange={event=> handleEmployeeChange(index, 'location', event.target.value)} disabled={componentView} /></td>
                             </tr>
                         ))}
                         <tr>
-                            <td colSpan="3"><button className="addanother" onClick={handleAddEmployee}><IoMdAdd className="addIcon"/></button></td>
+                            <td colSpan="3"><button className="addanother" onClick={handleAddEmployee} disabled={componentView}><IoMdAdd className="addIcon"/></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -523,7 +584,7 @@ const PersonalInformation = () => {
                         {relations.map((relation, index) => (
                             <tr key={index}>
                                 <td>
-                                    <select className="textbox" onChange={event => handleRelationChange(index, 'relationship', event.target.value)}>
+                                    <select className="textbox" value={personalinfo?.emergencyContacts?.relationship} onChange={event => handleRelationChange(index, 'relationship', event.target.value)}disabled={componentView}>
                                         <option>Spouse/Partner</option>
                                         <option>Father</option>
                                         <option>Mother</option>
@@ -531,13 +592,13 @@ const PersonalInformation = () => {
                                         <option>Guardian</option>
                                     </select>
                                 </td>
-                                <td><input type="text" className="textbox" placeholder="Name" onChange={event => handleRelationChange(index, 'name', event.target.value)} /></td>
-                                <td><input type="number" className="textbox" placeholder="Mobile No." onChange={event => handleRelationChange(index, 'number', event.target.value)} /></td>
-                                <td><input type="text" className="textbox" placeholder="Eg. Chennai" onChange={event => handleRelationChange(index, 'location', event.target.value)} /></td>
+                                <td><input type="text" className="textbox" placeholder="Name" value={personalinfo?.emergencyContacts?.name}onChange={event => handleRelationChange(index, 'name', event.target.value)}disabled={componentView} /></td>
+                                <td><input type="number" className="textbox" placeholder="Mobile No." value={personalinfo?.emergencyContacts?.number}onChange={event => handleRelationChange(index, 'number', event.target.value)}disabled={componentView} /></td>
+                                <td><input type="text" className="textbox" placeholder="Eg. Chennai" value={personalinfo?.emergencyContacts?.location} onChange={event => handleRelationChange(index, 'location', event.target.value)}disabled={componentView} /></td>
                             </tr>
                         ))}
                         <tr>
-                            <td colSpan="4"><button className="addanother" onClick={handleAddRelation}><IoMdAdd className="addIcon"/></button></td>
+                            <td colSpan="4"><button className="addanother" onClick={handleAddRelation}disabled={componentView}><IoMdAdd className="addIcon"/></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -552,7 +613,9 @@ const PersonalInformation = () => {
                             <input
                                 type="file"
                                 accept=".doc, .pdf, .img"
+                                value={personalinfo?.requiredDocuments?.aadhar}
                                 onChange={event => handleInputChange('aadhar', event.target.files[0])}
+                                disabled={componentView}
                             />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>You can drag and drop too</p>
@@ -566,7 +629,9 @@ const PersonalInformation = () => {
                             <input
                                 type="file"
                                 accept=".doc, .pdf, .img"
+                                value={personalinfo?.requiredDocuments?.pan}
                                 onChange={event => handleInputChange('pan', event.target.files[0])}
+                                disabled={componentView}
                             />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>You can drag and drop too</p>
@@ -580,7 +645,9 @@ const PersonalInformation = () => {
                             <input
                                 type="file"
                                 accept=".doc, .pdf, .img"
+                                value={personalinfo?.requiredDocuments?.driverLicense}
                                 onChange={event => handleInputChange('driverLicense', event.target.files[0])}
+                                disabled={componentView}
                             />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
@@ -596,7 +663,9 @@ const PersonalInformation = () => {
                             <input
                                 type="file"
                                 accept=".doc, .pdf, .img"
+                                value={personalinfo?.requiredDocuments?.passport}
                                 onChange={event => handleInputChange('passport', event.target.files[0])}
+                                disabled={componentView}
                             />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
@@ -607,13 +676,13 @@ const PersonalInformation = () => {
                 </div>
             </div>
             {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-            <button onClick={handleSave}>Save</button>  
+            <button onClick={handleSave}>Save</button>
         </div>
     );
 };
 
 PersonalInformation.propTypes = {
-    onSave: propTypes.func.isRequired
+    personalinfo: propTypes.object.isRequired,
+    componentView: propTypes.bool.isRequired
 };
-  
 export default PersonalInformation;

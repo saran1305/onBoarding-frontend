@@ -187,323 +187,220 @@
       "name": "mm",
       "mailId": "m",
       "id": 11
-    },
+    }
+  ],
+  "personalinfo": [
     {
-      "name": "c",
-      "mailId": "c",
-      "id": 12
-    },
+      "generalInfo": {
+        "fullName": "Abilashini",
+        "dateOfBirth": "2024-02-12",
+        "nationality": "Indian",
+        "gender": "female",
+        "maritalStatus": "married",
+        "marriageDate": "",
+        "profile": null,
+        "bloodGroup": "O+",
+        "email": "abi@gmail.com",
+        "mobileNumber": "1234567810",
+        "presentAddress": {
+          "addressLine1": "XYZ",
+          "addressLine2": "xyz",
+          "country": "India",
+          "state": "Tamil Nadu",
+          "city": "Chennai",
+          "zipCode": "",
+          "sameAsPermanent": false
+        },
+        "permanentAddress": {
+          "addressLine1": "XYZ",
+          "addressLine2": "xyz",
+          "country": "India",
+          "state": "Tamil Nadu",
+          "city": "Chennai",
+          "zipCode": ""
+        }
+      },
+      "familyMembers": [
+        {
+          "relationship": "Father",
+          "name": "Balu",
+          "dob": "2024-02-12",
+          "role": "xyz",
+          "number": "12345678910"
+        },
+        {
+          "relationship": "Mother",
+          "name": "xxx",
+          "dob": "2024-02-12",
+          "role": "xyz",
+          "number": "12345678910"
+        },
+        {
+          "relationship": "Spouse",
+          "name": "",
+          "dob": "",
+          "role": "",
+          "number": ""
+        },
+        {
+          "relationship": "Child 1",
+          "name": "",
+          "dob": "",
+          "role": "",
+          "number": ""
+        }
+      ],
+      "childCount": 1,
+      "employees": [
+        {
+          "empId": "",
+          "name": "",
+          "location": ""
+        }
+      ],
+      "relations": [
+        {
+          "relationship": "Father",
+          "name": "Balu",
+          "number": "12345678910",
+          "location": "Madurai"
+        }
+      ],
+      "hobbies": {
+        "memberOfProfessionalBody": false,
+        "professionalBodyName": "StoryTelling, listening Music",
+        "hobbiesAndInterests": ""
+      },
+      "friendsColleagues": [
+        {
+          "empId": "",
+          "name": "",
+          "location": ""
+        }
+      ],
+      "emergencyContacts": [
+        {
+          "relationship": "Spouse/Partner",
+          "name": "",
+          "number": "",
+          "location": ""
+        },
+        {
+          "relationship": "Father",
+          "name": "",
+          "number": "",
+          "location": ""
+        },
+        {
+          "relationship": "Mother",
+          "name": "",
+          "number": "",
+          "location": ""
+        },
+        {
+          "relationship": "Siblings",
+          "name": "",
+          "number": "",
+          "location": ""
+        },
+        {
+          "relationship": "Guardian",
+          "name": "",
+          "number": "",
+          "location": ""
+        }
+      ],
+      "requiredDocuments": {
+        "aadhar": null,
+        "pan": null,
+        "driverLicense": null,
+        "passport": null
+      },
+      "id": 1
+    }
+  ],
+  "education": [
     {
-      "name": "n",
-      "mailId": "n",
-      "id": 13
-    },
+      "qualification": "M.Sc",
+      "university": "Boston",
+      "institution": "Boston",
+      "degreeAchieved": "",
+      "specialization": "MBA(HR)",
+      "passedOutYear": "2024",
+      "percentageAchieved": "94"
+    }
+  ],
+  "certifications": [
     {
-      "name": "w",
-      "mailId": "w",
-      "id": 14
-    },
+      "name": "Abi",
+      "issue": "Great Learnng",
+      "valid": "2024-01-08",
+      "specialization": "",
+      "yearofCertifications": "2021",
+      "percentageAchieved": ""
+    }
+  ],
+  "previousexperience": [
     {
-      "name": "w",
-      "mailId": "w",
-      "id": 15
+      "name": "Mano",
+      "designation": "Accountant",
+      "fromDate": "2024-02-12",
+      "toDate": "2024-02-12",
+      "reporting": "HR",
+      "reasonforleaving": "SalaryHike",
+      "location": "Chennai",
+      "proofofattachments": "",
+      "reference": {
+        "name": "Abi",
+        "designation": "Full-stack Developer",
+        "companyName": "Ideassion",
+        "contact": "123456789",
+        "emailId": "abi@123gmail.com"
+      }
+    }
+  ],
+  "healthinfo": [
+    {
+      "specificHealthCondition": "no",
+      "allergies": "No",
+      "recentSurgery": false,
+      "surgeryExplanation": "NA",
+      "workInRotationalShifts": false,
+      "disabilities": false,
+      "disabilityExplanation": "NA",
+      "vaccinationStatus": "",
+      "vaccineCertificate": null,
+      "healthRelatedDocuments": null,
+      "id": 1
+    }
+  ],
+  "existingbankinfo": [
+    {
+      "nameOnBankAccount": "Choottu",
+      "bankName": "Chottu",
+      "bankBranchLocation": "Choottu",
+      "bankAccountNumber": "0001123456798",
+      "bankIFSCCode": "A11A22A3",
+      "isJointAccount": true,
+      "bankRelatedDocuments": "",
+      "id": 1
     }
   ],
   "login": [
     {
       "email": "Abi@gmail.com",
-      "password": "Hell11",
+      "password": "123456",
       "id": 1
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "Hello99",
-      "id": 2
-    },
-    {
-      "email": "aa@gmail.com",
-      "password": "123123",
-      "id": 3
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "Hello33",
-      "id": 4
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "Hello222",
-      "id": 5
     },
     {
       "email": "Abi@gmail.com",
       "password": "123456",
-      "id": 6
+      "id": 2
     },
     {
       "email": "Abi@gmail.com",
       "password": "123456",
-      "id": 7
-    },
-    {
-      "email": "Abi@gmail.com",
-      "password": "123456",
-      "id": 8
-    }
-  ],
-  "personalinfo": [
-    {
-      "id": 1
-    },
-    {
-      "id": 2
-    }
-  ],
-  "education": [
-    [
-      {
-        "qualification": "M.Sc",
-        "university": "Boston",
-        "institution": "Boston",
-        "degreeAchieved": "",
-        "specialization": "MBA(HR)",
-        "passedOutYear": "2024",
-        "percentageAchieved": "94"
-      },
-      {
-        "qualification": "",
-        "university": "",
-        "institution": "",
-        "degreeAchieved": "",
-        "specialization": "",
-        "passedOutYear": "",
-        "percentageAchieved": ""
-      }
-    ],
-    [
-      {
-        "qualification": "M.Sc",
-        "university": "Boston",
-        "institution": "Boston",
-        "degreeAchieved": "",
-        "specialization": "MBA(HR)",
-        "passedOutYear": "2024",
-        "percentageAchieved": "94"
-      },
-      {
-        "qualification": "",
-        "university": "",
-        "institution": "",
-        "degreeAchieved": "",
-        "specialization": "",
-        "passedOutYear": "",
-        "percentageAchieved": ""
-      }
-    ],
-    [
-      {
-        "qualification": "M.Sc",
-        "university": "cdf",
-        "institution": "adf",
-        "degreeAchieved": "M.Sc",
-        "specialization": "wfwe",
-        "passedOutYear": "",
-        "percentageAchieved": ""
-      }
-    ]
-  ],
-  "certifications": [
-    [
-      {
-        "name": "Abi",
-        "issue": "Great Learnng",
-        "valid": "2024-01-08",
-        "specialization": "",
-        "yearofCertifications": "2021",
-        "percentageAchieved": ""
-      }
-    ],
-    [
-      {
-        "name": "Abi",
-        "issue": "Great Learnng",
-        "valid": "2024-01-08",
-        "specialization": "",
-        "yearofCertifications": "2021",
-        "percentageAchieved": ""
-      }
-    ],
-    [
-      {
-        "name": "Abilashini",
-        "issue": "Abilashini",
-        "valid": "",
-        "specialization": "",
-        "yearofCertifications": "",
-        "percentageAchieved": ""
-      }
-    ],
-    [
-      {
-        "name": "",
-        "issue": "",
-        "valid": "",
-        "specialization": "",
-        "yearofCertifications": "",
-        "percentageAchieved": ""
-      }
-    ],
-    [
-      {
-        "name": "",
-        "issue": "",
-        "valid": "",
-        "specialization": "",
-        "yearofCertifications": "",
-        "percentageAchieved": ""
-      }
-    ],
-    [
-      {
-        "name": "",
-        "issue": "",
-        "valid": "",
-        "specialization": "",
-        "yearofCertifications": "",
-        "percentageAchieved": ""
-      }
-    ]
-  ],
-  "previousexperience": [
-    [
-      {
-        "name": "",
-        "designation": "",
-        "fromDate": "",
-        "toDate": "",
-        "reporting": "",
-        "reasonforleaving": "",
-        "location": "",
-        "proofofattachments": ""
-      }
-    ],
-    [
-      {
-        "name": "",
-        "designation": "",
-        "fromDate": "",
-        "toDate": "",
-        "reporting": "",
-        "reasonforleaving": "",
-        "location": "",
-        "proofofattachments": ""
-      }
-    ],
-    [
-      {
-        "name": "",
-        "designation": "",
-        "fromDate": "",
-        "toDate": "",
-        "reporting": "",
-        "reasonforleaving": "",
-        "location": "",
-        "proofofattachments": ""
-      }
-    ],
-    [
-      {
-        "name": "",
-        "designation": "",
-        "fromDate": "",
-        "toDate": "",
-        "reporting": "",
-        "reasonforleaving": "",
-        "location": "",
-        "proofofattachments": ""
-      }
-    ],
-    [
-      {
-        "name": "",
-        "designation": "",
-        "fromDate": "",
-        "toDate": "",
-        "reporting": "",
-        "reasonforleaving": "",
-        "location": "",
-        "proofofattachments": "",
-        "reference": {
-          "name": "",
-          "designation": "",
-          "companyName": "",
-          "contact": "",
-          "emailId": ""
-        }
-      }
-    ]
-  ],
-  "healthinfo": [
-    {
-      "id": 1
-    },
-    {
-      "id": 2
-    },
-    {
-      "specificHealthCondition": "",
-      "allergies": "",
-      "recentSurgery": false,
-      "surgeryExplanation": "",
-      "workInRotationalShifts": false,
-      "disabilities": false,
-      "disabilityExplanation": "",
-      "vaccinationStatus": "",
-      "vaccineCertificate": null,
-      "healthRelatedDocuments": null,
       "id": 3
-    }
-  ],
-  "existingbankinfo": [
-    {
-      "nameOnBankAccount": "",
-      "bankName": "",
-      "bankBranchLocation": "",
-      "bankAccountNumber": "",
-      "bankIFSCCode": "",
-      "isJointAccount": false,
-      "bankRelatedDocuments": "",
-      "id": 1
-    },
-    {
-      "nameOnBankAccount": "",
-      "bankName": "",
-      "bankBranchLocation": "",
-      "bankAccountNumber": "",
-      "bankIFSCCode": "",
-      "isJointAccount": false,
-      "bankRelatedDocuments": "",
-      "id": 2
-    },
-    {
-      "nameOnBankAccount": "",
-      "bankName": "",
-      "bankBranchLocation": "",
-      "bankAccountNumber": "",
-      "bankIFSCCode": "",
-      "isJointAccount": false,
-      "bankRelatedDocuments": "",
-      "id": 3
-    },
-    {
-      "nameOnBankAccount": "",
-      "bankName": "",
-      "bankBranchLocation": "",
-      "bankAccountNumber": "",
-      "bankIFSCCode": "",
-      "isJointAccount": true,
-      "bankRelatedDocuments": "",
-      "id": 4
     }
   ]
 }
