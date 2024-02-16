@@ -8,35 +8,35 @@ import propTypes from 'prop-types';
 
 const HealthInformation = ({ componentView, healthInfo }) => {
     const [ healthInformationData, setHealthInformationData ] = useState({
-        specificHealthCondition: '',
+        specific_health_condition: '',
         allergies: '',
-        recentSurgery: false,
-        surgeryExplanation: '',
-        workInRotationalShifts: false,
-        disabilities: false,
-        disabilityExplanation: '',
-        vaccinationStatus: '',
-        vaccineCertificate: null,
-        healthRelatedDocuments: null
+        surgery: false,
+        surgery_explaination: '',
+        night_shifts: false,
+        disability: false,
+        disability_explanation: '',
+        covidVaccine: '',
+        vaccine_certificate: null,
+        health_documents: null
     });
 
-    const [ vaccinationStatus, setVaccinationStatus ] = useState('');
+    const [ covidVaccine, setCovidVaccine ] = useState('');
     const [ vaccineCertificate, setVaccineCertificate ] = useState(null);
     const [ validationErrors, setValidationErrors ] = useState({
-        vaccinationStatus: '',
-        vaccineCertificate: ''
+        covidVaccine: '',
+        vaccine_certificate: ''
     });
     const [ draftSaved, setDraftSaved ] = useState(false);
 
     const validateVaccinationStatus = () => {
-        if (!vaccinationStatus) {
+        if (!covidVaccine) {
             setValidationErrors(prevErrors => ({
                 ...prevErrors,
-                vaccinationStatus: 'Please select your vaccination status.'
+                covidVaccine: 'Please select your vaccination status.'
             }));
             return false;
         }
-        setValidationErrors(prevErrors => ({ ...prevErrors, vaccinationStatus: '' }));
+        setValidationErrors(prevErrors => ({ ...prevErrors, covidVaccine: '' }));
         return true;
     };
     
@@ -44,21 +44,21 @@ const HealthInformation = ({ componentView, healthInfo }) => {
         if (!vaccineCertificate) {
             setValidationErrors(prevErrors => ({
                 ...prevErrors,
-                vaccineCertificate: 'Please upload your vaccine certificate.'
+                vaccine_certificate: 'Please upload your vaccine certificate.'
             }));
             return false;
         }
-        setValidationErrors(prevErrors => ({ ...prevErrors, vaccineCertificate: '' }));
+        setValidationErrors(prevErrors => ({ ...prevErrors, vaccine_certificate: '' }));
         return true;
     };
 
     const handleVaccinationStatusChange = event => {
-        setVaccinationStatus(event.target.value);
+        setCovidVaccine(event.target.value);
         validateVaccinationStatus();
         
         setValidationErrors(prevErrors => ({
             ...prevErrors,
-            vaccinationStatus: '' 
+            covidVaccine: '' 
         }));
     };
     
@@ -74,46 +74,46 @@ const HealthInformation = ({ componentView, healthInfo }) => {
     };
     
     const handleSave = () => {
-        if (validateVaccinationStatus() && validateVaccineCertificate()) {
-            const formData = new FormData();
+        const formData = new FormData();
 
-            formData.append('specificHealthCondition', healthInformationData.specificHealthCondition);
-            formData.append('allergies', healthInformationData.allergies);
-            formData.append('recentSurgery', healthInformationData.recentSurgery);
-            formData.append('surgeryExplanation', healthInformationData.surgeryExplanation);
-            formData.append('workInRotationalShifts', healthInformationData.workInRotationalShifts);
-            formData.append('disabilities', healthInformationData.disabilities);
-            formData.append('disabilityExplanation', healthInformationData.disabilityExplanation);
-            formData.append('vaccinationStatus', healthInformationData.vaccinationStatus);
-            formData.append('vaccineCertificate', healthInformationData.vaccineCertificate);
-            formData.append('healthRelatedDocuments', healthInformationData.healthRelatedDocuments);
-
-            axios.post(`${Endpoint.API_ENDPOINT}/healthinfo`, healthInformationData)
-                .then(response => {
-                    console.log('Data saved successfully:', response.data);
-                    setDraftSaved(true);
-                })
-                .catch(error => {
-                    console.error('Error saving data:', error.message || error);
-                });
-        } else {
-            console.log('Form validation failed.');
-        }
+        formData.append('Specific_health_condition', healthInformationData.specific_health_condition || ''); 
+        formData.append('Allergies', healthInformationData.allergies || '');
+        formData.append('surgery', healthInformationData.surgery);
+        formData.append('Surgery_explaination', healthInformationData.surgery_explaination || '');
+        formData.append('Night_shifts', healthInformationData.night_shifts);
+        formData.append('Disability', healthInformationData.disability);
+        formData.append('Disability_explanation', healthInformationData.disability_explanation || '');
+        formData.append('CovidVaccine', healthInformationData.covidVaccine || ''); 
+        formData.append('Vaccine_certificate', healthInformationData.vaccine_certificate || ''); 
+        formData.append('Health_documents', healthInformationData.health_documents || '');
+    
+        axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-health/1`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(response => {
+                console.log('Data saved successfully:', response.data);
+                setDraftSaved(true);
+            })
+            .catch(error => {
+                console.error('Error saving data:', error.message || error);
+            });
     };
     const handleRecentSurgeryChange = event => {
         const value = event.target.id === 'no'; 
 
-        handleInputChange('recentSurgery', value);
+        handleInputChange('surgery', value);
     };
     const handleWorkInRotationalShiftsChange = event => {
         const value = event.target.id === 'no';
 
-        handleInputChange('workInRotationalShifts', value);
+        handleInputChange('night_shifts', value);
     };
     const handleDisabilitiesChange = event => {
         const value = event.target.id === 'yes'; 
 
-        handleInputChange('disabilities', value);
+        handleInputChange('disability', value);
     };
     const handleInputChange = (field, value) => {
         setHealthInformationData(prevData => ({
@@ -134,8 +134,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             type="text"
                             placeholder="Answer"
                             className="textbox"
-                            value={healthInfo?.specificHealthCondition}
-                            onChange={event => handleInputChange('specificHealthCondition', event.target.value)}
+                            value={healthInfo?.specific_health_condition}
+                            onChange={event => handleInputChange('specific_health_condition', event.target.value)}
                             disabled={componentView}/>     
                     </div>
                 </div>
@@ -163,7 +163,7 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={healthInformationData.recentSurgery||healthInfo?.recentSurgery}
+                                checked={healthInformationData.surgery||healthInfo?.surgery}
                                 disabled={componentView}/>
                             <label htmlFor="yes">Yes</label>
                         </div>
@@ -174,7 +174,7 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={!healthInformationData.recentSurgery || !healthInfo?.recentSurgery}
+                                checked={!healthInformationData.surgery || !healthInfo?.surgery}
                                 disabled={componentView} />
                             <label htmlFor="no">No</label>
                         </div>
@@ -189,8 +189,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             type="text"
                             placeholder="About Surgery"
                             className="textbox2"
-                            value={healthInfo?.surgeryExplanation}
-                            onChange={event => handleInputChange('surgeryExplanation', event.target.value)}
+                            value={healthInfo?.surgery_explaination}
+                            onChange={event => handleInputChange('surgery_explaination', event.target.value)}
                             disabled={componentView} />
                     </div>
                 </div>
@@ -206,7 +206,7 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={healthInformationData.workInRotationalShifts ||healthInfo?.workInRotationalShifts}
+                                checked={healthInformationData.night_shifts ||healthInfo?.night_shifts}
                                 disabled={componentView} />
                             <label htmlFor="yes">Yes</label>
                         </div>
@@ -217,7 +217,7 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={!healthInformationData.workInRotationalShifts || !healthInfo?.workInRotationalShifts}
+                                checked={!healthInformationData.night_shifts || !healthInfo?.night_shifts}
                                 disabled={componentView}/>
                             <label htmlFor="no">No</label>
                         </div>
@@ -231,22 +231,22 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                         <div>
                             <input
                                 type="radio"
-                                name="disabilities"
+                                name="disability"
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={healthInformationData.disabilities || healthInfo?.disabilities}
+                                checked={healthInformationData.disability || healthInfo?.disability}
                                 disabled={componentView}/>
                             <label htmlFor="yes">Yes</label>
                         </div>
                         <div>
                             <input
                                 type="radio"
-                                name="disabilities"
+                                name="disability"
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={!healthInformationData.disabilities || !healthInfo?.disabilities }
+                                checked={!healthInformationData.disability || !healthInfo?.disability }
                                 disabled={componentView}/>
                             <label htmlFor="no">No</label>
                         </div>
@@ -259,8 +259,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             type="text"
                             placeholder="About disability"
                             className="textbox2"
-                            value={healthInfo?.disabilityExplanation}
-                            onChange={event => handleInputChange('disabilityExplanation', event.target.value)}
+                            value={healthInfo?.disability_explanation}
+                            onChange={event => handleInputChange('disability_explanation', event.target.value)}
                             disabled={componentView} />  
                     </div>
                 </div>
@@ -271,24 +271,24 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                     <div className="radiospace2 col-10">
                         <div>
                             <input type="radio" name="vaccination" id="fully" className="radiodesign" 
-                                checked={healthInformationData.vaccinationStatus|| healthInfo?.vaccinationStatus}
+                                checked={healthInformationData.covidVaccine|| healthInfo?.covidVaccine}
                                 onChange={handleVaccinationStatusChange} disabled={componentView}/>
                             <h6 htmlFor="fully">Fully</h6>
                         </div>
                         <div>
                             <input type="radio" name="vaccination" id="patially" className="radiodesign"  
-                                checked={healthInformationData.vaccinationStatus|| healthInfo?.vaccinationStatus}
+                                checked={healthInformationData.covidVaccine|| healthInfo?.covidVaccine}
                                 onChange={handleVaccinationStatusChange} disabled={componentView}/>
                             <h6 htmlFor="patially">Partially</h6>
                         </div>
                         <div>
                             <input type="radio" name="vaccination" id="not vaccinated" className="radiodesign"  
-                                checked={healthInformationData.vaccinationStatus || healthInfo?.vaccinationStatus}
+                                checked={healthInformationData.covidVaccine || healthInfo?.covidVaccine}
                                 onChange={handleVaccinationStatusChange}disabled={componentView}/>
                             <h6 htmlFor="not vaccinated">Not Vaccinated</h6>
                         </div>
                     </div>
-                    <p className="error">{validationErrors.vaccinationStatus}</p>
+                    <p className="error">{validationErrors.covidVaccine}</p>
                 </div>
                 <div className="col-6">
                     <h6>Vaccine Certificate <span className="validation">*</span></h6>

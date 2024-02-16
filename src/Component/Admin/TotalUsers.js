@@ -18,30 +18,39 @@ const TotalUsers = () => {
     const [ showDropdown, setShowDropdown ] = useState(false);
     const [ selectedOption, setSelectedOption ] = useState(null);
     const [ selectedUsers, setSelectedUsers ] = useState([]);
-    const [ validation, setValidation ] = useState({ name: '', mailId: '' });
+    const [ validation, setValidation ] = useState({ empname: '', email: '' });
     const [ isInviteMultiple, setIsInviteMultiple ] = useState(false);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            // const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
-            // const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
-            // const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
-            
-            const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/pending`);
-            const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/invited`);
-            const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/expired`);
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         // const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
+    //         // const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
+    //         // const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
 
-            const combinedData = [
-                ...responsePending.data,
-                ...responseInvited.data,
-                ...responseExpired.data
-            ];
+    //         const combinedData = [
+    //             ...responsePending.data,
+    //             ...responseInvited.data,
+    //             ...responseExpired.data
+    //         ];
 
-            setUserData(combinedData);
-            filterData(combinedData, searchInput);
-        };
+    //         setUserData(combinedData);
+    //         filterData(combinedData, searchInput);
+    //     };
 
-        fetchUserData();
+    //     fetchUserData();
+    // }, [searchInput]);
+    
+    useEffect (() => {
+        axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/AdminDashboard`)
+            .then(response => {
+                console.log('Data getted successflly', response.data);
+                
+                setUserData(response.data);
+                filterData(response.data, searchInput);
+            })
+            .catch(error => {
+                console.error('error fetching data :',error);
+            })
     }, [searchInput]);
 
     const filterData = (data, search) => {
@@ -49,7 +58,7 @@ const TotalUsers = () => {
 
         if (search.length >= 3) {
             filtered = filtered.filter(user =>
-                user.name.toLowerCase().includes(search.toLowerCase())
+                user.empname.toLowerCase().includes(search.toLowerCase())
             );
         }
         setUserData(filtered);
@@ -59,9 +68,9 @@ const TotalUsers = () => {
         const selectedOption = event.target.value;
         const sortedData = [...userData].sort((firstUser, secondUser) => {
             if (selectedOption === 'ascend') {
-                return firstUser.userId - secondUser.userId;
+                return firstUser.empid - secondUser.empid;
             } else {
-                return secondUser.userId - firstUser.userId;
+                return secondUser.empid - firstUser.empid;
             }
         });
 
@@ -69,13 +78,13 @@ const TotalUsers = () => {
     };
 
     const addValidUser = () => {
-        const validUser = { name: '', mailId: '' };
+        const validUser = { empname: '', email: '' };
 
-        if (!selectedUsers.every(user => user.name)) {
-            validUser.name = 'Name is required.';
+        if (!selectedUsers.every(user => user.empname)) {
+            validUser.empname = 'Name is required.';
         }
-        if (!selectedUsers.every(user => user.mailId)) {
-            validUser.mailId = 'Email address is required';
+        if (!selectedUsers.every(user => user.email)) {
+            validUser.email = 'Email address is required';
         }
 
         setValidation(validUser);
@@ -86,8 +95,8 @@ const TotalUsers = () => {
         if (addValidUser()) {            
             await Promise.all(selectedUsers.map(async user => {
                 await axios.post(`${Endpoint.API_ENDPOINT}/inviteUser`, {
-                    name: user.name,
-                    mailId: user.mailId
+                    empname: user.empname,
+                    email: user.email
                 });
             }));
     
@@ -97,8 +106,8 @@ const TotalUsers = () => {
     
 
     const handleClosePopup = () => {
-        setSelectedUsers([{ name: '', mailId: '' }]);
-        setValidation({ name: '', mailId: '' });
+        setSelectedUsers([{ empname: '', email: '' }]);
+        setValidation({ empname: '', email: '' });
         setSelectedOption(null);
     };
 
@@ -117,11 +126,11 @@ const TotalUsers = () => {
     const handleAddUserPopup = option => {
         setSelectedOption(option);
         setIsInviteMultiple(option === 'inviteMultipleUser');
-        setSelectedUsers([{ name: '', mailId: '' }]);
+        setSelectedUsers([{ empname: '', email: '' }]);
     };
 
     const handleAddUserInput = () => {
-        setSelectedUsers(prevUsers => [ ...prevUsers, { name: '', mailId: '' }] );
+        setSelectedUsers(prevUsers => [ ...prevUsers, { empname: '', email: '' }] );
     };    
 
     const handleUserInputChange = (index, field, value) => {
@@ -163,13 +172,13 @@ const TotalUsers = () => {
                             <Form.Control
                                 type="text"
                                 placeholder="Name"
-                                value={user.name}
+                                value={user.empname}
                                 onChange={event =>
-                                    handleUserInputChange(index, 'name', event.target.value)
+                                    handleUserInputChange(index, 'empname', event.target.value)
                                 }
                             />
                             {validation && (
-                                <Form.Text className="text-danger">{validation.name}</Form.Text>
+                                <Form.Text className="text-danger">{validation.empname}</Form.Text>
                             )}
                         </Form.Group>
                         {index === 0 && isInviteMultiple && (
@@ -183,13 +192,13 @@ const TotalUsers = () => {
                             <Form.Control
                                 type="text"
                                 placeholder="Email ID"
-                                value={user.mailId}
+                                value={user.email}
                                 onChange={event =>
-                                    handleUserInputChange(index, 'mailId', event.target.value)
+                                    handleUserInputChange(index, 'email', event.target.value)
                                 }
                             />
                             {validation && (
-                                <Form.Text className="text-danger">{validation.mailId}</Form.Text>
+                                <Form.Text className="text-danger">{validation.email}</Form.Text>
                             )}
                         </Form.Group>
                     </div>
@@ -274,11 +283,11 @@ const TotalUsers = () => {
                     </thead>
                     <tbody>
                         {userData.map(user => (
-                            <tr key={user.userId}>
-                                <td>{user.userId}</td>
-                                <td>{user.name}</td>
+                            <tr key={user.empid}>
+                                <td>{user.empid}</td>
+                                <td>{user.empname}</td>
                                 <td>{user.contact}</td>
-                                <td>{user.mailId}</td>
+                                <td>{user.email}</td>
                                 <td>{user.education}</td>
                                 <td className="actions">
                                     <RiFileUserFill className="iconuser" />
