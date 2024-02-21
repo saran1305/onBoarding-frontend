@@ -9,24 +9,26 @@ import propTypes from 'prop-types';
 const Certifications = ({ componentView, certificationsinfo }) => {
     const [ certifications, setCertifications ] = useState([
         {
-            name: '',
-            issue: '',
-            valid: '',
+            certificate_name: '',
+            issued_by: '',
+            valid_till: '',
             specialization: '',
-            yearofCertifications: '',
-            percentageAchieved: ''
+            duration: '',
+            percentage: '',
+            proof:null
         }
     ]);
     const handleAddCertifications = () => {
         setCertifications(prevDetails => [
             ...prevDetails,
             {
-                name: '',
-                issue: '',
-                valid: '',
+                certificate_name: '',
+                issued_by: '',
+                valid_till: '',
                 specialization: '',
-                yearofCertifications: '',
-                percentageAchieved: ''
+                duration: '',
+                percentage: '',
+                proof:null
             }
         ]);
     };
@@ -35,22 +37,38 @@ const Certifications = ({ componentView, certificationsinfo }) => {
     const handleInputChange = (index, field, value) => {
         setCertifications(prevDetails => {
             const newDetails = [...prevDetails];
-
-            newDetails[index][field] = value;
+    
+            if (field === 'proof') {
+                const file = value;
+    
+                if (newDetails[index]) { 
+                    newDetails[index][field] = file.name;
+                    newDetails[index]['file'] = file;
+                }
+            } else {
+                if (newDetails[index]) { 
+                    newDetails[index][field] = value;
+                }
+            }
             return newDetails;
         });
         setDraftSaved(false);
     };
-    const handleSave = () => {
+    
 
-        axios.post(`${Endpoint.API_ENDPOINT}/certifications`, certifications)
-            .then(response => {
-                console.log('Data saved successfully:', response.data);
-                setDraftSaved(true);
-            })
-            .catch(error => {
-                console.error('Error saving data:', error.message || error);
-            });
+    const handleSave = async () => {
+        try {
+            const response = await axios.post(
+                `${Endpoint.API_ENDPOINT}/api/User/add-certificate/1`,
+                certifications, 
+                { headers: { 'Content-Type': 'application/json' } }
+            );
+    
+            console.log('Data saved successfully:', response.data);
+            setDraftSaved(true);
+        } catch (error) {
+            console.error('Error saving data in Certification:', error);
+        }
     };
 
     return (
@@ -74,34 +92,34 @@ const Certifications = ({ componentView, certificationsinfo }) => {
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={certifications.name || certificationsinfo?.name}
+                                        value={certifications.certificate_name || certificationsinfo?.certificate_name }
                                         placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'name', event.target.value)}
+                                        onChange={event => handleInputChange(index, 'certificate_name', event.target.value)}
                                         disabled={componentView}/>
                                 </td>
                                 <td>
                                     <input
                                         className="textbox"
                                         type="text"
-                                        value={certifications.issue|| certificationsinfo?.issue}
-                                        placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'issue', event.target.value)}
+                                        value={certifications.issued_by|| certificationsinfo?.issued_by}
+                                        placeholder="Issuer"
+                                        onChange={event => handleInputChange(index, 'issued_by', event.target.value)}
                                         disabled={componentView}/>
                                 </td>
                                 <td>
                                     <input
                                         className="textbox"
                                         type="date"
-                                        value={certifications.valid|| certificationsinfo?.valid}
+                                        value={certifications.valid_till|| certificationsinfo?.valid_till}
                                         placeholder="01/01/2024"
-                                        onChange={event => handleInputChange(index, 'valid', event.target.value)}
+                                        onChange={event => handleInputChange(index, 'valid_till', event.target.value)}
                                         disabled={componentView} />
                                 </td>
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={certifications.yearofCertifications|| certificationsinfo?.yearofCertifications}
-                                        onChange={event => handleInputChange(index, 'yearofCertifications', event.target.value)}
+                                        value={certifications.duration|| certificationsinfo?.duration}
+                                        onChange={event => handleInputChange(index, 'duration', event.target.value)}
                                         disabled={componentView}>
                                         <option value="" disabled>
                                             Select
@@ -126,8 +144,8 @@ const Certifications = ({ componentView, certificationsinfo }) => {
                                 <td>
                                     <select
                                         className="textbox"
-                                        value={certifications.percentageAchieved|| certificationsinfo?.percentageAchieved}
-                                        onChange={event => handleInputChange(index, 'percentageAchieved', event.target.value)}
+                                        value={certifications.percentage|| certificationsinfo?.percentage}
+                                        onChange={event => handleInputChange(index, 'percentage', event.target.value)}
                                         disabled={componentView}>
                                         <option value="" disabled>
                                             Select
@@ -139,7 +157,15 @@ const Certifications = ({ componentView, certificationsinfo }) => {
                                         ))}
                                     </select>
                                 </td>
-                                <td><button className="choosefile" disabled={componentView}>Choose File</button></td>
+                                <td>
+                                    <input
+                                        className="choosefile" 
+                                        type="file"
+                                        value={certifications.proof|| certificationsinfo?.proof}
+                                        onChange={event => handleInputChange('proof', event.target.files[0])}
+                                        disabled={componentView}
+                                    />
+                                </td>                            
                             </tr>
                         ))}
 
@@ -158,7 +184,7 @@ const Certifications = ({ componentView, certificationsinfo }) => {
 };
 
 Certifications.propTypes = {
-    certificationsinfo: propTypes.object.isRequired,
+    certificationsinfo: propTypes.array.isRequired,
     componentView: propTypes.bool.isRequired
 };
 

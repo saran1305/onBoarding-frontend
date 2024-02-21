@@ -22,12 +22,12 @@ const OnBoarders = () => {
     const [ showRejection, setShowRejection ] = useState(false);
     const [ comments, setComments ] = useState('');
     const [ selectedUser, setSelectedUser ] = useState({
-        userId: '',
-        mailId: ''
+        empGen_Id: '',
+        email_id: ''
     });
     const [ validation, setValidation ] = useState({
-        userId: '',
-        mailId: ''
+        empGen_Id: '',
+        email_id: ''
     });
 
     const Navigate = useNavigate();
@@ -38,25 +38,18 @@ const OnBoarders = () => {
         Navigate(mainContainerURI);
     };
 
-    const fetchData = async status => {
+    const fetchData = async current_Status => {
         let response;
 
-        if (status === 'Pending') {
-            response = await axios.get(`${Endpoint.API_ENDPOINT}/pending`);
-        } else if (status === 'Invited') {
-            response = await axios.get(`${Endpoint.API_ENDPOINT}/invited`);
-        } else if (status === 'Expired') {
-            response = await axios.get(`${Endpoint.API_ENDPOINT}/expired`);
+        if (current_Status === 'Pending') {
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
+        } else if (current_Status === 'Invited') {
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
+        } else if (current_Status === 'Expired') {
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
         }
-
-        // if (status === 'Pending') {
-        //     response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
-        // } else if (status === 'Invited') {
-        //     response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
-        // } else if (status === 'Expired') {
-        //     response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
-        // }
         setUserData(response.data);
+        // console.log('i am response of Onboard',response.data);
     };
 
     useEffect(() => {
@@ -80,19 +73,19 @@ const OnBoarders = () => {
         const selectedOption = event.target.value;
         const sortedData = [...userData].sort((firstUser, secondUser) => {
             if (selectedOption === 'ascend') {
-                return firstUser.userId - secondUser.userId;
+                return firstUser.empGen_Id - secondUser.empGen_Id;
             } else {
-                return secondUser.userId - firstUser.userId;
+                return secondUser.empGen_Id - firstUser.empGen_Id;
             }
         });
 
         setUserData(sortedData);
     };
   
-    const handleStatus = status => {
-        if (status === 'Invited') {
+    const handleStatus = current_Status => {
+        if (current_Status === 'Invited') {
             return 'active1';
-        } else if (status === 'Expired') {
+        } else if (current_Status === 'Expired') {
             return 'active2';
         } else {
             return '';
@@ -104,9 +97,9 @@ const OnBoarders = () => {
         filterData(event.target.value);
     };
   
-    const filterTag = status => {
-        setActiveKey(status);
-        fetchData(status);
+    const filterTag = current_Status => {
+        setActiveKey(current_Status);
+        fetchData(current_Status);
     };
 
     const handleClearIcon = () => {
@@ -123,8 +116,8 @@ const OnBoarders = () => {
         setShowAcceptance(false);
         setShowRejection(false);
         setComments('');
-        setSelectedUser({ userId: '', mailId: '' });
-        setValidation({ userId: '', mailId: '' });
+        setSelectedUser({ empGen_Id: '', email_id: '' });
+        setValidation({ empGen_Id: '', email_id: '' });
     };
   
     const handleRejection = () => {
@@ -136,8 +129,8 @@ const OnBoarders = () => {
         if (addValidUser()) {
         
             await axios.post(`${Endpoint.API_ENDPOINT}/userAccept`, {
-                userId: selectedUser.userId,
-                mailId: selectedUser.mailId
+                empGen_Id: selectedUser.empGen_Id,
+                email_id: selectedUser.email_id
             });
             
             handleClosePopup();
@@ -147,7 +140,7 @@ const OnBoarders = () => {
     const handleRejectionPopup = async () => {
         if (addValidUser()) {
             await axios.post(`${Endpoint.API_ENDPOINT}/comments`, {
-                userId: selectedUser.userId,
+                empGen_Id: selectedUser.empGen_Id,
                 comments: comments
             });
             handleClosePopup();
@@ -161,13 +154,13 @@ const OnBoarders = () => {
         });
     };
     const addValidUser = () => {
-        const validUser = { userId: '', mailId: '', comments: '' };
+        const validUser = { empGen_Id: '', email_id: '', comments: '' };
     
-        if (!selectedUser.userId) {
-            validUser.userId = 'User ID is required.';
+        if (!selectedUser.empGen_Id) {
+            validUser.empGen_Id = 'User ID is required.';
         }
-        if (!selectedUser.mailId) {
-            validUser.mailId = 'Email address is required';
+        if (!selectedUser.email_id) {
+            validUser.email_id = 'Email address is required';
         }
         if (!comments && showRejection) {
             validUser.comments = 'Please enter comments';
@@ -240,32 +233,32 @@ const OnBoarders = () => {
                     </thead>
                     <tbody>
                         {userData.map(user => (
-                            <tr key={user.userId}>
-                                <td>{user.userId}</td>
+                            <tr key={user.empGen_Id}>
+                                <td>{user.empGen_Id}</td>
                                 <td>{user.name}</td>
-                                <td>{user.contact}</td>
-                                <td>{user.mailId}</td>
+                                <td>{user.contact_no}</td>
+                                <td>{user.email_id}</td>
                                 <td className="status">
-                                    <button className={handleStatus(user.status)}>
-                                        {user.status}
+                                    <button className={handleStatus(user.current_Status)}>
+                                        {user.current_Status}
                                     </button>
                                 </td>
                                 <td className="actions">
-                                    {user.status === 'Pending' ? (
+                                    {user.current_Status === 'Pending' ? (
                                         <RiFileUserFill className="iconuser" onClick={handleNavClick}/>
                                     ) : (
                                         <MdMailOutline className="iconmessage" />
                                     )}
                                     <FaRegCircleCheck
                                         onClick={() => handleAcceptance(user)}
-                                        className={`iconcorrect ${user.status === 'Invited' || user.status === 'Expired'
+                                        className={`iconcorrect ${user.current_Status === 'Invited' || user.current_Status === 'Expired'
                                             ? 'disabled'
                                             : ''
                                         }`}
                                     />
                                     <MdOutlineCancel
                                         onClick={() => handleRejection(user)}
-                                        className={`iconwrong ${user.status === 'Invited' || user.status === 'Expired'
+                                        className={`iconwrong ${user.current_Status === 'Invited' || user.current_Status === 'Expired'
                                             ? 'disabled'
                                             : ''
                                         }`}
@@ -291,13 +284,13 @@ const OnBoarders = () => {
                                 onChange={event => {
                                     setSelectedUser({
                                         ...selectedUser,
-                                        userId: event.target.value
+                                        empGen_Id: event.target.value
                                     });
-                                    clear('userId');
+                                    clear('empGen_Id');
                                 }}
                             />
                             {validation && (
-                                <span className="validation">{validation.userId}</span>
+                                <span className="validation">{validation.empGen_Id}</span>
                             )}
                             <p>
                                 Mail Id<span className="validation">*</span>{' '}
@@ -305,17 +298,17 @@ const OnBoarders = () => {
                             <input
                                 type="text"
                                 placeholder="Mail ID"
-                                value={selectedUser.mailId}
+                                value={selectedUser.email_id}
                                 onChange={event => {
                                     setSelectedUser({
                                         ...selectedUser,
-                                        mailId: event.target.value
+                                        email_id: event.target.value
                                     });
-                                    clear('mailId');
+                                    clear('email_id');
                                 }}
                             />
                             {validation && (
-                                <span className="validation">{validation.mailId}</span>
+                                <span className="validation">{validation.email_id}</span>
                             )}
                         </Modal.Body>
                         <Modal.Footer className="button-footer">

@@ -40,6 +40,7 @@ const UserOnboardings = () => {
     const [ previousExperienceinfo, setPreviousExperienceinfo ]= useState({});
     const [ healthInfo, setHealthInfo ]= useState({});
     const [ existingBankInfo, setExistingBankInfo ]= useState({});
+    const [ reference, setReference ]= useState({});
 
     useEffect(() => {
 
@@ -53,17 +54,17 @@ const UserOnboardings = () => {
                 console.error('Error loading data:', error);
             });
 
-        axios.get(`${Endpoint.API_ENDPOINT}/education`)
+        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-education/1`)
             .then(response => {
                 setEducationinfo(response.data[0]);
-                console.log('Education in UserOnboarding: ',response.data[0]);
+                console.log('Education in UserOnboarding: ',response.data);
             })
             .catch(error => { 
                 console.error('Error saving data:', error);
                     
             });
 
-        axios.get(`${Endpoint.API_ENDPOINT}/certifications`)
+        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-certificate/1`)
             .then(response => {
                 setCertificationsinfo(response.data[0]);
                 console.log('certifications in UserOnboarding: ',response.data[0]);
@@ -72,7 +73,8 @@ const UserOnboardings = () => {
                 console.error('Error saving data:', error);
                     
             });
-        axios.get(`${Endpoint.API_ENDPOINT}/previousexperience`)
+
+        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-experience/1`)
             .then(response => {
                 setPreviousExperienceinfo(response.data[0]);
                 console.log('previousexperience in UserOnboarding: ',response.data[0]);
@@ -81,23 +83,33 @@ const UserOnboardings = () => {
                 console.error('Error saving data:', error);
                     
             });
-        axios.get(`${Endpoint.API_ENDPOINT}/healthinfo`)
+        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-reference/1`)
             .then(response => {
-                setHealthInfo(response.data[0]);
-                console.log('HealthInfo in UserOnboarding: ',response.data[0]);
+                setReference(response.data);
+                console.log('reference in UserOnboarding: ',response.data);
             })
             .catch(error => { 
                 console.error('Error saving data:', error);
                     
             });
 
-        axios.get(`${Endpoint.API_ENDPOINT}/existingbankinfo`)
+        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-health/1`)
             .then(response => {
-                setExistingBankInfo(response.data[0]);
-                console.log('existingbankinfo in UserOnboarding: ',response.data[0]);
+                setHealthInfo(response.data);
+                console.log('HealthInfo in UserOnboarding: ',response.data);
             })
             .catch(error => { 
-                console.error('Error saving data:', error);
+                console.error('Error saving data healthinfo:', error);
+                    
+            });
+
+        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-existing-bank/1`)
+            .then(response => {
+                setExistingBankInfo(response.data);
+                console.log('existingbankinfo in UserOnboarding: ',response.data);
+            })
+            .catch(error => { 
+                console.error('Error saving data Existing bank infos :', error);
                     
             });
     }, [componentView]); 
@@ -159,7 +171,7 @@ const UserOnboardings = () => {
             case 'Certifications':
                 return <Certifications componentView={true} certificationsinfo={certificationsinfo}/>;
             case 'Previous Experience':
-                return <PreviousExperience componentView={true} previousExperienceinfo={previousExperienceinfo}/>;
+                return <PreviousExperience componentView={true} previousExperienceinfo={previousExperienceinfo} refInfo={reference}/>;
             case 'Health Information':
                 return <HealthInformation componentView={true} healthInfo={healthInfo}/>;
             case 'Existing Bank Information':
