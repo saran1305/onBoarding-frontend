@@ -1,24 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import '../../Styles/healthInformation.css';
 import { LiaCloudUploadAltSolid } from 'react-icons/lia';
-import axios from 'axios';
-import * as Endpoint from '../../Entities/Endpoint';
-import { TiTick } from 'react-icons/ti';
 import propTypes from 'prop-types';
 
-const HealthInformation = ({ componentView, healthInfo }) => {
-    const [ healthInformationData, setHealthInformationData ] = useState({
-        specific_health_condition: '',
-        allergies: '',
-        surgery: false,
-        surgery_explaination: '',
-        night_shifts: false,
-        disability: false,
-        disability_explanation: '',
-        covidVaccine: '',
-        vaccine_certificate: null,
-        health_documents: null
-    });
+const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformationData }) => {
+
+    useEffect(() => {
+        if (healthInfo) {
+            setHealthInformationData(healthInfo);
+        }
+    }, [healthInfo]);
 
     const [ covidVaccine, setCovidVaccine ] = useState('');
     const [ vaccineCertificate, setVaccineCertificate ] = useState(null);
@@ -26,7 +17,6 @@ const HealthInformation = ({ componentView, healthInfo }) => {
         covidVaccine: '',
         vaccine_certificate: ''
     });
-    const [ draftSaved, setDraftSaved ] = useState(false);
 
     const validateVaccinationStatus = () => {
         if (!covidVaccine) {
@@ -67,39 +57,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
     
         setVaccineCertificate(selectedFile);
         validateVaccineCertificate();
-        // setValidationErrors(prevErrors => ({
-        //     ...prevErrors,
-        //     vaccineCertificate: ''
-        // }));
     };
     
-    const handleSave = () => {
-        const formData = new FormData();
-
-        formData.append('Specific_health_condition', healthInformationData.specific_health_condition || ''); 
-        formData.append('Allergies', healthInformationData.allergies || '');
-        formData.append('surgery', healthInformationData.surgery);
-        formData.append('Surgery_explaination', healthInformationData.surgery_explaination || '');
-        formData.append('Night_shifts', healthInformationData.night_shifts);
-        formData.append('Disability', healthInformationData.disability);
-        formData.append('Disability_explanation', healthInformationData.disability_explanation || '');
-        formData.append('CovidVaccine', healthInformationData.covidVaccine || ''); 
-        formData.append('Vaccine_certificate', healthInformationData.vaccine_certificate || ''); 
-        formData.append('Health_documents', healthInformationData.health_documents || '');
-    
-        axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-health/1`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(response => {
-                console.log('Data saved successfully:', response.data);
-                setDraftSaved(true);
-            })
-            .catch(error => {
-                console.error('Error saving data:', error.message || error);
-            });
-    };
     const handleRecentSurgeryChange = event => {
         const value = event.target.id === 'no'; 
 
@@ -134,9 +93,9 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             type="text"
                             placeholder="Answer"
                             className="textbox"
-                            value={healthInfo?.specific_health_condition}
+                            value={healthInformationData.specific_health_condition ||  '' }
                             onChange={event => handleInputChange('specific_health_condition', event.target.value)}
-                            disabled={componentView}/>     
+                        />     
                     </div>
                 </div>
                 <div className="col-6">
@@ -146,9 +105,9 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             type="text"
                             placeholder="Answer"
                             className="textbox"
-                            value={healthInfo?.allergies}
+                            value={healthInformationData.allergies|| ''}
                             onChange={event => handleInputChange('allergies', event.target.value)}
-                            disabled={componentView}/>
+                        />
                     </div>
                 </div>
             </div>
@@ -163,8 +122,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={healthInformationData.surgery||healthInfo?.surgery}
-                                disabled={componentView}/>
+                                checked={healthInformationData.surgery|| '' }
+                            />
                             <label htmlFor="yes">Yes</label>
                         </div>
                         <div>
@@ -174,8 +133,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={!healthInformationData.surgery || !healthInfo?.surgery}
-                                disabled={componentView} />
+                                checked={!healthInformationData.surgery|| '' }
+                            />
                             <label htmlFor="no">No</label>
                         </div>
                     </div>
@@ -189,9 +148,9 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             type="text"
                             placeholder="About Surgery"
                             className="textbox2"
-                            value={healthInfo?.surgery_explaination}
+                            value={healthInformationData.surgery_explaination||''}
                             onChange={event => handleInputChange('surgery_explaination', event.target.value)}
-                            disabled={componentView} />
+                        />
                     </div>
                 </div>
             </div>
@@ -206,8 +165,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={healthInformationData.night_shifts ||healthInfo?.night_shifts}
-                                disabled={componentView} />
+                                checked={healthInformationData.night_shifts|| '' }
+                            />
                             <label htmlFor="yes">Yes</label>
                         </div>
                         <div>
@@ -217,8 +176,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={!healthInformationData.night_shifts || !healthInfo?.night_shifts}
-                                disabled={componentView}/>
+                                checked={!healthInformationData.night_shifts|| '' }
+                            />
                             <label htmlFor="no">No</label>
                         </div>
                     </div>
@@ -235,8 +194,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={healthInformationData.disability || healthInfo?.disability}
-                                disabled={componentView}/>
+                                checked={healthInformationData.disability|| '' || healthInfo?.disability}
+                            />
                             <label htmlFor="yes">Yes</label>
                         </div>
                         <div>
@@ -246,8 +205,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={!healthInformationData.disability || !healthInfo?.disability }
-                                disabled={componentView}/>
+                                checked={!healthInformationData.disability|| '' || !healthInfo?.disability }
+                            />
                             <label htmlFor="no">No</label>
                         </div>
                     </div>
@@ -261,7 +220,7 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             className="textbox2"
                             value={healthInfo?.disability_explanation}
                             onChange={event => handleInputChange('disability_explanation', event.target.value)}
-                            disabled={componentView} />  
+                        />  
                     </div>
                 </div>
             </div>
@@ -271,20 +230,20 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                     <div className="radiospace2 col-10">
                         <div>
                             <input type="radio" name="vaccination" id="fully" className="radiodesign" 
-                                checked={healthInformationData.covidVaccine|| healthInfo?.covidVaccine}
-                                onChange={handleVaccinationStatusChange} disabled={componentView}/>
+                                checked={healthInformationData.covidVaccine|| '' || healthInfo?.covidVaccine}
+                                onChange={handleVaccinationStatusChange} />
                             <h6 htmlFor="fully">Fully</h6>
                         </div>
                         <div>
                             <input type="radio" name="vaccination" id="patially" className="radiodesign"  
-                                checked={healthInformationData.covidVaccine|| healthInfo?.covidVaccine}
-                                onChange={handleVaccinationStatusChange} disabled={componentView}/>
+                                checked={healthInformationData.covidVaccine|| '' || healthInfo?.covidVaccine}
+                                onChange={handleVaccinationStatusChange} />
                             <h6 htmlFor="patially">Partially</h6>
                         </div>
                         <div>
                             <input type="radio" name="vaccination" id="not vaccinated" className="radiodesign"  
-                                checked={healthInformationData.covidVaccine || healthInfo?.covidVaccine}
-                                onChange={handleVaccinationStatusChange}disabled={componentView}/>
+                                checked={healthInformationData.covidVaccine|| '' || healthInfo?.covidVaccine}
+                                onChange={handleVaccinationStatusChange}/>
                             <h6 htmlFor="not vaccinated">Not Vaccinated</h6>
                         </div>
                     </div>
@@ -297,7 +256,7 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                             <input
                                 type="file"
                                 onChange={handleVaccineCertificateChange}
-                                disabled={componentView}/>
+                            />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
@@ -316,9 +275,7 @@ const HealthInformation = ({ componentView, healthInfo }) => {
                         <p>You can drag and drop too</p>
                     </div>
                     <p className="filetext">File Type Accepted:doc,pdf & img</p>
-                </div>
-                {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-                <button onClick={handleSave} disabled={componentView}>Save</button>
+                </div>            
             </div>
             <hr />
         </div>
@@ -327,7 +284,8 @@ const HealthInformation = ({ componentView, healthInfo }) => {
 
 HealthInformation.propTypes = {
     healthInfo: propTypes.object.isRequired,
-    componentView: propTypes.bool.isRequired
+    healthInformationData: propTypes.object.isRequired,
+    setHealthInformationData: propTypes.object.isRequired
 };
 
 export default HealthInformation;

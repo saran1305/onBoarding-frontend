@@ -1,36 +1,18 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import * as Endpoint from '../../Entities/Endpoint';
+import React, { useEffect } from 'react';
 import '../../Styles/previousExperience.css';
 import { IoMdAdd } from 'react-icons/io';
-import { TiTick } from 'react-icons/ti';
 import propTypes from 'prop-types';
 
-const PreviousExperience = ({ componentView,previousExperienceinfo,refInfo }) => {
-    const [ previousExperience, setPreviousExperience ] = useState([
-        {
-            company_name: '',
-            designation: '',
-            startDate: '',
-            endDate: '',
-            reporting_to: '',
-            reason: '',
-            location: '',
-            exp_Certificate: ''
-        }
-    ]);
-        
-    const [ reference, setReference ] = useState([
-        {
-            referral_name: '',
-            designation: '',
-            company_name: '',
-            contact_number: '',
-            email_Id: '',
-            authorize: true
-        }
+const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExperience,setPreviousExperience,reference,setReference }) => {
 
-    ]);
+    useEffect(() => {
+        if (previousExperienceinfo && previousExperienceinfo.length > 0) {
+            setPreviousExperience(previousExperienceinfo);
+        }
+        if (referenceinfo) {
+            setReference(referenceinfo);
+        }
+    }, [ previousExperienceinfo,referenceinfo ]);
 
     const handleAddPreviousExperience = () => {
         setPreviousExperience(prevDetails => [
@@ -48,7 +30,6 @@ const PreviousExperience = ({ componentView,previousExperienceinfo,refInfo }) =>
         ]);
     };
     
-    const [ draftSaved, setDraftSaved ] = useState(false);
 
     const handleInputChange = (index, field, value, type = 'previousExperience') => {
         if (type === 'previousExperience') {
@@ -58,56 +39,14 @@ const PreviousExperience = ({ componentView,previousExperienceinfo,refInfo }) =>
                 newDetails[index][field] = value;
                 return newDetails;
             });
-        } else if (type === 'reference') {
-            setReference(prevRef => {
-                const newReference = [...prevRef];
-
-                newReference[index][field] = value;
-                return newReference;
-            });
         }
     };
     
     const handleCheckboxChange = event => {
         const { checked } = event.target;
 
-        setReference(prevRef => prevRef.map(ref => ({ ...ref, authorize: checked })));
+        setReference(prevRef => prevRef.map(reference => ({ ...reference, authorize: checked })));
     };
-
-
-    const handleSave = async () => {
-        try {
-            const allPreviousExperienceData = previousExperience.map(experience => ({
-                company_name: experience.company_name,
-                designation: experience.designation,
-                startDate: experience.startDate,
-                endDate: experience.endDate,
-                reporting_to: experience.reporting_to,
-                reason: experience.reason,
-                location: experience.location,
-                exp_Certificate: experience.exp_Certificate
-            }));
-            
-            await axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-experience/1`, allPreviousExperienceData);
-                
-            const allReferenceData = reference.map(ref => ({
-                referral_name: ref.referral_name,
-                designation: ref.designation,
-                company_name: ref.company_name,
-                contact_number: ref.contact_number,
-                email_Id: ref.email_Id,
-                authorize: ref.authorize
-            }));
-            
-            await axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-reference/1`, allReferenceData);
-    
-            setDraftSaved(true);
-        } catch (error) {
-            console.error('Error saving data:', error);
-        }
-    };
-    
-    
     
     return (
         <div className="previousExp">
@@ -124,85 +63,86 @@ const PreviousExperience = ({ componentView,previousExperienceinfo,refInfo }) =>
                         <th>Proof of Attachments</th>
                     </thead>
                     <tbody>
-                        {previousExperience.map((experience, index) => (
-                            <tr key={index}>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="text"
-                                        value={experience.company_name||previousExperienceinfo?.company_name}
-                                        placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'company_name', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="text"
-                                        value={experience.designation||previousExperienceinfo?.designation}
-                                        placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'designation', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="date"
-                                        value={experience.startDate||previousExperienceinfo?.startDate}
-                                        placeholder="From"
-                                        onChange={event => handleInputChange(index, 'startDate', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="date"
-                                        value={experience.endDate||previousExperienceinfo?.endDate}
-                                        placeholder="To"
-                                        onChange={event => handleInputChange(index, 'endDate', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="text"
-                                        value={experience.reporting_to||previousExperienceinfo?.reporting_to}
-                                        placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'reporting_to', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="text"
-                                        value={experience.reason||previousExperienceinfo?.reason}
-                                        placeholder="Reason"
-                                        onChange={event => handleInputChange(index, 'reason', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="text"
-                                        value={experience.location||previousExperienceinfo?.location}
-                                        placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'location', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td><button 
-                                    className="choosefile"
-                                    type="file"
-                                    value={experience.exp_Certificate || previousExperienceinfo?.exp_Certificate}
-                                    placeholder="Proof of Attachments"
-                                    onChange={event => handleInputChange(index, 'exp_Certificate', event.target.files[0])}
-                                    disabled={componentView}
-                                >Choose File</button>
-                                </td>
-                            </tr>
-                        ))}
+                        {previousExperience.map((experience, index) => {
+                            return(
+                                <tr key={index}>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            value={experience.company_name||''}
+                                            placeholder="Name"
+                                            onChange={event => handleInputChange(index, 'company_name', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            value={experience.designation||''}
+                                            placeholder="Name"
+                                            onChange={event => handleInputChange(index, 'designation', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="date"
+                                            value={experience.startDate||''}
+                                            placeholder="From"
+                                            onChange={event => handleInputChange(index, 'startDate', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="date"
+                                            value={experience.endDate||''}
+                                            placeholder="To"
+                                            onChange={event => handleInputChange(index, 'endDate', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            value={experience.reporting_to||''}
+                                            placeholder="Name"
+                                            onChange={event => handleInputChange(index, 'reporting_to', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            value={experience.reason||''}
+                                            placeholder="Reason"
+                                            onChange={event => handleInputChange(index, 'reason', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            value={experience.location||''}
+                                            placeholder="Name"
+                                            onChange={event => handleInputChange(index, 'location', event.target.value)}
+                                        />
+                                    </td>
+                                    <td><button 
+                                        className="choosefile"
+                                        type="file"
+                                        value={experience.exp_Certificate ||''}
+                                        placeholder="Proof of Attachments"
+                                        onChange={event => handleInputChange(index, 'exp_Certificate', event.target.files[0])}
+                                    
+                                    >Choose File</button>
+                                    </td>
+                                </tr>
+                            )})}
                         <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                         <tr>
-                            <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddPreviousExperience} disabled={componentView}>
+                            <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddPreviousExperience} >
                                 <IoMdAdd className="addIcon"/></button></td>
                         </tr >
                         <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
@@ -212,7 +152,7 @@ const PreviousExperience = ({ componentView,previousExperienceinfo,refInfo }) =>
 
             <h4>Reference Details</h4>
             <div className="row">
-                <table className="family ref">
+                <table className="family reference">
                     <thead>
                         <th>Name</th>
                         <th>Designation</th>
@@ -221,50 +161,48 @@ const PreviousExperience = ({ componentView,previousExperienceinfo,refInfo }) =>
                         <th>Email ID</th>
                     </thead>
                     <tbody>
-                        {reference.map((ref, index) => (
-                            <tr key={index}>
-                                <td><input
-                                    className="textbox"
-                                    type="text"
-                                    value={ref.referral_name||refInfo?.referral_name}
-                                    placeholder="Name"
-                                    onChange={event => handleInputChange(index, 'referral_name', event.target.value, 'reference')}
-                                    disabled={componentView}/>
-                                </td>
-                                <td><input
-                                    className="textbox"
-                                    type="text"
-                                    value={ref.designation || refInfo?.designation}
-                                    placeholder="Role"
-                                    onChange={event => handleInputChange(index, 'designation', event.target.value, 'reference')}
-                                    disabled={componentView}/>
-                                </td>
-                                <td><input
-                                    className="textbox"
-                                    type="text"
-                                    value={ref.company_name||refInfo?.company_name}
-                                    placeholder="Name"
-                                    onChange={event => handleInputChange(index, 'company_name', event.target.value, 'reference')}
-                                    disabled={componentView}/>
-                                </td>
-                                <td><input
-                                    className="textbox"
-                                    type="number"
-                                    value={ref.contact_number || refInfo?.contact_number}
-                                    placeholder="Contact No."
-                                    onChange={event => handleInputChange(index, 'contact_number', event.target.value, 'reference')}
-                                    disabled={componentView}/>
-                                </td>
-                                <td><input
-                                    className="textbox"
-                                    type="text"
-                                    value={ref.email_Id || refInfo?.email_Id}
-                                    placeholder="Name"
-                                    onChange={event => handleInputChange(index, 'email_Id', event.target.value, 'reference')}
-                                    disabled={componentView}/>
-                                </td>
-                            </tr>
-                        ))}
+                        <tr>
+                            <td><input
+                                className="textbox"
+                                type="text"
+                                value={reference.referral_name||''}
+                                placeholder="Name"
+                                onChange={event => handleInputChange( 'referral_name', event.target.value)}
+                            />
+                            </td>
+                            <td><input
+                                className="textbox"
+                                type="text"
+                                value={reference.designation ||''}
+                                placeholder="Role"
+                                onChange={event => handleInputChange('designation', event.target.value)}
+                            />
+                            </td>
+                            <td><input
+                                className="textbox"
+                                type="text"
+                                value={reference.company_name||''}
+                                placeholder="Name"
+                                onChange={event => handleInputChange('company_name', event.target.value )}
+                            />
+                            </td>
+                            <td><input
+                                className="textbox"
+                                type="number"
+                                value={reference.contact_number || ''}
+                                placeholder="Contact No."
+                                onChange={event => handleInputChange( 'contact_number', event.target.value)}
+                            />
+                            </td>
+                            <td><input
+                                className="textbox"
+                                type="text"
+                                value={reference.email_Id ||''}
+                                placeholder="Name"
+                                onChange={event => handleInputChange( 'email_Id', event.target.value)}
+                            />
+                            </td>
+                        </tr>
                         <tr><td colSpan={5}><hr /></td></tr>
                     </tbody>
                 </table>
@@ -273,19 +211,19 @@ const PreviousExperience = ({ componentView,previousExperienceinfo,refInfo }) =>
                     checked={reference.length > 0 && reference[0].authorize}
                     onChange={handleCheckboxChange}
                     className="checkbox"
-                    disabled={componentView}
                 />I hereby authorize Ideassion Tech to connect with my reference or my background verification.</div>
             </div> 
-            {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-            <button onClick={handleSave}disabled={componentView}>Save</button>
         </div>
     );
 };
 
 PreviousExperience.propTypes = {
-    refInfo: propTypes.object.isRequired,
+    referenceinfo: propTypes.object.isRequired,
     previousExperienceinfo: propTypes.object.isRequired,
-    componentView: propTypes.bool.isRequired
+    previousExperience:propTypes.object.isRequired,
+    setPreviousExperience:propTypes.object.isRequired,
+    reference:propTypes.object.isRequired,
+    setReference:propTypes.object.isRequired
 };
 
 export default PreviousExperience;
