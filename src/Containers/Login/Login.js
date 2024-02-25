@@ -1,3 +1,4 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [110,1000,60,10,1,0] }] */
 import React, { useState } from 'react';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
@@ -5,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import propTypes from 'prop-types';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import validator from 'validator';
+import validator from 'validator';
 import { Button, Form, Container, Col, Row } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import IdeassionLogomini from '../../Assets/IdeassionLogomini.png';
@@ -23,9 +24,47 @@ const Login = ({ toastContainer }) => {
     // const [ emailError, setEmailError ] = useState('');
     // const [ passwordError, setPasswordError ] = useState('');
     const [ showForgotPasswordModal, setShowForgotPasswordModal ] = useState(false);
+    const [ emailValid, setEmailValid ] = useState(false);
+    const [ showSecondModal, setShowSecondModal ] = useState(false);
+    const [ showThird, setShowThird ] = useState(false);
 
     const handleCloseForgotPasswordModal = () => setShowForgotPasswordModal(false);
-    const handleShowForgotPasswordModal = () => setShowForgotPasswordModal(true);
+
+    const handleEmailChange = event => {
+        const inputEmail = event.target.value;
+
+        setEmail(inputEmail);
+        // setEmailValid(event.target.value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.target.value));
+        const isValid = validEmail(inputEmail);
+
+        setEmailValid(isValid);
+    };
+    const validEmail = email =>{
+        // const rex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        return validator.isEmail(email);
+    };
+    const handleShowForgotPasswordModal = async () => {
+        try {
+            const responseForgotPassword = await axios.post(`${Endpoint.API_ENDPOINT}/api/Login/ForgotPassword`, null, {
+                params: {
+                    emailId: email
+                }
+            });
+        
+            if (responseForgotPassword.status) {
+                toast.success('Forgot password request sent successfully');
+                setShowForgotPasswordModal(true);
+            } else {
+                toast.error('Error sending forgot password request');
+            }
+        } catch (error) {
+            console.error('Error sending forgot password request:', error);
+            toast.error('Error sending forgot password request');
+        }
+    };
+    
+    const handleCloseShowSecondModal = () => setShowSecondModal(false);
 
     const Navigate = useNavigate();
 
@@ -82,7 +121,7 @@ const Login = ({ toastContainer }) => {
                                     type="email"
                                     value={email}
                                     placeholder="Mail Id"
-                                    onChange={event => setEmail(event.target.value)}
+                                    onChange={handleEmailChange}
                                 />
                                 {/* {emailError && <p className="error">{emailError}</p>} */}
                             </Form.Group>
@@ -104,7 +143,7 @@ const Login = ({ toastContainer }) => {
                                     </Form.Group>
                                 </Col>
                                 <Col xs={6} className="checking">
-                                    <Button variant="link" onClick={handleShowForgotPasswordModal}>
+                                    <Button variant="link" onClick={handleShowForgotPasswordModal} disabled={!emailValid}>
                                         Forgot Password?
                                     </Button>
                                 </Col>
@@ -126,7 +165,16 @@ const Login = ({ toastContainer }) => {
                     </Col>
                 </Row>
             </Container>
-            <ForgotPasswordModal show={showForgotPasswordModal} handleClose={handleCloseForgotPasswordModal} />
+            <ForgotPasswordModal 
+                show={showForgotPasswordModal} 
+                setShow={setShowForgotPasswordModal}
+                handleClose={handleCloseForgotPasswordModal} 
+                showSecond={showSecondModal}
+                setShowSecond={setShowSecondModal}
+                handleCloseTwo={handleCloseShowSecondModal}
+                showThird={showThird}
+                setShowThird={setShowThird}
+            />
         </React.Fragment>
     );
 };
