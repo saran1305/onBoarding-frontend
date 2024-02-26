@@ -19,7 +19,7 @@ const UserDashBoard = () => {
     
         const fetchStatus = async () => {
             try {
-                const response = await axios.get(`${Endpoint.API_ENDPOINT}/api/UserDetails/GetStatusByLoginId?loginId=${userId}`);
+                const response = await axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetStatusByLoginId?loginId=${userId}`);
 
                 setStatus(response.data);
             } catch (error) {

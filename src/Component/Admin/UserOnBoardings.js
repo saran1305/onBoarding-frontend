@@ -20,7 +20,6 @@ import ExistingBankInformation from './ExistingBankInformation';
 
 const UserOnboardings = () => {
     const [ userData, setUserData ] = useState(null);
-
     const [ activeIndex, setActiveIndex ] = useState(0);
     const [ showModal, setShowModal ] = useState(false);
     const [ formData, setFormData ] = useState({ name: '', date: '' });
@@ -35,7 +34,6 @@ const UserOnboardings = () => {
         'Health Information',
         'Existing Bank Information'
     ];
-    const [ personalinfo, setPersonalinfo ] = useState({});
     const [ educationinfo, setEducationinfo ] = useState();
     const [ certificationsinfo, setCertificationsinfo ]= useState();
     const [ previousExperienceinfo, setPreviousExperienceinfo ]= useState();
@@ -54,22 +52,14 @@ const UserOnboardings = () => {
 
     useEffect(() => {
         const storedUserData = JSON.parse(localStorage.getItem('userData'));
-    
+
         if (storedUserData) {
             setUserData(storedUserData);
             const userId = Number(storedUserData.empId); 
 
             setActiveIndex(0);
-            axios.get(`${Endpoint.API_ENDPOINT}/api/UserDetails/GetPersonalInfo/${userId}`)
-                .then(response => {
-                    setPersonalinfo(response.data);
-                    console.log('Personal Info in UserOnboarding:', response.data ); 
-                })
-                .catch(error => {
-                    console.error('Error loading data:', error);
-                });
 
-            axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-education/${userId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${userId}`)
                 .then(response => {
                     setEducationinfo(response.data);
                     console.log('Education in UserOnboarding: ',response.data); 
@@ -79,7 +69,7 @@ const UserOnboardings = () => {
                     
                 });
 
-            axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-certificate/${userId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${userId}`)
                 .then(response => {
                     setCertificationsinfo(response.data);
                     console.log('certifications in UserOnboarding: ',response.data);
@@ -89,39 +79,35 @@ const UserOnboardings = () => {
                     
                 });
 
-            axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-experience/${userId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${userId}`)
                 .then(response => {
                     setPreviousExperienceinfo(response.data);
-                    console.log('previousexperience in UserOnboarding: ',response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data:', error);
                     
                 });
-            axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-reference/${userId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${userId}`)
                 .then(response => {
                     setReferenceinfo(response.data);
-                    console.log('reference in UserOnboarding: ',response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data:', error);
                     
                 });
 
-            axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-health/${userId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${userId}`)
                 .then(response => {
                     setHealthInfo(response.data);
-                    console.log('HealthInfo in UserOnboarding: ',response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data healthinfo:', error);
                     
                 });
 
-            axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-existing-bank/${userId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${userId}`)
                 .then(response => {
                     setExistingBankInfo(response.data);
-                    console.log('existingbankinfo in UserOnboarding: ',response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data Existing bank infos :', error);
@@ -168,13 +154,13 @@ const UserOnboardings = () => {
             }
         } else if (activeKey === 'Previous Experience') {
             try {
-                await axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-experience/${userId}`, previousExperience);
-                await axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-reference/${userId}`, reference);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${userId}`, previousExperience);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${userId}`, reference);
             } catch (error) {
                 console.error('Error saving data:', error);
             }
         } else if (activeKey === 'Health Information') {
-            axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-health/${userId}`, healthInfo, 
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${userId}`, healthInfo, 
                 { headers: { 'Content-Type': 'multipart/form-data' } })
                 .then(response => {
                     console.log('Data saved successfully HealthInfo:', response.data);
@@ -183,7 +169,7 @@ const UserOnboardings = () => {
                     console.error('Error saving data:', error.message || error);
                 });
         } else if (activeKey === 'Existing Bank Information') {
-            axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-existing-bank/${userId}`,existingBankInfo,
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${userId}`,existingBankInfo,
                 { headers: { 'Content-Type': 'multipart/form-data' } } )
                 .then(response => {
                     console.log('Existing Bank data saved successfully:', response.data);
@@ -245,7 +231,7 @@ const UserOnboardings = () => {
 
             switch (activeKey) {
             case 'Personal Information':
-                return <PersonalInformation  personalinfo={personalinfo}  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails}/>;
+                return <PersonalInformation  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} userId={userData && userData.empId} />;
             case 'Education':
                 return <Education educationinfo={educationinfo} educationDetails={educationDetails} setEducationDetails={setEducationDetails}/>;
             case 'Certifications':

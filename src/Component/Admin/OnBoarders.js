@@ -42,11 +42,11 @@ const OnBoarders = () => {
         let response;
 
         if (current_Status === 'Pending') {
-            response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/Admin/api/GetPendingEmployeeDetails`);
         } else if (current_Status === 'Invited') {
-            response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/Admin/api/GetInvitedEmployeeDetails`);
         } else if (current_Status === 'Expired') {
-            response = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
+            response = await axios.get(`${Endpoint.API_ENDPOINT}/Admin/api/GetRejectedEmployeeDetails`);
         }
         setUserData(response.data);
         // console.log('i am response of Onboard',response.data);

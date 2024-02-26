@@ -46,7 +46,7 @@ const Login = ({ toastContainer }) => {
     };
     const handleShowForgotPasswordModal = async () => {
         try {
-            const responseForgotPassword = await axios.post(`${Endpoint.API_ENDPOINT}/api/Login/ForgotPassword`, null, {
+            const responseForgotPassword = await axios.post(`${Endpoint.API_ENDPOINT}/Login/ForgotPassword`, null, {
                 params: {
                     emailId: email
                 }

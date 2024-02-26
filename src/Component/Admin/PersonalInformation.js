@@ -1,67 +1,157 @@
 /* eslint-disable max-len */
 /* eslint-disable max-statements */
 /* eslint no-magic-numbers: ["error", { "ignore": [0,1,2,3,4,5,6,7,8] }] */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../Styles/personalInformation.css'
 import propTypes from 'prop-types';
-import { LiaCloudUploadAltSolid } from 'react-icons/lia';
+import { LiaCloudUploadAltSolid, LiaFileSolid } from 'react-icons/lia';
 import { IoMdAdd } from 'react-icons/io';
+import axios from 'axios';
+import * as Endpoint from '../../Entities/Endpoint';
+// import { convertToBase64 } from '../../Utils/Util'
+const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => {
 
+    const [ martialStatus, setMartialstatus ] = useState([])
+    const [ gender, setGender ] = useState([])
+    const [ bloodGroup, setBloodGroup ] = useState([])
+    const [ fileName, setFileName ] = useState({
+        aadhar: '',
+        pan: '',
+        driving_license: '',
+        passport: ''
+    })
+    
 
-const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }) => {
     useEffect(() => {
-        if (personalinfo) {
-            setPersonalDetails(personalinfo);
+        if (userId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${0}`)
+                .then(response => {
+                    setPersonalDetails(response.data);
+                })
+                .catch(error => {
+                    console.error('Error loading data:', error);
+                });
+
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/MartialStatus`)
+                .then(response => {
+                    setMartialstatus(response.data);
+                })
+                .catch(error => {
+                    console.log('error', error)
+                    setMartialstatus([])
+                });
+
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/Gender`)
+                .then(response => {
+                    setGender(response.data);
+                })
+                .catch(error => {
+                    console.log('error', error)
+                    setGender([])
+                });
+
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/BloodGroup`)
+                .then(response => {
+                    setBloodGroup(response.data);
+                })
+                .catch(error => {
+                    console.log('error', error)
+                    setBloodGroup([])
+                });
+
         }
-    }, [personalinfo]);
+    }, [userId])
 
+    useEffect(() => {
+        if (Object.keys(personalDetails).length === 0) {
+            setPersonalDetails({
+                result: {
+                    loginId: 0,
+                    generalVM: {
+                        genId: userId,
+                        empname: '',
+                        personal_Emailid: '',
+                        contact_no: 8056039856,
+                        dob: '',
+                        nationality: '',
+                        gender: '',
+                        maritalStatus: '',
+                        dateOfMarriage: '',
+                        bloodGrp: '',
+                        profile_Pic: ''
+                    },
+                    contact: [
+                        {
+                            address1: '',
+                            address2: '',
+                            country_Id: 1,
+                            state_Id: 1,
+                            city_Id: 1,
+                            pincode: '',
+                            addressType: 'present'
+                        },
+                        {
+                            address1: '',
+                            address2: '',
+                            country_Id: 1,
+                            state_Id: 1,
+                            city_Id: 1,
+                            pincode: '',
+                            addressType: 'Permanent'
+                        }
+                    ],
+                    families: [
+                        {
+                            relationship: '',
+                            name: '',
+                            dob: '',
+                            occupation: '',
+                            contact: ''
+                        }
+                    ],
+                    hobby: {
+                        professionalBody: null,
+                        professionalBody_name: '',
+                        hobbies: ''
+                    },
+                    colleagues: [
+                        {
+                            empid: '',
+                            colleague_Name: '',
+                            location: ''
+                        }
+                    ],
+                    emergencies: [
+                        {
+                            relationship: '',
+                            relation_name: '',
+                            contact_number: '',
+                            contact_address: ''
+                        }
+                    ],
+                    requiredDocuments: {
+                        aadhar: '',
+                        pan: '',
+                        driving_license: '',
+                        passport: ''
+                    }
+                },
+                id: 0,
+                exception: null,
+                status: 0,
+                isCanceled: false,
+                isCompleted: false,
+                isCompletedSuccessfully: false,
+                creationOptions: 0,
+                asyncState: null,
+                isFaulted: false
+            })
+        }
 
-    // const [ personalDetails, setPersonalDetails ] = useState({
-    //     generalVM: {
-    //         empname: '',
-    //         dob: '',
-    //         nationality: '',
-    //         personal_Emailid: '',
-    //         contact_no: '',
-    //         gender: '',
-    //         maritalStatus: '',
-    //         dateOfMarriage: '',
-    //         bloodGrp: '',
-    //         contact: {
-    //             address1: '',
-    //             address2: '',
-    //             country_Id: '',
-    //             state_Id: '',
-    //             city_Id: '',
-    //             pincode: '',
-    //             addressType: false
-    //         },
-    //         profile_Pic: null
-    //     },
-    //     families: [ 
-    //         { relationship: 'Father', name: '', dob: '', occupation: '', contact: '' },
-    //         { relationship: 'Mother', name: '', dob: '', occupation: '', contact: '' },
-    //         { relationship: 'Spouse', name: '', dob: '', occupation: '', contact: '' },
-    //         { relationship: 'Child 1', name: '', dob: '', occupation: '', contact: '' }],
-    //     employees: [],
-    //     hobby: {
-    //         professionalBody: false,
-    //         professionalBody_name: '',
-    //         hobbies: ''
-    //     },
-    //     emergencies: [],
-    //     requiredDocuments: {
-    //         aadhar: '',
-    //         pan: '',
-    //         driving_license: '',
-    //         passport: ''
-    //     }
-    // });
+    }, [])
 
     const handleMembershipStatusChange = status => {
-        setPersonalDetails(prevDetails => ({
-            ...prevDetails, result: { ...prevDetails?.result, hobby: { ...prevDetails.result.hobby, hobbies: status } }
-        }));
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, hobby: { ...personalDetails.result.hobby, professionalBody: status } } })
     };
     
     const handleAddressChange = (index, fieldName,type,value) => {
@@ -88,42 +178,16 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
         setPersonalDetails(updatedDetails);
     };
 
-    const handleFileGettingInput = (fieldName, file) => {
+    const handleFileGettingInput = (field, file) => {
+
+        setFileName({ ...fileName, [field]: file.name })
         
-        setPersonalDetails(prevDetails => ({
-            ...prevDetails,
-            requiredDocuments: {
-                ...prevDetails.requiredDocuments,
-                [fieldName]: file
-            }
-        }));    
+        convertToBase64(file, base64String => {
+            setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, requiredDocuments: { ...personalDetails.result.requiredDocuments, [field]: base64String } } })
+        })
     };
     
-    const { employees,emergencies } = personalDetails;
-
-    // const setChildCount = newCount => {
-    //     setPersonalDetails(prevDetails => ({
-    //         ...prevDetails,
-    //         childCount: newCount
-    //     }));
-    // };
-
-    const setEmployees = updatedEmployees => {
-        setPersonalDetails(prevDetails => ({
-            ...prevDetails,
-            employees: updatedEmployees
-        }));
-    };
-
-    const setEmergencies = updatedEmergencies => {
-        setPersonalDetails(prevDetails => ({
-            ...prevDetails,
-            emergencies: updatedEmergencies
-        }));
-    };
-
     const handleAddMember = () => {
-        // const newChildCount = childCount + 1;
         const newFamilyMember = {
             relationship: '',
             name: '',
@@ -132,46 +196,83 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
             contact: ''
         };
     
-        setPersonalDetails(prevDetails => ({
-            ...prevDetails,
-            families: [ ...prevDetails.families, newFamilyMember ]
-        }));
-        // setChildCount(newChildCount);
+        const _newfamily = [ ...personalDetails.result.families, newFamilyMember ]
+
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, families: _newfamily } } )
+        
     };
     
     const handleChange = (index, field, value) => {
-        const updatedFamilyMembers = [...personalDetails.result.families];
+        const updatedFamilies = personalDetails?.result?.families?.map((family, idx) => {
+            if (index === idx) {
+                return { ...family, [field]: value }
+            } else {
+                return { ...family }
+            }
+        })
 
-        updatedFamilyMembers[index][field] = value;
-        setPersonalDetails(prevDetails => ({
-            ...prevDetails,
-            families: updatedFamilyMembers
-        }));
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, families: updatedFamilies } })
     };
     
     const handleAddEmployee = () => {
         const newEmployee = { empid: '', colleague_Name: '', location: '' };
 
-        setEmployees([ ...employees, newEmployee ]);
-    };
-    const handleEmployeeChange = (index, field, value) => {
-        const updatedEmployees = [...employees];
+        const _employee =([ ...personalDetails.result.colleagues, newEmployee ])
 
-        updatedEmployees[index][field] = value;
-        setEmployees(updatedEmployees);
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, colleagues: _employee } })
+    };
+
+    const handleEmployeeChange = (index, field, value) => {
+
+        const updatedEmployee = personalDetails?.result?.colleagues?.map((emp, ind) => {
+            if (index === ind) {
+                return { ...emp, [field]: value }
+            } else {
+                return { ...emp }
+            }
+        })
+
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, colleagues: updatedEmployee } })
+        
+
     };
 
     const handleAddEmergencies = () => {
         const newEmergencies = { relationship: 'Spouse/Partner', relation_name: '', contact_number: '', contact_address: '' };
 
-        setEmergencies([ ...emergencies, newEmergencies ]);
+        const _emergencies = ([ ...personalDetails.result.emergencies, newEmergencies ]);
+
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, emergencies: _emergencies } } )
     };
 
     const handleEmergenciesChange = (index, field, value) => {
-        const updatedEmergencies = [...emergencies];
+        const updatedemergencies = personalDetails?.result?.emergencies?.map((contact, idx) => {
+            if (index === idx) {
+                return { ...contact, [field]: value }
+            } else {
+                return { ...contact }
+            }
+        })
 
-        updatedEmergencies[index][field] = value;
-        setEmergencies(updatedEmergencies);
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, emergencies: updatedemergencies } })
+
+    };
+
+    const handleProfilePic = (feild, file) => {
+        convertToBase64(file, base64String => {
+            setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, generalVM: { ...personalDetails.result.generalVM, profile_Pic: base64String } } });
+        });
+    };
+
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            callback(result);
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -186,7 +287,6 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                                 type="text"
                                 className="textbox"
                                 value={personalDetails?.result?.generalVM?.empname ||''}
-                                // onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalVM: { ...prevDetails?.result?.generalVM, empname: event.target.value } }))}
                                 onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, empname: event.target.value } } }))}
                             />
                         </div>
@@ -195,7 +295,6 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                             <div>
                                 <input type="date" className="textbox"
                                     value={personalDetails?.result?.generalVM?.dob|| ''}
-                                    // onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalVM: { ...prevDetails.generalVM, dob: event.target.value } }))}
                                     onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, dob: event.target.value } } }))}
                                 />
                             </div>
@@ -204,7 +303,6 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                             <h6 htmlFor="nationality">nationality<span className="error"> * </span></h6>
                             <input type="text" className="textbox"
                                 value={personalDetails?.result?.generalVM?.nationality || ''}
-                                // onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, generalVM: { ...prevDetails.generalVM, nationality: event.target.value } }))}
                                 onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, nationality: event.target.value } } }))}
                             />                        
                         </div>
@@ -215,22 +313,11 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                             <select
                                 className="textbox"
                                 value={personalDetails?.result?.generalVM?.gender || ''}
-                                onChange={event => {
-                                    let genderValue;
-
-                                    if (event.target.value === 'male') {
-                                        genderValue = 1;
-                                    } else if (event.target.value === 'female') {
-                                        genderValue = 2;
-                                    } else {
-                                        genderValue = 3;
-                                    }
-                                    setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, gender: genderValue } } }));
-                                }}
+                                onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, gender: Number(value) } } })}
                             >
-                                <option value="1">Male</option>
-                                <option value="2">Female</option>
-                                <option value="3">Other</option>
+                                {gender?.length > 0 && gender.map(gen => {
+                                    return <option key={gen.id} value={gen.id}> {gen.name}</option>
+                                })}
                             </select>
                         </div>
                         <div className="col-4">
@@ -238,24 +325,11 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                             <select
                                 className="textbox"
                                 value={personalDetails?.result?.generalVM?.maritalStatus || ''}
-                                onChange={event => {
-                                    let statusValue;
-
-                                    if (event.target.value === 'married') {
-                                        statusValue = 1;
-                                    } else if (event.target.value === 'unmarried') {
-                                        statusValue = 2;
-                                    } else if (event.target.value === 'divorced') {
-                                        statusValue = 3;
-                                    } else {
-                                        statusValue = 0;
-                                    }
-                                    setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, maritalStatus: statusValue } } }));
-                                }}
+                                onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, maritalStatus: Number(value) } } })}
                             >
-                                <option value="1">Married</option>
-                                <option value="2">Unmarried</option>
-                                <option value="3">Divorced</option>
+                                {martialStatus.length > 0 && martialStatus.map(status => {
+                                    return <option key={status.id} value={status.id}> {status.name}</option>
+                                })}
                             </select>
                         </div>
 
@@ -268,57 +342,35 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                 <div className="col-3">
                     <div className="col">
                         <h6>Profile Picture<span className="error"> * </span></h6>
-                        <div className="profile_Pic-box typography">
-                            <input
-                                type="file"
-                                accept=".doc, .pdf, .img"
-                                onChange={event => handleFileGettingInput('profile_Pic', event.target.files[0])}
+                        {personalDetails && personalDetails?.result?.generalVM?.profile_Pic !== '' ? (
+                            <img src={personalDetails?.result?.generalVM?.profile_Pic} alt="Profile" className="profile-picture" />
+
+                        ) : (
+                            <div className="profile_Pic-box typography">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={event => handleProfilePic('profile_Pic', event.target.files[0])}
                                 
-                            />
-                            <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                            <p>Upload</p>
-                            <p>You can drag and drop too</p>
-                        </div>
-                        <p className="filetext">JPG, PNG or JPNG</p>
+                                />
+                                <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                <p>Upload</p>
+                                <p>You can drag and drop too</p>
+                            </div>)}
+                        {personalDetails?.result?.generalVM?.profile_Pic === '' && < p className="filetext">JPG, PNG or JPNG</p>}
                     </div>
                 </div>
-            </div>
-            <div className="col-3">
-                <h6>Blood Group<span className="error"> * </span></h6>
-                <select className="textbox"
-                    value={personalDetails?.result?.generalVM?.bloodGrp || ''}
-                    onChange={event => {
-                        let bloodGroupValue;
-
-                        if (event.target.value === 'O+') {
-                            bloodGroupValue = 1;
-                        } else if (event.target.value === 'A+') {
-                            bloodGroupValue = 2;
-                        } else if (event.target.value === 'B+') {
-                            bloodGroupValue = 3;
-                        } else if (event.target.value === 'AB+') {
-                            bloodGroupValue = 4;
-                        } else if (event.target.value === 'AB-') {
-                            bloodGroupValue = 5;
-                        } else if (event.target.value === 'A-') {
-                            bloodGroupValue = 6;
-                        } else if (event.target.value === 'B-') {
-                            bloodGroupValue = 7;
-                        } else if (event.target.value === 'O-') {
-                            bloodGroupValue = 8;
-                        } else {
-                            bloodGroupValue = 0; 
-                        }
-                        setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, bloodGrp: bloodGroupValue } } }));  }}>
-                    <option value="1">O+</option>
-                    <option value="2">A+</option>
-                    <option value="3">B+</option>
-                    <option value="4">AB+</option>
-                    <option value="5">AB-</option>
-                    <option value="6">A-</option>
-                    <option value="7">B-</option>
-                    <option value="8">O-</option>
-                </select>
+                <div className="col-3">
+                    <h6>Blood Group<span className="error"> * </span></h6>
+                    <select className="textbox"
+                        value={personalDetails?.result?.generalVM?.bloodGrp || ''}
+                        onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, bloodGroup: Number(value) } } })}
+                    >
+                        {bloodGroup.length > 0 && bloodGroup.map(group => {
+                            return <option key={group.id} value={group.id}> {group.name}</option>
+                        })}
+                    </select>
+                </div>
             </div>
 
             <hr />
@@ -407,7 +459,7 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                                             onChange={event => handleAddressChange(index, 'pincode',contact.addressType, event.target.value)}
                                         />  
                                     </div>
-                                    <div className="col-6">
+                                    {index === 1 && <div className="col-6 mt-5">
                                         <h6>
                                             <input
                                                 type="checkbox"
@@ -419,75 +471,10 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                                                     }
                                                 }))}
                                             />
-                                            Present address same as permanent address
+                                            <span>Permanent address same as present address</span>
                                         </h6>
-                                    </div>
+                                    </div>}
                                 </div>
-                                {/* <div>
-                                    <h4>Permanent Address</h4>
-                                    <div className="row">
-                                        <div className="col-3">
-                                            <h6>Address Line 1<span className="error"> * </span></h6>
-                                            <input
-                                                type="text"
-                                                className="textbox"
-                                                value={contact?.address1 || ''}
-                                                onChange={event => handleAddressChange(index, 'address1','permanent', event.target.value)}
-                                            />
-                                        </div>
-                                        <div className="col-3">
-                                            <h6>Address Line 2<span className="error"> * </span></h6>
-                                            <input
-                                                type="text"
-                                                className="textbox"
-                                                value={contact?.address2 || ''}
-                                                onChange={event => handleAddressChange(index, 'address2','permanent', event.target.value)}
-                                            /> 
-                                        </div>
-                                        <div className="col-3">
-                                            <h6>Country<span className="error"> * </span></h6>
-                                            <select
-                                                className="textbox"
-                                                value={contact?.country_Id || ''}
-                                                onChange={event => handleAddressChange(index, 'country_Id','permanent', event.target.value)}
-                                            >
-                                                <option>India</option>
-                                            </select>
-                                        </div>
-                                        <div className="col-3">
-                                            <h6>State<span className="error"> * </span></h6>
-                                            <select
-                                                className="textbox"
-                                                value={contact?.state_Id || ''}
-                                                onChange={event => handleAddressChange(index, 'state_Id','permanent', event.target.value)}
-                                            >
-                                                <option>Tamil Nadu</option>
-                                            </select>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-3">
-                                                <h6>City<span className="error"> * </span></h6>
-                                                <select
-                                                    className="textbox"
-                                                    value={contact?.city_Id || ''}
-                                                    onChange={event => handleAddressChange(index, 'city_Id','permanent', event.target.value)}
-                                                >
-                                                    <option>Chennai</option>
-                                                </select>
-                                            </div>
-                                            <div className="col-3">
-                                                <h6>Zip Code<span className="error"> * </span></h6>
-                                                <input
-                                                    type="number"
-                                                    className="textbox"
-                                                    value={contact?.pincode || ''}
-                                                    onChange={event => handleAddressChange(index, 'pincode','permanent', event.target.value)}
-                                                />  
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </div> */}
                             </div>
                         </div>
                     ))}
@@ -508,7 +495,7 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                     <tbody>
                         {personalDetails?.result?.families.map((member, index) => (
                             <tr key={index}>
-                                <th>{member.relationship || (index === 0 ? 'Father' : index === 1 ? 'Mother' : index === 2 ? 'Spouse' : `Child ${index - 2}`)}</th>
+                                <th>{member.relationship || (index === 0 ? 'Father' : index === 1 ? 'Mother' : index === 2 ? 'Spouse' : 'Child')}</th>
                                 <td><input type="text" className="textbox" placeholder="Name" value={member.name || ''} onChange={event => handleChange(index, 'name', event.target.value)}  /></td>                                
                                 <td><input type="date" className="textbox" value={member.dob||''} onChange={event => handleChange(index, 'dob', event.target.value)} /></td>
                                 <td><input type="text" className="textbox" placeholder="role" value={member.occupation|| ''} onChange={event => handleChange(index, 'occupation', event.target.value)} /></td>
@@ -516,7 +503,7 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                             </tr>
                         ))}
                         <tr>
-                            <td colSpan="5"><button className="addanother" onClick={handleAddMember}><IoMdAdd className="addIcon"/></button></td>
+                            <td colSpan="5"><button className="addanother" onClick={() => handleAddMember()}><IoMdAdd className="addIcon"/></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -533,8 +520,8 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                                 name="professionalMember" 
                                 id="yes" 
                                 className="radiodesign"
-                                checked={personalDetails?.result?.hobby?.professionalBody === 'yes'}
-                                onChange={() => handleMembershipStatusChange('yes')} 
+                                checked={personalDetails?.result?.hobby?.professionalBody}
+                                onChange={() => handleMembershipStatusChange(true)} 
                             />                                                      
                             <h6 htmlFor="yes">Yes</h6>
                         </div>
@@ -544,8 +531,8 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                                 name="professionalMember" 
                                 id="no" 
                                 className="radiodesign"
-                                checked={personalDetails?.result?.hobby?.professionalBody === 'no'}
-                                onChange={() => handleMembershipStatusChange('no')} 
+                                checked={!personalDetails?.result?.hobby?.professionalBody}
+                                onChange={() => handleMembershipStatusChange(false)} 
                             />
                             <h6 htmlFor="no">No</h6>
                         </div>
@@ -583,13 +570,14 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                         <th>Location</th>
                     </thead>
                     <tbody>
-                        {personalDetails?.result?.colleagues?.map((employee, index) => (
-                            <tr key={index}>
-                                <td><input type="number" className="textbox2" placeholder="0000" value={employee.empid||''} onChange={event => handleEmployeeChange(index, 'empid', event.target.value)} /></td>
-                                <td><input type="text" className="textbox2" placeholder="Name" value={employee.colleague_Name||''} onChange={event=> handleEmployeeChange(index, 'colleague_Name', event.target.value)}  /></td>
-                                <td><input type="text" className="textbox2" placeholder="Eg. Chennai" value={employee.location||''} onChange={event=> handleEmployeeChange(index, 'location', event.target.value)}  /></td>
-                            </tr>
-                        ))}
+                        {personalDetails?.result?.colleagues?.map((employee, index) => {
+                            return (
+                                <tr key={index}>
+                                    <td><input type="number" className="textbox2" placeholder="0000" value={employee.empid||''} onChange={event => handleEmployeeChange(index, 'empid', event.target.value)} /></td>
+                                    <td><input type="text" className="textbox2" placeholder="Name" value={employee.colleague_Name||''} onChange={event=> handleEmployeeChange(index, 'colleague_Name', event.target.value)}  /></td>
+                                    <td><input type="text" className="textbox2" placeholder="Eg. Chennai" value={employee.location||''} onChange={event=> handleEmployeeChange(index, 'location', event.target.value)}  /></td>
+                                </tr>)
+                        })}
                         <tr>
                             <td colSpan="3"><button className="addanother" onClick={handleAddEmployee} ><IoMdAdd className="addIcon"/></button></td>
                         </tr>
@@ -636,58 +624,95 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
                     <div className="col-4 ">
                         <h6>aadhar<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            <input
-                                type="file"
-                                accept=".doc, .pdf, .img"
-                                onChange={event => handleFileGettingInput('aadhar', event.target.files[0])}
-                            />
-                            <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                            <p>You can drag and drop too</p>
+                            {personalDetails && personalDetails?.result?.requiredDocuments?.aadhar == '' ? (
+                                <div>
+                                    <input
+                                        type="file"
+                                        accept=".doc, .pdf, .img"
+                                        onChange={event => handleFileGettingInput('aadhar', event.target.files[0])}
+                                    />
+                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                    <p>You can drag and drop too</p>
+                                </div>
+                            ) : (
+                                <div className="inline">
+                                    <LiaFileSolid />
+                                    <p>{fileName.aadhar}</p>
+                                </div>
+                            )
+                            }
                         </div>
-                        <p className="filetext">File Type Accepted: doc, pdf & img</p>
+
+                        {personalDetails?.result?.requiredDocuments?.aadhar == '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
                     </div>
                     <div className="col-4 ">
                         <h6>PAN<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            <input
-                                type="file"
-                                accept=".doc, .pdf, .img"
-                                onChange={event => handleFileGettingInput('pan', event.target.files[0])}
-                            />
-                            <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                            <p>You can drag and drop too</p>
+                            {personalDetails && personalDetails?.result?.requiredDocuments?.pan == '' ? (
+                                <div>
+                                    <input
+                                        type="file"
+                                        accept=".doc, .pdf, .img"
+                                        onChange={event => handleFileGettingInput('pan', event.target.files[0])}
+                                    />
+                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                    <p>You can drag and drop too</p>
+                                </div>
+                            ) : (
+                                <div className="inline">
+                                    <LiaFileSolid />
+                                    <p>{fileName.pan}</p>
+                                </div>)}
                         </div>
-                        <p className="filetext">File Type Accepted: doc, pdf & img</p>
+                        {personalDetails?.result?.requiredDocuments?.pan === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
                     </div>
                     <div className="col-4 ">
                         <h6>Driver License<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            <input
-                                type="file"
-                                accept=".doc, .pdf, .img"
-                                onChange={event => handleFileGettingInput('driving_license', event.target.files[0])}
-                            />
-                            <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                            <p>Upload</p>
-                            <p>You can drag and drop too</p>
+                            {personalDetails && personalDetails?.result?.requiredDocuments?.driving_license == '' ? (
+                                <div>
+                                    <input
+                                        type="file"
+                                        accept=".doc, .pdf, .img"
+                                        onChange={event => handleFileGettingInput('driving_license', event.target.files[0])}
+                                    />
+                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                    <p>Upload</p>
+                                    <p>You can drag and drop too</p>
+                                </div>
+                            ) : (
+                                <div className="inline">
+                                    <LiaFileSolid />
+                                    <p>{fileName.driving_license}</p>
+                                </div>
+                            )}
                         </div>
-                        <p className="filetext">File Type Accepted:doc,pdf & img</p>
+                        {personalDetails?.result?.requiredDocuments?.driving_license && <p className="filetext">File Type Accepted:doc,pdf & img</p>}
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-4 ">
                         <h6>passport<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            <input
-                                type="file"
-                                accept=".doc, .pdf, .img"
-                                onChange={event => handleFileGettingInput('passport', event.target.files[0])}
-                            />
-                            <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                            <p>Upload</p>
-                            <p>You can drag and drop too</p>
+                            {personalDetails && personalDetails?.result?.requiredDocuments?.passport == '' ? (
+                                <div>
+                                    <input
+                                        type="file"
+                                        accept=".doc, .pdf, .img"
+                                        onChange={event => handleFileGettingInput('passport', event.target.files[0])}
+                                    />
+                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                    <p>Upload</p>
+                                    <p>You can drag and drop too</p>
+                                </div>
+                            ) : (
+                                <div className="inline">
+                                    <LiaFileSolid />
+                                    <p>{fileName.passport}</p>
+                                </div>
+                            )}
                         </div>
-                        <p className="filetext">File Type Accepted:doc,pdf & img</p>
+                        {personalDetails?.result?.requiredDocuments?.passport === '' && <p className="filetext">File Type Accepted:doc,pdf & img</p>}
                     </div>
                 </div>
             </div>
@@ -696,8 +721,8 @@ const PersonalInformation = ({ personalinfo,setPersonalDetails,personalDetails }
 };
 
 PersonalInformation.propTypes = {
-    personalinfo: propTypes.object.isRequired,
     personalDetails: propTypes.object.isRequired,
-    setPersonalDetails: propTypes.object.isRequired
+    setPersonalDetails: propTypes.object.isRequired,
+    userId: propTypes.number.isrequired
 };
 export default PersonalInformation;

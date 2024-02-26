@@ -1,4 +1,4 @@
-const BASE_ENDPOINT = 'http://localhost:7136';
+const BASE_ENDPOINT = 'http://localhost:7136/api';
 
 // const BASE = '/api'
 
