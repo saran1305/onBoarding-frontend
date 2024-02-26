@@ -34,19 +34,14 @@ const UserOnboardings = () => {
         'Health Information',
         'Existing Bank Information'
     ];
-    const [ educationinfo, setEducationinfo ] = useState();
-    const [ certificationsinfo, setCertificationsinfo ]= useState();
-    const [ previousExperienceinfo, setPreviousExperienceinfo ]= useState();
-    const [ referenceinfo, setReferenceinfo ]= useState({});
-    const [ healthInfo, setHealthInfo ]= useState({});
     const [ existingBankInfo, setExistingBankInfo ]= useState({});
 
     const [ personalDetails, setPersonalDetails ] = useState({});
-    const [ educationDetails, setEducationDetails ] = useState([]);
+    const [ educationinfo, setEducationinfo ] = useState([]);
     const [ certifications, setCertifications ] = useState([]);
     const [ previousExperience, setPreviousExperience ] = useState([]);
     const [ reference, setReference ] = useState({});
-    const [ healthInformationData, setHealthInformationData ] = useState({});
+    const [ healthInformation, setHealthInformation ] = useState({});
     const [ existingbank, setExistingbank ] = useState({});
 
 
@@ -58,52 +53,6 @@ const UserOnboardings = () => {
             const userId = Number(storedUserData.empId); 
 
             setActiveIndex(0);
-
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${userId}`)
-                .then(response => {
-                    setEducationinfo(response.data);
-                    console.log('Education in UserOnboarding: ',response.data); 
-                })
-                .catch(error => { 
-                    console.error('Error saving data:', error);
-                    
-                });
-
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${userId}`)
-                .then(response => {
-                    setCertificationsinfo(response.data);
-                    console.log('certifications in UserOnboarding: ',response.data);
-                })
-                .catch(error => { 
-                    console.error('Error saving data:', error);
-                    
-                });
-
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${userId}`)
-                .then(response => {
-                    setPreviousExperienceinfo(response.data);
-                })
-                .catch(error => { 
-                    console.error('Error saving data:', error);
-                    
-                });
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${userId}`)
-                .then(response => {
-                    setReferenceinfo(response.data);
-                })
-                .catch(error => { 
-                    console.error('Error saving data:', error);
-                    
-                });
-
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${userId}`)
-                .then(response => {
-                    setHealthInfo(response.data);
-                })
-                .catch(error => { 
-                    console.error('Error saving data healthinfo:', error);
-                    
-                });
 
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${userId}`)
                 .then(response => {
@@ -120,12 +69,13 @@ const UserOnboardings = () => {
         if (activeIndex < componentOrder.length - 1) {
             setActiveIndex(prevIndex => prevIndex + 1);
         }
-        const userId = userData.userId;
+        const userId = Number(userData.empId);
+
         const activeKey = componentOrder[activeIndex];
 
         if(activeKey === 'Personal Information'){
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/api/UserDetails/AddPersonalInfo`, personalDetails, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, personalDetails, 
                     { headers: { 'Content-Type': 'application/json' } });
 
                 console.log('Education data saved successfully:', response.data);
@@ -135,7 +85,7 @@ const UserOnboardings = () => {
         }
         else if (activeKey === 'Education') {
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-education/${userId}`, educationDetails, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${userId}`, educationinfo, 
                     { headers: { 'Content-Type': 'application/json' } });
 
                 console.log('Education data saved successfully:', response.data);
@@ -144,7 +94,7 @@ const UserOnboardings = () => {
             }
         } else if (activeKey === 'Certifications') {
             try {
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/api/User/add-certificate/${userId}`, certifications,
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${userId}`, certifications,
                     { headers: { 'Content-Type': 'application/json' } }
                 );
 
@@ -160,8 +110,8 @@ const UserOnboardings = () => {
                 console.error('Error saving data:', error);
             }
         } else if (activeKey === 'Health Information') {
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${userId}`, healthInfo, 
-                { headers: { 'Content-Type': 'multipart/form-data' } })
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${userId}`, healthInformation, 
+                { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {
                     console.log('Data saved successfully HealthInfo:', response.data);
                 })
@@ -233,15 +183,14 @@ const UserOnboardings = () => {
             case 'Personal Information':
                 return <PersonalInformation  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} userId={userData && userData.empId} />;
             case 'Education':
-                return <Education educationinfo={educationinfo} educationDetails={educationDetails} setEducationDetails={setEducationDetails}/>;
+                return <Education educationinfo={educationinfo} setEducationinfo={setEducationinfo} userId={userData && userData.empId} />;
             case 'Certifications':
-                return <Certifications certificationsinfo={certificationsinfo} certifications={certifications} setCertifications={setCertifications}/>;
+                return <Certifications certifications={certifications} setCertifications={setCertifications} userId={userData && userData.empId} />;
             case 'Previous Experience':
-                return <PreviousExperience previousExperienceinfo={previousExperienceinfo} referenceinfo={referenceinfo} 
-                    previousExperience={previousExperience}setPreviousExperience={setPreviousExperience}
-                    reference={reference} setReference={setReference}/>;
+                return <PreviousExperience previousExperience={previousExperience}setPreviousExperience={setPreviousExperience}
+                    reference={reference} setReference={setReference} userId={userData && userData.empId}/>;
             case 'Health Information':
-                return <HealthInformation healthInfo={healthInfo} healthInformationData={healthInformationData} setHealthInformationData={setHealthInformationData}/>;
+                return <HealthInformation healthInformation={healthInformation} setHealthInformation={setHealthInformation}/>;
             case 'Existing Bank Information':
                 return <ExistingBankInformation existingBankInfo={existingBankInfo} existingbank={existingbank} setExistingbank={setExistingbank}/>;
             default:

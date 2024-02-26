@@ -1,15 +1,38 @@
 import React,{ useEffect } from 'react';
 import '../../Styles/certification.css'
+import * as Endpoint from '../../Entities/Endpoint';
+import axios from 'axios';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const Certifications = ({ certificationsinfo,certifications,setCertifications }) => {
+const Certifications = ({ certifications,setCertifications,userId }) => {
+    // const [ fileName, setFileName ] = useState({ proof: '' })
 
-    useEffect(()=>{
-        if(certificationsinfo && certificationsinfo.length>0){
-            setCertifications(certificationsinfo)
-        }
-    },[certificationsinfo])
+    useEffect(() => {
+        if (userId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${userId}`)
+                .then(response => {
+                    setCertifications(response.data);
+                    console.log('certifications in UserOnboarding: ',response.data);
+                })
+                .catch(error => { 
+                    console.error('Error saving data:', error);
+                    
+                });
+        }},[userId])
+
+    useEffect(() => {
+        if (certifications && certifications?.length === 0) {
+            setCertifications([{
+                certificate_name: '',
+                issued_by: '',
+                valid_till: '',
+                specialization: '',
+                duration: 0,
+                percentage: '',
+                proof:''
+            }])
+        }},[])
 
     const handleAddCertifications = () => {
         setCertifications(prevDetails => [
@@ -26,15 +49,17 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
         ]);
     };
 
+   
     const handleInputChange = (index, field, value) => {
-        setCertifications(prevDetails => {
-            const newDetails = [...prevDetails];
-
-            if (newDetails[index]) {
-                newDetails[index][field] = value;
+        const update = certifications?.map((certification, idx) => {
+            if (index === idx) {
+                return { ...certification, [field]: value }
+            } else {
+                return { ...certification }
             }
-            return newDetails;
-        });
+        })
+
+        setCertifications(update)
     };
 
     return (
@@ -59,7 +84,7 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={certifications.certificate_name||''}
+                                            value={certifications?.certificate_name||''}
                                             placeholder="Name"
                                             onChange={event => handleInputChange(index, 'certificate_name', event.target.value)}
                                         />
@@ -68,7 +93,7 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={certifications.issued_by||''}
+                                            value={certifications?.issued_by||''}
                                             placeholder="Issuer"
                                             onChange={event => handleInputChange(index, 'issued_by', event.target.value)}
                                         />
@@ -77,7 +102,7 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
                                         <input
                                             className="textbox"
                                             type="date"
-                                            value={certifications.valid_till||''}
+                                            value={certifications?.valid_till||''}
                                             placeholder="01/01/2024"
                                             onChange={event => handleInputChange(index, 'valid_till', event.target.value)}
                                         />
@@ -85,7 +110,7 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
                                     <td>
                                         <select
                                             className="textbox"
-                                            value={certifications.duration||''}
+                                            value={certifications?.duration||''}
                                             onChange={event => handleInputChange(index, 'duration', event.target.value)}
                                         >
                                             <option value="" disabled>
@@ -99,19 +124,18 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
                                         </select>
                                     </td>
                                     <td>
-                                        <select
+                                        <input
                                             className="textbox"
-                                            value={certifications.specialization||''}
+                                            type="text"
+                                            placeholder="Specialization"
+                                            value={certifications?.specialization||''}
                                             onChange={event => handleInputChange(index, 'specialization', event.target.value)}
-                                        >
-                                            <option>Computer Science</option>
-                                            <option>Computer Application</option>
-                                        </select>
+                                        />
                                     </td>
                                     <td>
                                         <select
                                             className="textbox"
-                                            value={certifications.percentage||''}
+                                            value={certifications?.percentage||''}
                                             onChange={event => handleInputChange(index, 'percentage', event.target.value)}
                                         >
                                             <option value="" disabled>
@@ -128,7 +152,7 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
                                         <input
                                             className="choosefile" 
                                             type="file"
-                                            value={certifications.proof || ''}
+                                            value={certifications?.proof || ''}
                                             onChange={event => handleInputChange('proof', event.target.files[0])}
                                         />
                                     </td>                            
@@ -148,9 +172,9 @@ const Certifications = ({ certificationsinfo,certifications,setCertifications })
 };
 
 Certifications.propTypes = {
-    certificationsinfo: propTypes.object.isRequired,
-    certifications: propTypes.object.isRequired,
-    setCertifications:  propTypes.object.isRequired
+    certifications: propTypes.array.isRequired,
+    setCertifications:  propTypes.func.isRequired,
+    userId: propTypes.number.isrequired
 };
 
 export default Certifications;

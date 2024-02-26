@@ -1,19 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useState,useEffect } from 'react';
+import * as Endpoint from '../../Entities/Endpoint';
+import axios from 'axios';
 import '../../Styles/education.css';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
+const Education = ({ educationinfo,setEducationinfo,userId }) => {
+    const [ fileName, setFileName ] = useState({ edu_certificate: '' })
 
     useEffect(() => {
-        if (educationinfo && educationinfo.length > 0) {
-            setEducationDetails(educationinfo);
-        }
-    }, [educationinfo]);
-    
+        if (userId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${userId}`)
+                .then(response => {
+                    setEducationinfo(response.data);
+                    console.log('Education in UserOnboarding: ',response.data); 
+                })
+                .catch(error => { 
+                    console.error('Error saving data:', error);
+                
+                });
+        }},[userId])
+
+    useEffect(() => {
+        
+        if (educationinfo && educationinfo?.length === 0 ) {
+            setEducationinfo([{
+                qualification: '',
+                university: '',
+                institution_name: '',
+                degree_achieved: '',
+                specialization: '',
+                passoutyear: 0,
+                percentage: '',
+                edu_certificate: ''
+            }])
+        }},[educationinfo])
 
     const handleAddEducation = () => {
-        setEducationDetails(prevDetails => [
+        setEducationinfo(prevDetails => [
             ...prevDetails,
             {
                 qualification: '',
@@ -27,15 +51,38 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
             }
         ]);
     };
-
+   
     const handleInputChange = (index, field, value) => {
-        setEducationDetails(prevDetails => {
-            const newDetails = [...prevDetails];
+        const update = educationinfo?.map((education, idx) => {
+            if (index === idx) {
+                return { ...education, [field]: value }
+            } else {
+                return { ...education }
+            }
+        })
 
-            newDetails[index][field] = value;
-            return newDetails;           
-        });
+        setEducationinfo(update)
     };
+    
+    const handleFileGettingInput = (field, file) => {
+
+        setFileName({ ...fileName, edu_certificate: file.name })
+        
+        convertToBase64(file, base64String => {
+            setFileName({ edu_certificate: base64String })
+        })
+        return
+    };
+
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            callback(result);
+        };
+        reader.readAsDataURL(file); };
 
     return (
         <div className="education">
@@ -55,14 +102,14 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {educationDetails.map((education, index) => {
+                        {educationinfo && educationinfo.map((education, index) => {
                             return(
                                 <tr key={index}>
                                     <td>
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={education.qualification||''}
+                                            value={education?.qualification||''}
                                             placeholder="Qualification"
                                             onChange={event => handleInputChange(index, 'qualification', event.target.value)}
                                         />
@@ -71,7 +118,7 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={education.university||''}
+                                            value={education?.university||''}
                                             placeholder="University"
                                             onChange={event => handleInputChange(index, 'university', event.target.value)}
                                         />
@@ -80,7 +127,7 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={education.institution_name||''}
+                                            value={education?.institution_name||''}
                                             placeholder="Institution"
                                             onChange={event => handleInputChange(index, 'institution_name', event.target.value)}
                                         />
@@ -98,7 +145,7 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={ education.specialization||''}
+                                            value={ education?.specialization||''}
                                             placeholder="Specialization"
                                             onChange={event => handleInputChange(index, 'specialization', event.target.value)}
                                         />
@@ -107,7 +154,7 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
                                         <input
                                             className="textbox"
                                             type="number"
-                                            value={ education.passoutyear||''}
+                                            value={ education?.passoutyear||''}
                                             placeholder="Passout Year"
                                             onChange={event => handleInputChange(index, 'passoutyear', event.target.value)}
                                         />
@@ -116,7 +163,7 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={ education.percentage||''}
+                                            value={ education?.percentage||''}
                                             placeholder="% Achieved"
                                             onChange={event => handleInputChange(index, 'percentage', event.target.value)}
                                         />
@@ -125,8 +172,8 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
                                         <input
                                             className="textbox"
                                             type="file"
-                                            value={ education.edu_certificate||''}
-                                            onChange={event => handleInputChange(index, 'edu_certificate', event.target.files[0])}
+                                            value={ education?.edu_certificate||''}
+                                            onChange={event => handleFileGettingInput(index, 'edu_certificate', event.target.files[0])}
                                         />
                                     </td>
                                 </tr>
@@ -147,9 +194,9 @@ const Education = ({ educationinfo,educationDetails,setEducationDetails }) => {
 };
 
 Education.propTypes = {
-    educationinfo: propTypes.object.isRequired,
-    educationDetails: propTypes.object.isRequired,
-    setEducationDetails: propTypes.object.isRequired
+    educationinfo: propTypes.array.isRequired,
+    setEducationinfo: propTypes.func.isRequired,
+    userId: propTypes.number.isrequired
 };
 
 export default Education;

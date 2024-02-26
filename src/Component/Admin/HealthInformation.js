@@ -1,34 +1,70 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [0,1,2,3] }] */
 import React, { useState,useEffect } from 'react';
 import '../../Styles/healthInformation.css';
 import { LiaCloudUploadAltSolid } from 'react-icons/lia';
+import * as Endpoint from '../../Entities/Endpoint';
+import axios from 'axios';
 import propTypes from 'prop-types';
 
-const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformationData }) => {
+const HealthInformation = ({ healthInformation,setHealthInformation,userId }) => {
 
-    useEffect(() => {
-        if (healthInfo) {
-            setHealthInformationData(healthInfo);
-        }
-    }, [healthInfo]);
-
-    const [ covidVaccine, setCovidVaccine ] = useState('');
     const [ vaccineCertificate, setVaccineCertificate ] = useState(null);
     const [ validationErrors, setValidationErrors ] = useState({
         covidVaccine: '',
         vaccine_certificate: ''
     });
 
-    const validateVaccinationStatus = () => {
-        if (!covidVaccine) {
-            setValidationErrors(prevErrors => ({
-                ...prevErrors,
-                covidVaccine: 'Please select your vaccination status.'
-            }));
-            return false;
+    console.log('healthInformation',healthInformation);
+    useEffect(() => {
+        if (userId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${userId}`)
+                .then(response => {
+                    setHealthInformation(response.data);
+                })
+                .catch(error => { 
+                    console.error('Error saving data healthinfo:', error);
+                    
+                });
+
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/VaccinationStatus`)
+                .then(response => {
+                    setHealthInformation(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching vaccination status:', error);
+                });
+        }},[userId])
+
+    useEffect(() => {
+        if (healthInformation) {
+            setHealthInformation({
+                specific_health_condition: '',
+                allergies:'',
+                surgery: false,
+                surgery_explaination: '',
+                night_shifts: false,
+                disability: false,
+                disability_explanation: '',
+                covidVaccine: 1,
+                vaccine_certificate: '',
+                health_documents: ''
+            });
         }
-        setValidationErrors(prevErrors => ({ ...prevErrors, covidVaccine: '' }));
-        return true;
-    };
+    },[])
+
+    
+
+    // const validateVaccinationStatus = () => {
+    //     if (!covidVaccine) {
+    //         setValidationErrors(prevErrors => ({
+    //             ...prevErrors,
+    //             covidVaccine: 'Please select your vaccination status.'
+    //         }));
+    //         return false;
+    //     }
+    //     setValidationErrors(prevErrors => ({ ...prevErrors, covidVaccine: '' }));
+    //     return true;
+    // };
     
     const validateVaccineCertificate = () => {
         if (!vaccineCertificate) {
@@ -42,9 +78,11 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
         return true;
     };
 
-    const handleVaccinationStatusChange = event => {
-        setCovidVaccine(event.target.value);
-        validateVaccinationStatus();
+    const handleVaccinationStatusChange = value => {
+        setHealthInformation(prevState => ({
+            ...prevState,
+            covidVaccine: value
+        }));
         
         setValidationErrors(prevErrors => ({
             ...prevErrors,
@@ -60,22 +98,23 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
     };
     
     const handleRecentSurgeryChange = event => {
-        const value = event.target.id === 'no'; 
+        const value = event.target.id; 
 
         handleInputChange('surgery', value);
     };
     const handleWorkInRotationalShiftsChange = event => {
-        const value = event.target.id === 'no';
+        const value = event.target.id;
 
         handleInputChange('night_shifts', value);
     };
     const handleDisabilitiesChange = event => {
-        const value = event.target.id === 'yes'; 
+        const value = event.target.id; 
 
         handleInputChange('disability', value);
     };
+
     const handleInputChange = (field, value) => {
-        setHealthInformationData(prevData => ({
+        setHealthInformation(prevData => ({
             ...prevData,
             [field]: value
         }));
@@ -93,7 +132,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                             type="text"
                             placeholder="Answer"
                             className="textbox"
-                            value={healthInformationData.specific_health_condition ||  '' }
+                            value={healthInformation?.specific_health_condition ||  '' }
                             onChange={event => handleInputChange('specific_health_condition', event.target.value)}
                         />     
                     </div>
@@ -105,7 +144,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                             type="text"
                             placeholder="Answer"
                             className="textbox"
-                            value={healthInformationData.allergies|| ''}
+                            value={healthInformation?.allergies|| ''}
                             onChange={event => handleInputChange('allergies', event.target.value)}
                         />
                     </div>
@@ -122,7 +161,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={healthInformationData.surgery|| '' }
+                                checked={healthInformation?.surgery|| '' }
                             />
                             <label htmlFor="yes">Yes</label>
                         </div>
@@ -133,7 +172,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleRecentSurgeryChange}
-                                checked={!healthInformationData.surgery|| '' }
+                                checked={!healthInformation?.surgery|| '' }
                             />
                             <label htmlFor="no">No</label>
                         </div>
@@ -148,7 +187,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                             type="text"
                             placeholder="About Surgery"
                             className="textbox2"
-                            value={healthInformationData.surgery_explaination||''}
+                            value={healthInformation?.surgery_explaination||''}
                             onChange={event => handleInputChange('surgery_explaination', event.target.value)}
                         />
                     </div>
@@ -165,7 +204,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={healthInformationData.night_shifts|| '' }
+                                checked={healthInformation?.night_shifts|| '' }
                             />
                             <label htmlFor="yes">Yes</label>
                         </div>
@@ -176,7 +215,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleWorkInRotationalShiftsChange}
-                                checked={!healthInformationData.night_shifts|| '' }
+                                checked={!healthInformation?.night_shifts|| '' }
                             />
                             <label htmlFor="no">No</label>
                         </div>
@@ -194,7 +233,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                                 id="yes"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={healthInformationData.disability|| '' || healthInfo?.disability}
+                                checked={healthInformation?.disability|| ''}
                             />
                             <label htmlFor="yes">Yes</label>
                         </div>
@@ -205,7 +244,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                                 id="no"
                                 className="radiodesign"
                                 onChange={handleDisabilitiesChange}
-                                checked={!healthInformationData.disability|| '' || !healthInfo?.disability }
+                                checked={!healthInformation?.disability|| '' }
                             />
                             <label htmlFor="no">No</label>
                         </div>
@@ -218,7 +257,7 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                             type="text"
                             placeholder="About disability"
                             className="textbox2"
-                            value={healthInfo?.disability_explanation}
+                            value={healthInformation?.disability_explanation}
                             onChange={event => handleInputChange('disability_explanation', event.target.value)}
                         />  
                     </div>
@@ -229,21 +268,36 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
                     <h6>COVID Vaccination Status <span className="validation">*</span></h6>
                     <div className="radiospace2 col-10">
                         <div>
-                            <input type="radio" name="vaccination" id="fully" className="radiodesign" 
-                                checked={healthInformationData.covidVaccine|| '' || healthInfo?.covidVaccine}
-                                onChange={handleVaccinationStatusChange} />
+                            <input 
+                                type="radio" 
+                                name="vaccination" 
+                                id="fully" 
+                                className="radiodesign" 
+                                checked={healthInformation.covidVaccine === 2} 
+                                onChange={() => handleVaccinationStatusChange(2)}
+                            />
                             <h6 htmlFor="fully">Fully</h6>
                         </div>
                         <div>
-                            <input type="radio" name="vaccination" id="patially" className="radiodesign"  
-                                checked={healthInformationData.covidVaccine|| '' || healthInfo?.covidVaccine}
-                                onChange={handleVaccinationStatusChange} />
+                            <input 
+                                type="radio" 
+                                name="vaccination" 
+                                id="partially" 
+                                className="radiodesign" 
+                                checked={healthInformation.covidVaccine === 1}
+                                onChange={() => handleVaccinationStatusChange(1)} 
+                            />
                             <h6 htmlFor="patially">Partially</h6>
                         </div>
                         <div>
-                            <input type="radio" name="vaccination" id="not vaccinated" className="radiodesign"  
-                                checked={healthInformationData.covidVaccine|| '' || healthInfo?.covidVaccine}
-                                onChange={handleVaccinationStatusChange}/>
+                            <input 
+                                type="radio" 
+                                name="vaccination" 
+                                id="not vaccinated" 
+                                className="radiodesign" 
+                                checked={healthInformation.covidVaccine === 3}
+                                onChange={() => handleVaccinationStatusChange(3)}
+                            />
                             <h6 htmlFor="not vaccinated">Not Vaccinated</h6>
                         </div>
                     </div>
@@ -283,9 +337,9 @@ const HealthInformation = ({ healthInfo,healthInformationData,setHealthInformati
 };
 
 HealthInformation.propTypes = {
-    healthInfo: propTypes.object.isRequired,
-    healthInformationData: propTypes.object.isRequired,
-    setHealthInformationData: propTypes.object.isRequired
+    healthInformation: propTypes.object.isRequired,
+    setHealthInformation: propTypes.object.isRequired,
+    userId: propTypes.number.isrequired
 };
 
 export default HealthInformation;

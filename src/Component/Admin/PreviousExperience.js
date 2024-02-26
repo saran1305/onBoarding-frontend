@@ -1,18 +1,55 @@
 import React, { useEffect } from 'react';
 import '../../Styles/previousExperience.css';
+import * as Endpoint from '../../Entities/Endpoint';
+import axios from 'axios';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExperience,setPreviousExperience,reference,setReference }) => {
+const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference,userId }) => {
 
     useEffect(() => {
-        if (previousExperienceinfo && previousExperienceinfo.length > 0) {
-            setPreviousExperience(previousExperienceinfo);
-        }
-        if (referenceinfo) {
-            setReference(referenceinfo);
-        }
-    }, [ previousExperienceinfo,referenceinfo ]);
+        if (userId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${userId}`)
+                .then(response => {
+                    setPreviousExperience(response.data);
+                })
+                .catch(error => { 
+                    console.error('Error saving data:', error);
+                    
+                });
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${userId}`)
+                .then(response => {
+                    setReference(response.data);
+                })
+                .catch(error => { 
+                    console.error('Error saving data:', error);
+                    
+                });
+        }},[userId])
+        
+    useEffect(() => {
+        if (previousExperience && previousExperience?.length == 0) {
+            setPreviousExperience([{
+                company_name: '',
+                designation: '',
+                startDate: '',
+                endDate: '',
+                reporting_to: '',
+                reason: '',
+                location: '',
+                exp_Certificate: ''
+            }])
+            if (reference) {
+                setReference({
+                    referral_name: '',
+                    designation: '',
+                    company_name: '',
+                    contact_number: 0,
+                    email_Id:'',
+                    authorize: true
+                });
+            }
+        }},[])
 
     const handleAddPreviousExperience = () => {
         setPreviousExperience(prevDetails => [
@@ -33,20 +70,33 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
 
     const handleInputChange = (index, field, value, type = 'previousExperience') => {
         if (type === 'previousExperience') {
-            setPreviousExperience(prevDetails => {
-                const newDetails = [...prevDetails];
-
-                newDetails[index][field] = value;
-                return newDetails;
-            });
+            const update = previousExperience?.map((experience, idx) => {
+                if (index === idx) {
+                    return { ...experience, [field]: value }
+                } else {
+                    return { ...experience }
+                }
+            })
+    
+            setPreviousExperience(update)
         }
     };
-    
+    const handleInputChangeRef = (field, value) => {
+        setReference(prevReference => ({
+            ...prevReference,
+            [field]: value
+        }));
+    };
+
     const handleCheckboxChange = event => {
         const { checked } = event.target;
 
-        setReference(prevRef => prevRef.map(reference => ({ ...reference, authorize: checked })));
+        setReference(prevReference => ({
+            ...prevReference,
+            authorize: checked
+        }));
     };
+    
     
     return (
         <div className="previousExp">
@@ -70,7 +120,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={experience.company_name||''}
+                                            value={experience?.company_name||''}
                                             placeholder="Name"
                                             onChange={event => handleInputChange(index, 'company_name', event.target.value)}
                                         />
@@ -79,7 +129,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={experience.designation||''}
+                                            value={experience?.designation||''}
                                             placeholder="Name"
                                             onChange={event => handleInputChange(index, 'designation', event.target.value)}
                                         />
@@ -88,7 +138,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                         <input
                                             className="textbox"
                                             type="date"
-                                            value={experience.startDate||''}
+                                            value={experience?.startDate||''}
                                             placeholder="From"
                                             onChange={event => handleInputChange(index, 'startDate', event.target.value)}
                                         />
@@ -97,7 +147,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                         <input
                                             className="textbox"
                                             type="date"
-                                            value={experience.endDate||''}
+                                            value={experience?.endDate||''}
                                             placeholder="To"
                                             onChange={event => handleInputChange(index, 'endDate', event.target.value)}
                                         />
@@ -106,7 +156,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={experience.reporting_to||''}
+                                            value={experience?.reporting_to||''}
                                             placeholder="Name"
                                             onChange={event => handleInputChange(index, 'reporting_to', event.target.value)}
                                         />
@@ -115,7 +165,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={experience.reason||''}
+                                            value={experience?.reason||''}
                                             placeholder="Reason"
                                             onChange={event => handleInputChange(index, 'reason', event.target.value)}
                                         />
@@ -124,7 +174,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                         <input
                                             className="textbox"
                                             type="text"
-                                            value={experience.location||''}
+                                            value={experience?.location||''}
                                             placeholder="Name"
                                             onChange={event => handleInputChange(index, 'location', event.target.value)}
                                         />
@@ -132,7 +182,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                                     <td><button 
                                         className="choosefile"
                                         type="file"
-                                        value={experience.exp_Certificate ||''}
+                                        value={experience?.exp_Certificate ||''}
                                         placeholder="Proof of Attachments"
                                         onChange={event => handleInputChange(index, 'exp_Certificate', event.target.files[0])}
                                     
@@ -165,41 +215,41 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                             <td><input
                                 className="textbox"
                                 type="text"
-                                value={reference.referral_name||''}
+                                value={reference?.referral_name||''}
                                 placeholder="Name"
-                                onChange={event => handleInputChange( 'referral_name', event.target.value)}
+                                onChange={event => handleInputChangeRef( 'referral_name', event.target.value)}
                             />
                             </td>
                             <td><input
                                 className="textbox"
                                 type="text"
-                                value={reference.designation ||''}
+                                value={reference?.designation ||''}
                                 placeholder="Role"
-                                onChange={event => handleInputChange('designation', event.target.value)}
+                                onChange={event => handleInputChangeRef('designation', event.target.value)}
                             />
                             </td>
                             <td><input
                                 className="textbox"
                                 type="text"
-                                value={reference.company_name||''}
+                                value={reference?.company_name||''}
                                 placeholder="Name"
-                                onChange={event => handleInputChange('company_name', event.target.value )}
+                                onChange={event => handleInputChangeRef('company_name', event.target.value )}
                             />
                             </td>
                             <td><input
                                 className="textbox"
                                 type="number"
-                                value={reference.contact_number || ''}
+                                value={reference?.contact_number || ''}
                                 placeholder="Contact No."
-                                onChange={event => handleInputChange( 'contact_number', event.target.value)}
+                                onChange={event => handleInputChangeRef( 'contact_number', event.target.value)}
                             />
                             </td>
                             <td><input
                                 className="textbox"
                                 type="text"
-                                value={reference.email_Id ||''}
+                                value={reference?.email_Id ||''}
                                 placeholder="Name"
-                                onChange={event => handleInputChange( 'email_Id', event.target.value)}
+                                onChange={event => handleInputChangeRef( 'email_Id', event.target.value)}
                             />
                             </td>
                         </tr>
@@ -208,7 +258,7 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
                 </table>
                 <div><input
                     type="checkbox"
-                    checked={reference.length > 0 && reference[0].authorize}
+                    checked={reference.authorize}
                     onChange={handleCheckboxChange}
                     className="checkbox"
                 />I hereby authorize Ideassion Tech to connect with my reference or my background verification.</div>
@@ -218,12 +268,11 @@ const PreviousExperience = ({ previousExperienceinfo,referenceinfo,previousExper
 };
 
 PreviousExperience.propTypes = {
-    referenceinfo: propTypes.object.isRequired,
-    previousExperienceinfo: propTypes.object.isRequired,
-    previousExperience:propTypes.object.isRequired,
-    setPreviousExperience:propTypes.object.isRequired,
+    previousExperience:propTypes.array.isRequired,
+    setPreviousExperience:propTypes.func.isRequired,
     reference:propTypes.object.isRequired,
-    setReference:propTypes.object.isRequired
+    setReference:propTypes.func.isRequired,
+    userId: propTypes.number.isrequired
 };
 
 export default PreviousExperience;
