@@ -82,7 +82,7 @@ const Login = ({ toastContainer }) => {
         //     return;
         // }
         try {
-            const responseLogin = await axios.post(`${Endpoint.API_ENDPOINT}/api/Login/AuthenticateEmp`, null, {
+            const responseLogin = await axios.post(`${Endpoint.API_ENDPOINT}/Login/AuthenticateEmp`, null, {
                 params: {
                     emailid: email,
                     password: password
