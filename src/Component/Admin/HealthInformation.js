@@ -6,7 +6,7 @@ import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
 import propTypes from 'prop-types';
 
-const HealthInformation = ({ healthInformation,setHealthInformation,userId }) => {
+const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => {
 
     const [ vaccineCertificate, setVaccineCertificate ] = useState(null);
     const [ validationErrors, setValidationErrors ] = useState({
@@ -16,8 +16,8 @@ const HealthInformation = ({ healthInformation,setHealthInformation,userId }) =>
 
     console.log('healthInformation',healthInformation);
     useEffect(() => {
-        if (userId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${userId}`)
+        if (genId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${genId}`)
                 .then(response => {
                     setHealthInformation(response.data);
                 })
@@ -33,7 +33,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,userId }) =>
                 .catch(error => {
                     console.error('Error fetching vaccination status:', error);
                 });
-        }},[userId])
+        }},[genId])
 
     useEffect(() => {
         if (healthInformation) {
@@ -92,7 +92,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,userId }) =>
     
     const handleVaccineCertificateChange = event => {
         const selectedFile = event.target.files[0];
-    
+        
         setVaccineCertificate(selectedFile);
         validateVaccineCertificate();
     };
@@ -339,7 +339,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,userId }) =>
 HealthInformation.propTypes = {
     healthInformation: propTypes.object.isRequired,
     setHealthInformation: propTypes.object.isRequired,
-    userId: propTypes.number.isrequired
+    genId: propTypes.number.isRequired
 };
 
 export default HealthInformation;

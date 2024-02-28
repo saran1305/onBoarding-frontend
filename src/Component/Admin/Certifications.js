@@ -5,21 +5,20 @@ import axios from 'axios';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const Certifications = ({ certifications,setCertifications,userId }) => {
-    // const [ fileName, setFileName ] = useState({ proof: '' })
+const Certifications = ({ certifications,setCertifications,genId }) => {
 
     useEffect(() => {
-        if (userId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${userId}`)
+        if (genId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${genId}`)
                 .then(response => {
                     setCertifications(response.data);
-                    console.log('certifications in UserOnboarding: ',response.data);
+                    console.log('certifications get: ',response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data:', error);
                     
                 });
-        }},[userId])
+        }},[genId])
 
     useEffect(() => {
         if (certifications && certifications?.length === 0) {
@@ -32,7 +31,7 @@ const Certifications = ({ certifications,setCertifications,userId }) => {
                 percentage: '',
                 proof:''
             }])
-        }},[])
+        }},[certifications])
 
     const handleAddCertifications = () => {
         setCertifications(prevDetails => [
@@ -153,7 +152,7 @@ const Certifications = ({ certifications,setCertifications,userId }) => {
                                             className="choosefile" 
                                             type="file"
                                             value={certifications?.proof || ''}
-                                            onChange={event => handleInputChange('proof', event.target.files[0])}
+                                            onChange={event => handleInputChange(index,'proof', event.target.files[0])}
                                         />
                                     </td>                            
                                 </tr>
@@ -174,7 +173,7 @@ const Certifications = ({ certifications,setCertifications,userId }) => {
 Certifications.propTypes = {
     certifications: propTypes.array.isRequired,
     setCertifications:  propTypes.func.isRequired,
-    userId: propTypes.number.isrequired
+    genId: propTypes.number.isRequired
 };
 
 export default Certifications;

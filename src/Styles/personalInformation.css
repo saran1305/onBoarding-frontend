@@ -65,7 +65,7 @@
     padding: 10px;
     margin-top: 10px;
     width: 250px;
-    height: 60px;
+    height: 90px;
     border-radius: 10px;
 }
 .personalinfo .typography p{
@@ -85,14 +85,6 @@
     letter-spacing: -0.01em;
     text-align: center;
     color: #CFCFCF;
-}
-.personalinfo .doc-box{
-    border: 2px dashed #71839B66;
-    padding: 10px;
-    margin-top: 10px;
-    width: 250px;
-    height: 90px;
-    border-radius: 10px;
 }
 .personalinfo .checkbox {
     margin-right: 10px;

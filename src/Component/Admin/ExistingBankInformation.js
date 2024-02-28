@@ -5,13 +5,13 @@ import { LiaCloudUploadAltSolid, LiaFileSolid } from 'react-icons/lia';
 import propTypes from 'prop-types';import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 
-const ExistingBankInformation = ({ existingbank,setExistingbank,userId }) => { 
+const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => { 
 
     const [ fileName, setFileName ] = useState({})
 
     useEffect(() => {
-        if (userId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${userId}`)
+        if (genId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${genId}`)
                 .then(response => {
                     setExistingbank(response.data);
                 })
@@ -19,8 +19,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,userId }) => {
                     console.error('Error saving data Existing bank infos :', error);
                     
                 });
-        }},[userId])
-
+        }},[genId])
 
     const handleInputChange = (field, value) => {
         setExistingbank(prevData => ({
@@ -36,12 +35,6 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,userId }) => {
         }));
     };
 
-    // const handleFileChange = event => {
-    //     setExistingbank(prevData => ({
-    //         ...prevData,
-    //         bank_Documents: event.target.files[0]
-    //     }));
-    // };
     const handleFileGettingInput = (field, file) => {
 
         setFileName({ ...fileName,bank_Documents: file.name })
@@ -194,6 +187,6 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,userId }) => {
 ExistingBankInformation.propTypes = {
     existingbank: propTypes.object.isRequired,
     setExistingbank: propTypes.func.isRequired,
-    userId: propTypes.number.isrequired
+    genId: propTypes.number.isRequired
 };
 export default ExistingBankInformation;

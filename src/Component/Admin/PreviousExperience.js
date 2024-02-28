@@ -5,11 +5,11 @@ import axios from 'axios';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference,userId }) => {
+const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference,genId }) => {
 
     useEffect(() => {
-        if (userId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${userId}`)
+        if (genId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${genId}`)
                 .then(response => {
                     setPreviousExperience(response.data);
                 })
@@ -17,7 +17,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     console.error('Error saving data:', error);
                     
                 });
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${userId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${genId}`)
                 .then(response => {
                     setReference(response.data);
                 })
@@ -25,7 +25,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     console.error('Error saving data:', error);
                     
                 });
-        }},[userId])
+        }},[genId])
         
     useEffect(() => {
         if (previousExperience && previousExperience?.length == 0) {
@@ -49,7 +49,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     authorize: true
                 });
             }
-        }},[])
+        }},[previousExperience])
 
     const handleAddPreviousExperience = () => {
         setPreviousExperience(prevDetails => [
@@ -96,7 +96,6 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
             authorize: checked
         }));
     };
-    
     
     return (
         <div className="previousExp">
@@ -272,7 +271,7 @@ PreviousExperience.propTypes = {
     setPreviousExperience:propTypes.func.isRequired,
     reference:propTypes.object.isRequired,
     setReference:propTypes.func.isRequired,
-    userId: propTypes.number.isrequired
+    genId: propTypes.number.isRequired
 };
 
 export default PreviousExperience;
