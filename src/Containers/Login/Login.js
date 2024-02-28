@@ -34,35 +34,18 @@ const Login = ({ toastContainer }) => {
         const inputEmail = event.target.value;
 
         setEmail(inputEmail);
-        // setEmailValid(event.target.value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.target.value));
         const isValid = validEmail(inputEmail);
 
         setEmailValid(isValid);
     };
     const validEmail = email =>{
-        // const rex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
         return validator.isEmail(email);
     };
+
     const handleShowForgotPasswordModal = async () => {
-        try {
-            const responseForgotPassword = await axios.post(`${Endpoint.API_ENDPOINT}/Login/ForgotPassword`, null, {
-                params: {
-                    emailId: email
-                }
-            });
-        
-            if (responseForgotPassword.status) {
-                toast.success('Forgot password request sent successfully');
-                setShowForgotPasswordModal(true);
-            } else {
-                toast.error('Error sending forgot password request');
-            }
-        } catch (error) {
-            console.error('Error sending forgot password request:', error);
-            toast.error('Error sending forgot password request');
-        }
+        setShowForgotPasswordModal(true);
     };
+    
     
     const handleCloseShowSecondModal = () => setShowSecondModal(false);
 
@@ -174,6 +157,7 @@ const Login = ({ toastContainer }) => {
                 handleCloseTwo={handleCloseShowSecondModal}
                 showThird={showThird}
                 setShowThird={setShowThird}
+                email={email}
             />
         </React.Fragment>
     );

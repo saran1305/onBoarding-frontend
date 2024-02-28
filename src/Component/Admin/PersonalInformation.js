@@ -9,7 +9,7 @@ import { IoMdAdd } from 'react-icons/io';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 // import { convertToBase64 } from '../../Utils/Util'
-const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => {
+const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId }) => {
 
     const [ martialStatus, setMartialstatus ] = useState([])
     const [ gender, setGender ] = useState([])
@@ -24,7 +24,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
 
     useEffect(() => {
         if (userId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${0}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${userId}`)
                 .then(response => {
                     setPersonalDetails(response.data);
                 })
@@ -66,12 +66,12 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
         if (Object.keys(personalDetails).length === 0) {
             setPersonalDetails({
                 result: {
-                    loginId: 0,
+                    loginId: userId,
+                    genId: genId,
                     generalVM: {
-                        genId: userId,
                         empname: '',
                         personal_Emailid: '',
-                        contact_no: 8056039856,
+                        contact_no: '',
                         dob: '',
                         nationality: '',
                         gender: '',
@@ -148,7 +148,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
             })
         }
 
-    }, [])
+    }, [personalDetails])
 
     const handleMembershipStatusChange = status => {
         setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, hobby: { ...personalDetails.result.hobby, professionalBody: status } } })
@@ -364,7 +364,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
                     <h6>Blood Group<span className="error"> * </span></h6>
                     <select className="textbox"
                         value={personalDetails?.result?.generalVM?.bloodGrp || ''}
-                        onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, bloodGroup: Number(value) } } })}
+                        onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, bloodGrp: Number(value) } } })}
                     >
                         {bloodGroup.length > 0 && bloodGroup.map(group => {
                             return <option key={group.id} value={group.id}> {group.name}</option>
@@ -493,7 +493,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
                         <th>Contact No</th>
                     </thead>
                     <tbody>
-                        {personalDetails?.result?.families.map((member, index) => (
+                        {personalDetails?.result?.families?.map((member, index) => (
                             <tr key={index}>
                                 <th>{member.relationship || (index === 0 ? 'Father' : index === 1 ? 'Mother' : index === 2 ? 'Spouse' : 'Child')}</th>
                                 <td><input type="text" className="textbox" placeholder="Name" value={member.name || ''} onChange={event => handleChange(index, 'name', event.target.value)}  /></td>                                
@@ -595,7 +595,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
                         <th>Contact Address</th>
                     </thead>
                     <tbody>
-                        {personalDetails?.result?.emergencies.map((relation, index) => (
+                        {personalDetails?.result?.emergencies?.map((relation, index) => (
                             <tr key={index}>
                                 <td>
                                     <select className="textbox" value={relation.relationship||''} onChange={event => handleEmergenciesChange(index, 'relationship', event.target.value)}>
@@ -624,7 +624,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
                     <div className="col-4 ">
                         <h6>aadhar<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails && personalDetails?.result?.requiredDocuments?.aadhar == '' ? (
+                            {personalDetails&& (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.aadhar == '' ) ? (
                                 <div>
                                     <input
                                         type="file"
@@ -648,7 +648,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
                     <div className="col-4 ">
                         <h6>PAN<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails && personalDetails?.result?.requiredDocuments?.pan == '' ? (
+                            {personalDetails&&( personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.pan == '' )? (
                                 <div>
                                     <input
                                         type="file"
@@ -669,7 +669,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
                     <div className="col-4 ">
                         <h6>Driver License<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails && personalDetails?.result?.requiredDocuments?.driving_license == '' ? (
+                            {personalDetails && (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.driving_license == '' )? (
                                 <div>
                                     <input
                                         type="file"
@@ -694,7 +694,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
                     <div className="col-4 ">
                         <h6>passport<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails && personalDetails?.result?.requiredDocuments?.passport == '' ? (
+                            {personalDetails &&(personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.passport == '') ?  (
                                 <div>
                                     <input
                                         type="file"
@@ -723,6 +723,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId }) => 
 PersonalInformation.propTypes = {
     personalDetails: propTypes.object.isRequired,
     setPersonalDetails: propTypes.object.isRequired,
-    userId: propTypes.number.isrequired
+    userId: propTypes.number.isRequired,
+    genId: propTypes.number.isRequired
 };
 export default PersonalInformation;

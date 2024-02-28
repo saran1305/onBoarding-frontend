@@ -1,16 +1,15 @@
-import React, { useState,useEffect } from 'react';
+import React, { useEffect } from 'react';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
 import '../../Styles/education.css';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const Education = ({ educationinfo,setEducationinfo,userId }) => {
-    const [ fileName, setFileName ] = useState({ edu_certificate: '' })
+const Education = ({ educationinfo,setEducationinfo,genId }) => {
 
     useEffect(() => {
-        if (userId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${userId}`)
+        if (genId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${genId}`)
                 .then(response => {
                     setEducationinfo(response.data);
                     console.log('Education in UserOnboarding: ',response.data); 
@@ -19,7 +18,7 @@ const Education = ({ educationinfo,setEducationinfo,userId }) => {
                     console.error('Error saving data:', error);
                 
                 });
-        }},[userId])
+        }},[genId])
 
     useEffect(() => {
         
@@ -64,25 +63,6 @@ const Education = ({ educationinfo,setEducationinfo,userId }) => {
         setEducationinfo(update)
     };
     
-    const handleFileGettingInput = (field, file) => {
-
-        setFileName({ ...fileName, edu_certificate: file.name })
-        
-        convertToBase64(file, base64String => {
-            setFileName({ edu_certificate: base64String })
-        })
-        return
-    };
-
-    const convertToBase64 = (file, callback) => {
-        const reader = new FileReader();
-
-        reader.onload = event => {
-            const result = event.target.result;
-
-            callback(result);
-        };
-        reader.readAsDataURL(file); };
 
     return (
         <div className="education">
@@ -173,7 +153,7 @@ const Education = ({ educationinfo,setEducationinfo,userId }) => {
                                             className="textbox"
                                             type="file"
                                             value={ education?.edu_certificate||''}
-                                            onChange={event => handleFileGettingInput(index, 'edu_certificate', event.target.files[0])}
+                                            onChange={event => handleInputChange(index,'edu_certificate', event.target.files[0])}
                                         />
                                     </td>
                                 </tr>
@@ -196,7 +176,7 @@ const Education = ({ educationinfo,setEducationinfo,userId }) => {
 Education.propTypes = {
     educationinfo: propTypes.array.isRequired,
     setEducationinfo: propTypes.func.isRequired,
-    userId: propTypes.number.isrequired
+    genId: propTypes.number.isRequired
 };
 
 export default Education;
