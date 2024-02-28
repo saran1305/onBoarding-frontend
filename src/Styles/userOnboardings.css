@@ -6,7 +6,7 @@
   align-items: center;
   padding: 10px;
   box-shadow: 0px 2px 4px 0px #00000040;
-  width: 1090px;
+  /* width: 95%; */
   height: 64px;
   margin: 26px 19px;
 }
@@ -22,8 +22,8 @@
   border-bottom: 2px solid #324054; 
   padding: 15px;
   margin: 20px;
-  width: 1080px;
-  height: 470px;
+  /* width: 95%; */
+  height: 75vh;
   overflow-y: auto;
 }
 .label{
@@ -114,7 +114,7 @@
   margin-left: 20px;
   margin-right: 20px;
 }
-.submitbutton, .savebutton, .nextbutton{
+.submitbutton, .nextbutton{
   width: 130px;
   height:40px;
   padding: 10px, 20px;
@@ -216,7 +216,7 @@
 }
 .statusdesign img{
   width: 400px;
-height: 290px;
+  height: 290px;
 }
 .iconFormLayout{
   width: 60px;
@@ -244,4 +244,13 @@ height: 290px;
   width: 24px;
   height: 24px;
   padding: 4px;
+}
+
+.uploadDocumentIcon {
+  width: 50%;
+  height: 50%;
+}
+
+.inline {
+  display: inline-flex
 }

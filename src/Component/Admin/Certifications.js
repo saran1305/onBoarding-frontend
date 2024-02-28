@@ -1,23 +1,39 @@
-import React, { useState } from 'react';
+import React,{ useEffect } from 'react';
 import '../../Styles/certification.css'
-import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
+import axios from 'axios';
 import { IoMdAdd } from 'react-icons/io';
-import { TiTick } from 'react-icons/ti';
 import propTypes from 'prop-types';
 
-const Certifications = ({ componentView, certificationsinfo }) => {
-    const [ certifications, setCertifications ] = useState([
-        {
-            certificate_name: '',
-            issued_by: '',
-            valid_till: '',
-            specialization: '',
-            duration: '',
-            percentage: '',
-            proof:null
-        }
-    ]);
+const Certifications = ({ certifications,setCertifications,userId }) => {
+    // const [ fileName, setFileName ] = useState({ proof: '' })
+
+    useEffect(() => {
+        if (userId) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${userId}`)
+                .then(response => {
+                    setCertifications(response.data);
+                    console.log('certifications in UserOnboarding: ',response.data);
+                })
+                .catch(error => { 
+                    console.error('Error saving data:', error);
+                    
+                });
+        }},[userId])
+
+    useEffect(() => {
+        if (certifications && certifications?.length === 0) {
+            setCertifications([{
+                certificate_name: '',
+                issued_by: '',
+                valid_till: '',
+                specialization: '',
+                duration: 0,
+                percentage: '',
+                proof:''
+            }])
+        }},[])
+
     const handleAddCertifications = () => {
         setCertifications(prevDetails => [
             ...prevDetails,
@@ -26,49 +42,24 @@ const Certifications = ({ componentView, certificationsinfo }) => {
                 issued_by: '',
                 valid_till: '',
                 specialization: '',
-                duration: '',
+                duration: 0,
                 percentage: '',
-                proof:null
+                proof:''
             }
         ]);
     };
-    const [ draftSaved, setDraftSaved ] = useState(false);
 
+   
     const handleInputChange = (index, field, value) => {
-        setCertifications(prevDetails => {
-            const newDetails = [...prevDetails];
-    
-            if (field === 'proof') {
-                const file = value;
-    
-                if (newDetails[index]) { 
-                    newDetails[index][field] = file.name;
-                    newDetails[index]['file'] = file;
-                }
+        const update = certifications?.map((certification, idx) => {
+            if (index === idx) {
+                return { ...certification, [field]: value }
             } else {
-                if (newDetails[index]) { 
-                    newDetails[index][field] = value;
-                }
+                return { ...certification }
             }
-            return newDetails;
-        });
-        setDraftSaved(false);
-    };
-    
+        })
 
-    const handleSave = async () => {
-        try {
-            const response = await axios.post(
-                `${Endpoint.API_ENDPOINT}/api/User/add-certificate/1`,
-                certifications, 
-                { headers: { 'Content-Type': 'application/json' } }
-            );
-    
-            console.log('Data saved successfully:', response.data);
-            setDraftSaved(true);
-        } catch (error) {
-            console.error('Error saving data in Certification:', error);
-        }
+        setCertifications(update)
     };
 
     return (
@@ -86,106 +77,104 @@ const Certifications = ({ componentView, certificationsinfo }) => {
                         <th>Proof of Attachments</th>
                     </thead>
                     <tbody>
-                        {certifications.map((certifications, index) => (
-                            <tr key={index}>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="text"
-                                        value={certifications.certificate_name || certificationsinfo?.certificate_name }
-                                        placeholder="Name"
-                                        onChange={event => handleInputChange(index, 'certificate_name', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="text"
-                                        value={certifications.issued_by|| certificationsinfo?.issued_by}
-                                        placeholder="Issuer"
-                                        onChange={event => handleInputChange(index, 'issued_by', event.target.value)}
-                                        disabled={componentView}/>
-                                </td>
-                                <td>
-                                    <input
-                                        className="textbox"
-                                        type="date"
-                                        value={certifications.valid_till|| certificationsinfo?.valid_till}
-                                        placeholder="01/01/2024"
-                                        onChange={event => handleInputChange(index, 'valid_till', event.target.value)}
-                                        disabled={componentView} />
-                                </td>
-                                <td>
-                                    <select
-                                        className="textbox"
-                                        value={certifications.duration|| certificationsinfo?.duration}
-                                        onChange={event => handleInputChange(index, 'duration', event.target.value)}
-                                        disabled={componentView}>
-                                        <option value="" disabled>
-                                            Select
-                                        </option>
-                                        {Array.from({ length: 20 }, (_, i) => new Date().getFullYear() - i).map(year => (
-                                            <option key={year} value={year}>
-                                                {year}
+                        {certifications.map((certifications, index) => {
+                            return(
+                                <tr key={index}>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            value={certifications?.certificate_name||''}
+                                            placeholder="Name"
+                                            onChange={event => handleInputChange(index, 'certificate_name', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            value={certifications?.issued_by||''}
+                                            placeholder="Issuer"
+                                            onChange={event => handleInputChange(index, 'issued_by', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="date"
+                                            value={certifications?.valid_till||''}
+                                            placeholder="01/01/2024"
+                                            onChange={event => handleInputChange(index, 'valid_till', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <select
+                                            className="textbox"
+                                            value={certifications?.duration||''}
+                                            onChange={event => handleInputChange(index, 'duration', event.target.value)}
+                                        >
+                                            <option value="" disabled>
+                                                Select
                                             </option>
-                                        ))}
-                                    </select>
-                                </td>
-                                <td>
-                                    <select
-                                        className="textbox"
-                                        value={certifications.specialization|| certificationsinfo?.specialization}
-                                        onChange={event => handleInputChange(index, 'specialization', event.target.value)}
-                                        disabled={componentView}>
-                                        <option>Computer Science</option>
-                                        <option>Computer Application</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select
-                                        className="textbox"
-                                        value={certifications.percentage|| certificationsinfo?.percentage}
-                                        onChange={event => handleInputChange(index, 'percentage', event.target.value)}
-                                        disabled={componentView}>
-                                        <option value="" disabled>
-                                            Select
-                                        </option>
-                                        {Array.from({ length: 101 }, (_, i) => i).map(percentage => (
-                                            <option key={percentage} value={percentage}>
-                                                {percentage}%
+                                            {Array.from({ length: 20 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                                                <option key={year} value={year}>
+                                                    {year}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="textbox"
+                                            type="text"
+                                            placeholder="Specialization"
+                                            value={certifications?.specialization||''}
+                                            onChange={event => handleInputChange(index, 'specialization', event.target.value)}
+                                        />
+                                    </td>
+                                    <td>
+                                        <select
+                                            className="textbox"
+                                            value={certifications?.percentage||''}
+                                            onChange={event => handleInputChange(index, 'percentage', event.target.value)}
+                                        >
+                                            <option value="" disabled>
+                                                Select
                                             </option>
-                                        ))}
-                                    </select>
-                                </td>
-                                <td>
-                                    <input
-                                        className="choosefile" 
-                                        type="file"
-                                        value={certifications.proof|| certificationsinfo?.proof}
-                                        onChange={event => handleInputChange('proof', event.target.files[0])}
-                                        disabled={componentView}
-                                    />
-                                </td>                            
-                            </tr>
-                        ))}
+                                            {Array.from({ length: 101 }, (_, i) => i).map(percentage => (
+                                                <option key={percentage} value={percentage}>
+                                                    {percentage}%
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input
+                                            className="choosefile" 
+                                            type="file"
+                                            value={certifications?.proof || ''}
+                                            onChange={event => handleInputChange('proof', event.target.files[0])}
+                                        />
+                                    </td>                            
+                                </tr>
+                            )})}
 
                     </tbody>
                     <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                     <tr>
-                        <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddCertifications} disabled={componentView}><IoMdAdd className="addIcon"/></button></td>
+                        <td colSpan="8" className="buttonrow"><button className="addanother" onClick={handleAddCertifications} ><IoMdAdd className="addIcon"/></button></td>
                     </tr >
                     <tr><td colSpan="8" className="buttonrow"><hr /></td></tr>
                 </table>
             </div>  
-            {draftSaved && <span className="draftSavedText"><TiTick className="icontick"/>draft Saved</span>}
-            <button onClick={handleSave} disabled={componentView}>Save</button>
         </div>
     );
 };
 
 Certifications.propTypes = {
-    certificationsinfo: propTypes.array.isRequired,
-    componentView: propTypes.bool.isRequired
+    certifications: propTypes.array.isRequired,
+    setCertifications:  propTypes.func.isRequired,
+    userId: propTypes.number.isrequired
 };
 
 export default Certifications;

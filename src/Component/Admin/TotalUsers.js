@@ -41,7 +41,7 @@ const TotalUsers = () => {
     // }, [searchInput]);
     
     useEffect (() => {
-        axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/AdminDashboard`)
+        axios.get(`${Endpoint.API_ENDPOINT}/Admin/api/AdminDashboard`)
             .then(response => {
                 console.log('Data getted successflly', response.data);
                 

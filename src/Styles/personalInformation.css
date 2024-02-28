@@ -115,3 +115,8 @@
     width: 14px;
     height: 14px;
   }
+
+.personalinfo .profile-picture {
+    height: 100%;
+    width: 100%;
+}

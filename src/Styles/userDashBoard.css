@@ -13,20 +13,36 @@
  }
  .card p{
     font-weight: 600;
-    /* margin-left: auto;
-    margin-right: auto; */
     margin-bottom: 10px;
  }
+ .userDashBoard .textalign{
+    margin-left: auto;
+    margin-right: auto;
+ }
  .innerlayout{
-     width: 24px;
-     height: 24px;
-     padding: 2px;
-     margin-left: 120px;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    margin-left: 150px;
  }
  .insidelayout{
-     background: #E6C10A;
-     width: 20px;
-     height: 20px;
-     color: white;
-     border-radius: 10px;
+    background: #E6C10A;
+    width: 25px;
+    height: 25px;
+    color: white;
+    border-radius: 15px;
  }
+ .insidelayout2{
+    background: #4EB699;
+    width: 25px;
+    height: 25px;
+    color: white;
+    border-radius: 15px;
+}
+.innerlayout3{
+    background: #D0004B;
+    width: 25px;
+    height: 25px;
+    color: white;
+    border-radius: 15px;
+}

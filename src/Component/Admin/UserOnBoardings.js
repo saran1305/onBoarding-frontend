@@ -19,13 +19,13 @@ import HealthInformation from './HealthInformation';
 import ExistingBankInformation from './ExistingBankInformation';
 
 const UserOnboardings = () => {
+    const [ userData, setUserData ] = useState(null);
     const [ activeIndex, setActiveIndex ] = useState(0);
     const [ showModal, setShowModal ] = useState(false);
     const [ formData, setFormData ] = useState({ name: '', date: '' });
     const [ validationError, setValidationError ] = useState({});
     const [ submissionStatus, setSubmissionStatus ] = useState(false);
     const [ componentView, setComponentView ] = useState(false);
-
     const componentOrder = [
         'Personal Information',
         'Education',
@@ -34,92 +34,107 @@ const UserOnboardings = () => {
         'Health Information',
         'Existing Bank Information'
     ];
-    const [ personalinfo, setPersonalinfo ] = useState({});
-    const [ educationinfo, setEducationinfo ] = useState({});
-    const [ certificationsinfo, setCertificationsinfo ]= useState({});
-    const [ previousExperienceinfo, setPreviousExperienceinfo ]= useState({});
-    const [ healthInfo, setHealthInfo ]= useState({});
     const [ existingBankInfo, setExistingBankInfo ]= useState({});
-    const [ reference, setReference ]= useState({});
+
+    const [ personalDetails, setPersonalDetails ] = useState({});
+    const [ educationinfo, setEducationinfo ] = useState([]);
+    const [ certifications, setCertifications ] = useState([]);
+    const [ previousExperience, setPreviousExperience ] = useState([]);
+    const [ reference, setReference ] = useState({});
+    const [ healthInformation, setHealthInformation ] = useState({});
+    const [ existingbank, setExistingbank ] = useState({});
+
 
     useEffect(() => {
+        const storedUserData = JSON.parse(localStorage.getItem('userData'));
 
-        setActiveIndex(0);
-        axios.get(`${Endpoint.API_ENDPOINT}/personalinfo`)
-            .then(response => {
-                setPersonalinfo(response.data[0]);
-                console.log('Personal Info in UserOnboarding:', response.data[0] ); 
-            })
-            .catch(error => {
-                console.error('Error loading data:', error);
-            });
+        if (storedUserData) {
+            setUserData(storedUserData);
+            const userId = Number(storedUserData.empId); 
 
-        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-education/1`)
-            .then(response => {
-                setEducationinfo(response.data[0]);
-                console.log('Education in UserOnboarding: ',response.data);
-            })
-            .catch(error => { 
-                console.error('Error saving data:', error);
+            setActiveIndex(0);
+
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${userId}`)
+                .then(response => {
+                    setExistingBankInfo(response.data);
+                })
+                .catch(error => { 
+                    console.error('Error saving data Existing bank infos :', error);
                     
-            });
+                });
+        }}, []); 
 
-        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-certificate/1`)
-            .then(response => {
-                setCertificationsinfo(response.data[0]);
-                console.log('certifications in UserOnboarding: ',response.data[0]);
-            })
-            .catch(error => { 
-                console.error('Error saving data:', error);
-                    
-            });
 
-        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-experience/1`)
-            .then(response => {
-                setPreviousExperienceinfo(response.data[0]);
-                console.log('previousexperience in UserOnboarding: ',response.data[0]);
-            })
-            .catch(error => { 
-                console.error('Error saving data:', error);
-                    
-            });
-        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-reference/1`)
-            .then(response => {
-                setReference(response.data);
-                console.log('reference in UserOnboarding: ',response.data);
-            })
-            .catch(error => { 
-                console.error('Error saving data:', error);
-                    
-            });
-
-        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-health/1`)
-            .then(response => {
-                setHealthInfo(response.data);
-                console.log('HealthInfo in UserOnboarding: ',response.data);
-            })
-            .catch(error => { 
-                console.error('Error saving data healthinfo:', error);
-                    
-            });
-
-        axios.get(`${Endpoint.API_ENDPOINT}/api/User/get-existing-bank/1`)
-            .then(response => {
-                setExistingBankInfo(response.data);
-                console.log('existingbankinfo in UserOnboarding: ',response.data);
-            })
-            .catch(error => { 
-                console.error('Error saving data Existing bank infos :', error);
-                    
-            });
-    }, [componentView]); 
-
-    const handleNext = () => {
+    const handleNext =async () => {
         if (activeIndex < componentOrder.length - 1) {
             setActiveIndex(prevIndex => prevIndex + 1);
         }
-    };
+        const userId = Number(userData.empId);
 
+        const activeKey = componentOrder[activeIndex];
+
+        if(activeKey === 'Personal Information'){
+            try{
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, personalDetails, 
+                    { headers: { 'Content-Type': 'application/json' } });
+
+                console.log('Education data saved successfully:', response.data);
+            }catch (error) {
+                console.error('Error in saving Education data:', error);
+            }
+        }
+        else if (activeKey === 'Education') {
+            try{
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${userId}`, educationinfo, 
+                    { headers: { 'Content-Type': 'application/json' } });
+
+                console.log('Education data saved successfully:', response.data);
+            }catch (error) {
+                console.error('Error in saving Education data:', error);
+            }
+        } else if (activeKey === 'Certifications') {
+            try {
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${userId}`, certifications,
+                    { headers: { 'Content-Type': 'application/json' } }
+                );
+
+                console.log('Certifications Data saved successfully:', response.data);
+            } catch (error) {
+                console.error('Error saving data in Certification:', error);
+            }
+        } else if (activeKey === 'Previous Experience') {
+            try {
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${userId}`, previousExperience);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${userId}`, reference);
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        } else if (activeKey === 'Health Information') {
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${userId}`, healthInformation, 
+                { headers: { 'Content-Type':  'application/json'    } })
+                .then(response => {
+                    console.log('Data saved successfully HealthInfo:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error saving data:', error.message || error);
+                });
+        } else if (activeKey === 'Existing Bank Information') {
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${userId}`,existingBankInfo,
+                { headers: { 'Content-Type': 'multipart/form-data' } } )
+                .then(response => {
+                    console.log('Existing Bank data saved successfully:', response.data);
+                })
+                .catch(error => {
+                    console.error('Error saving data:', error.message || error);
+                });
+        } console.error('Invalid activeKey:', activeKey);
+    };
+    const handleBack = () => {
+        if (activeIndex > 0) {
+            setActiveIndex(prevIndex => prevIndex - 1);
+        }
+    }
+    
     const handleSubmit = () => {
         setShowModal(true);
     };
@@ -153,6 +168,7 @@ const UserOnboardings = () => {
     };
 
     const handleIconClick = () => {
+        setSubmissionStatus(false)
         setComponentView(true);
         setActiveIndex(0);
         handleRender();
@@ -160,22 +176,23 @@ const UserOnboardings = () => {
     };  
 
     const handleRender = () => {
-        if (componentView) {
+        if(!submissionStatus) {
             const activeKey = componentOrder[activeIndex];
 
             switch (activeKey) {
             case 'Personal Information':
-                return <PersonalInformation componentView={true} personalinfo={personalinfo} />;
+                return <PersonalInformation  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} userId={userData && userData.empId} />;
             case 'Education':
-                return <Education componentView={true} educationinfo={educationinfo} />;
+                return <Education educationinfo={educationinfo} setEducationinfo={setEducationinfo} userId={userData && userData.empId} />;
             case 'Certifications':
-                return <Certifications componentView={true} certificationsinfo={certificationsinfo}/>;
+                return <Certifications certifications={certifications} setCertifications={setCertifications} userId={userData && userData.empId} />;
             case 'Previous Experience':
-                return <PreviousExperience componentView={true} previousExperienceinfo={previousExperienceinfo} refInfo={reference}/>;
+                return <PreviousExperience previousExperience={previousExperience}setPreviousExperience={setPreviousExperience}
+                    reference={reference} setReference={setReference} userId={userData && userData.empId}/>;
             case 'Health Information':
-                return <HealthInformation componentView={true} healthInfo={healthInfo}/>;
+                return <HealthInformation healthInformation={healthInformation} setHealthInformation={setHealthInformation}/>;
             case 'Existing Bank Information':
-                return <ExistingBankInformation componentView={true} existingBankInfo={existingBankInfo}/>;
+                return <ExistingBankInformation existingBankInfo={existingBankInfo} existingbank={existingbank} setExistingbank={setExistingbank}/>;
             default:
                 return null;
             }
@@ -223,74 +240,102 @@ const UserOnboardings = () => {
                 </div>
             );
         }
-        else {
-            const activeKey = componentOrder[activeIndex];
-            
-            switch (activeKey) {
-            case 'Personal Information':
-                return <PersonalInformation />;
-            case 'Education':
-                return <Education />;
-            case 'Certifications':
-                return <Certifications />;
-            case 'Previous Experience':
-                return <PreviousExperience />;
-            case 'Health Information':
-                return <HealthInformation />;
-            case 'Existing Bank Information':
-                return <ExistingBankInformation />;
-            default:
-                return null;
-            }
-        }
-        
     };
-
     const renderButtons = () => {
         const activeKey = componentOrder[activeIndex];
 
-        if (submissionStatus !== false) {
+        if(componentView){
+            if (activeKey === 'Personal Information') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="nextbutton" onClick={handleNext}>Next</Button>
+                    </ButtonToolbar>
+                );
+            } else if (activeKey === 'Education') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            } else if(activeKey === 'Certifications') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            }else if(activeKey === 'Previous Experience'){
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            }else if( activeKey === 'Health Information'){
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            } else if (activeKey === 'Existing Bank Information') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                    </ButtonToolbar>
+                );
+            }else{
+                return null;
+            }}
+        if(submissionStatus !== false) {
             return null;
         }
-        if (activeKey === 'Personal Information') {
-            return (
-                <ButtonToolbar className="justify-content-end">
-                    <Button className="savebutton">Save</Button>
-                    <Button className="nextbutton" onClick={handleNext}>
-                        Next
-                    </Button>
-                </ButtonToolbar>
-            );
-        } else if (
-            activeKey === 'Education' ||
-            activeKey === 'Certifications' ||
-            activeKey === 'Previous Experience' ||
-            activeKey === 'Health Information'
-        ) {
-            return (
-                <ButtonToolbar className="justify-content-end">
-                    <Button className="savebutton">Save</Button>
-                    <Button className="backbutton" onClick={handleNext}>
-                        Back
-                    </Button>
-                    <Button className="nextbutton" onClick={handleNext}>
-                        Next
-                    </Button>
-                </ButtonToolbar>
-            );
-        } else if (activeKey === 'Existing Bank Information') {
-            return (
-                <ButtonToolbar className="justify-content-end">
-                    <Button className="backbutton" onClick={handleNext}>
-                        Back
-                    </Button>
-                    <Button className="submitbutton" onClick={handleSubmit}>
-                        Submit
-                    </Button>
-                </ButtonToolbar>
-            );
-        } else {
-            return null;
+        if(!componentView){
+            if (activeKey === 'Personal Information') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="nextbutton" onClick={handleNext}>Next</Button>
+                    </ButtonToolbar>
+                );
+            } else if (activeKey === 'Education') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            } else if(activeKey === 'Certifications') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            }else if(activeKey === 'Previous Experience'){
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            }else if( activeKey === 'Health Information'){
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
+                    </ButtonToolbar>
+                );
+            } else if (activeKey === 'Existing Bank Information') {
+                return (
+                    <ButtonToolbar className="justify-content-end">
+                        <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="submitbutton" onClick={handleSubmit}>Submit</Button>
+                    </ButtonToolbar>
+                );
+            } else {
+                return null;
+            }
         }
         
     };
