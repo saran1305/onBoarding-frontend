@@ -34,8 +34,6 @@ const UserOnboardings = () => {
         'Health Information',
         'Existing Bank Information'
     ];
-    const [ existingBankInfo, setExistingBankInfo ]= useState({});
-
     const [ personalDetails, setPersonalDetails ] = useState({});
     const [ educationinfo, setEducationinfo ] = useState([]);
     const [ certifications, setCertifications ] = useState([]);
@@ -52,16 +50,10 @@ const UserOnboardings = () => {
             setUserData(storedUserData);
             const userId = Number(storedUserData.empId); 
 
+            console.log('userId',userId);
             setActiveIndex(0);
 
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${userId}`)
-                .then(response => {
-                    setExistingBankInfo(response.data);
-                })
-                .catch(error => { 
-                    console.error('Error saving data Existing bank infos :', error);
-                    
-                });
+            
         }}, []); 
 
 
@@ -119,7 +111,7 @@ const UserOnboardings = () => {
                     console.error('Error saving data:', error.message || error);
                 });
         } else if (activeKey === 'Existing Bank Information') {
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${userId}`,existingBankInfo,
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${userId}`,existingbank,
                 { headers: { 'Content-Type': 'multipart/form-data' } } )
                 .then(response => {
                     console.log('Existing Bank data saved successfully:', response.data);
@@ -190,9 +182,9 @@ const UserOnboardings = () => {
                 return <PreviousExperience previousExperience={previousExperience}setPreviousExperience={setPreviousExperience}
                     reference={reference} setReference={setReference} userId={userData && userData.empId}/>;
             case 'Health Information':
-                return <HealthInformation healthInformation={healthInformation} setHealthInformation={setHealthInformation}/>;
+                return <HealthInformation healthInformation={healthInformation} setHealthInformation={setHealthInformation} userId={userData && userData.empId}/>;
             case 'Existing Bank Information':
-                return <ExistingBankInformation existingBankInfo={existingBankInfo} existingbank={existingbank} setExistingbank={setExistingbank}/>;
+                return <ExistingBankInformation existingbank={existingbank} setExistingbank={setExistingbank} userId={userData && userData.empId}/>;
             default:
                 return null;
             }
