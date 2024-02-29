@@ -7,7 +7,7 @@ import * as Endpoint from '../../Entities/Endpoint';
 
 const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => { 
 
-    const [ fileName, setFileName ] = useState({})
+    const [ fileName, setFileName ] = useState({ bank_Documents:'' })
 
     useEffect(() => {
         if (genId) {
@@ -20,6 +20,23 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                     
                 });
         }},[genId])
+
+    useEffect(() => {
+        
+        if (existingbank.length === 0) {
+            setExistingbank([{
+                account_name: '',
+                bank_name: '',
+                bank_Branch: '',
+                account_number: 0,
+                ifsC_code: '',
+                joint_Account: true,
+                proofSubmitted: [
+                    ''
+                ],
+                bank_Documents: ''
+            }])
+        }},[existingbank])
 
     const handleInputChange = (field, value) => {
         setExistingbank(prevData => ({
@@ -53,6 +70,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
         };
         reader.readAsDataURL(file);
     };
+    const handleProofChange = ()  => {}
 
     return (
         <div className="existingbank">
@@ -146,7 +164,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                         <h6>Bank related Documents</h6>
                         <div className="col-6">
                             <div className="doc-box typography">
-                                {existingbank && existingbank?.bank_Documents == '' ? (
+                                {existingbank && (existingbank?.bank_Documents === '' || existingbank?.bank_Documents === null)  ? (
                                     <div>
                                         <input
                                             type="file"
@@ -167,15 +185,14 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                     </div>
                 </div>
                 <div className="col-6">
-
-                    <div className="col-6">
-                        <h6>Proof Submitted (To be updated by HR)</h6>
-                        <div className="checkbox-container" >
-                            <div><input type="checkbox" className="checkbox" />Cheque Leaf</div>
-                            <div><input type="checkbox" className="checkbox" />Bank Statement</div>
-                            <div><input type="checkbox" className="checkbox" />Passbook Copy</div>
-                            <div><input type="checkbox" className="checkbox" />Cheque main page</div>
-                        </div>
+                    <h6>Proof Submitted (To be updated by HR)</h6>
+                    <div className="checkbox-container" >
+                        {/* {existingbank?.proofSubmitted?.map((proof, index) => ( */}
+                        <div><input type="checkbox" className="checkbox" onChange={handleProofChange}/>Cheque Leaf</div>
+                        <div><input type="checkbox" className="checkbox" />Bank Statement</div>
+                        <div><input type="checkbox" className="checkbox" />Passbook Copy</div>
+                        <div><input type="checkbox" className="checkbox" />Cheque main page</div>
+                        {/* ))} */}
                     </div>
                 </div>
             </div>

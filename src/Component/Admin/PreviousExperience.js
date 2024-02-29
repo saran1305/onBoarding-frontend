@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import '../../Styles/previousExperience.css';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
+import { LiaFileSolid } from 'react-icons/lia';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
@@ -37,7 +38,9 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                 reporting_to: '',
                 reason: '',
                 location: '',
-                exp_Certificate: ''
+                exp_Certificate: '',
+                fileName: ''
+
             }])
             if (reference) {
                 setReference({
@@ -62,7 +65,8 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                 reporting_to: '',
                 reason: '',
                 location: '',
-                exp_Certificate: ''
+                exp_Certificate: '',
+                fileName: ''
             }
         ]);
     };
@@ -96,7 +100,27 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
             authorize: checked
         }));
     };
-    
+    const handleFileGettingInput = (index, event) => {
+
+        convertToBase64(event, base64String => {
+            setPreviousExperience(previousExperience?.map((data,ind) => {
+                if(ind === index){
+                    return { ...data , exp_Certificate:base64String,fileName: event?.name }
+                }else return data
+            }))
+        })
+    };
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            callback(result);
+        };
+        reader.readAsDataURL(file);
+    };
+
     return (
         <div className="previousExp">
             <h4>Previous Experience</h4>
@@ -178,14 +202,16 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                                             onChange={event => handleInputChange(index, 'location', event.target.value)}
                                         />
                                     </td>
-                                    <td><button 
-                                        className="choosefile"
-                                        type="file"
-                                        value={experience?.exp_Certificate ||''}
-                                        placeholder="Proof of Attachments"
-                                        onChange={event => handleInputChange(index, 'exp_Certificate', event.target.files[0])}
-                                    
-                                    >Choose File</button>
+                                    <td>
+                                        {experience?.fileName === '' ? 
+                                            <input
+                                                className="choosefile" 
+                                                type="file"
+                                                onChange={event => handleFileGettingInput(index, event.target.files[0])}
+                                            /> : <div className="inline">
+                                                <LiaFileSolid />
+                                                <p>{experience?.fileName}</p>                                    
+                                            </div>}
                                     </td>
                                 </tr>
                             )})}

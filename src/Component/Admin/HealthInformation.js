@@ -1,14 +1,14 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0,1,2,3] }] */
 import React, { useState,useEffect } from 'react';
 import '../../Styles/healthInformation.css';
-import { LiaCloudUploadAltSolid } from 'react-icons/lia';
+import { LiaCloudUploadAltSolid,LiaFileSolid } from 'react-icons/lia';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
 import propTypes from 'prop-types';
 
 const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => {
 
-    const [ vaccineCertificate, setVaccineCertificate ] = useState(null);
+    const [ fileName, setFileName ] = useState({ vaccine_certificate:'',health_documents:'' })
     const [ validationErrors, setValidationErrors ] = useState({
         covidVaccine: '',
         vaccine_certificate: ''
@@ -52,8 +52,6 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
         }
     },[])
 
-    
-
     // const validateVaccinationStatus = () => {
     //     if (!covidVaccine) {
     //         setValidationErrors(prevErrors => ({
@@ -66,17 +64,17 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
     //     return true;
     // };
     
-    const validateVaccineCertificate = () => {
-        if (!vaccineCertificate) {
-            setValidationErrors(prevErrors => ({
-                ...prevErrors,
-                vaccine_certificate: 'Please upload your vaccine certificate.'
-            }));
-            return false;
-        }
-        setValidationErrors(prevErrors => ({ ...prevErrors, vaccine_certificate: '' }));
-        return true;
-    };
+    // const validateVaccineCertificate = () => {
+    //     if (!vaccineCertificate) {
+    //         setValidationErrors(prevErrors => ({
+    //             ...prevErrors,
+    //             vaccine_certificate: 'Please upload your vaccine certificate.'
+    //         }));
+    //         return false;
+    //     }
+    //     setValidationErrors(prevErrors => ({ ...prevErrors, vaccine_certificate: '' }));
+    //     return true;
+    // };
 
     const handleVaccinationStatusChange = value => {
         setHealthInformation(prevState => ({
@@ -90,11 +88,23 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
         }));
     };
     
-    const handleVaccineCertificateChange = event => {
-        const selectedFile = event.target.files[0];
+    const handleFileGettingInput = (field, file) => {
+
+        setFileName({ ...fileName,[field]: file.name })
         
-        setVaccineCertificate(selectedFile);
-        validateVaccineCertificate();
+        convertToBase64(file, base64String => {
+            setHealthInformation({ ...healthInformation, [field]: base64String })
+        })
+    };
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            callback(result);
+        };
+        reader.readAsDataURL(file);
     };
     
     const handleRecentSurgeryChange = event => {
@@ -305,32 +315,50 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
                 </div>
                 <div className="col-6">
                     <h6>Vaccine Certificate <span className="validation">*</span></h6>
-                    <div className="col-6">
-                        <div className="doc-box typography">
+                    <div className="col-6 doc-box typography">
+                        {healthInformation && (healthInformation?.vaccine_certificate === '' || healthInformation?.vaccine_certificate=== null) ? (
+                            <div>
+                                <input
+                                    type="file"
+                                    onChange={event => handleFileGettingInput('vaccine_certificate', event.target.files[0])}
+                                />
+                                <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                <p>Upload</p>
+                                <p>You can drag and drop too</p>
+                            </div>
+                        ) : (
+                            <div className="inline">
+                                <LiaFileSolid />
+                                <p>{fileName.vaccine_certificate}</p>
+                            </div>
+                        )}
+                    </div>
+                    {healthInformation?.vaccine_certificate === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
+                </div>
+            </div>
+            <div className="col-6">
+                <h6>Health Related Documents</h6>
+                <div className="col-6 doc-box typography" >
+                    {healthInformation && (healthInformation?.health_documents === ''|| healthInformation?.health_documents === null )? (
+                        <div>
                             <input
                                 type="file"
-                                onChange={handleVaccineCertificateChange}
+                                onChange={event => handleFileGettingInput('health_documents', event.target.files[0])}
                             />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
                         </div>
-                        <p className="filetext">File Type Accepted:doc,pdf & img</p>
-                    </div>
-                    <p className="error">{validationErrors.vaccineCertificate}</p>
-                </div>
+                    ) : (
+                        <div className="inline">
+                            <LiaFileSolid />
+                            <p>{fileName.health_documents}</p>
+                        </div>
+                    )}
+                </div>         
+                {healthInformation?.health_documents === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}   
             </div>
-            <div className="col-6">
-                <h6>Health Related Documents</h6>
-                <div className="col-6">
-                    <div className="doc-box typography">
-                        <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                        <p>Upload</p>
-                        <p>You can drag and drop too</p>
-                    </div>
-                    <p className="filetext">File Type Accepted:doc,pdf & img</p>
-                </div>            
-            </div>
+
             <hr />
         </div>
     );

@@ -65,8 +65,7 @@ const UserOnboardings = () => {
                     console.error('Error fetching personalInfo:', error);
                 });
         }}, []); 
-        
-    console.log('personalDetails.result',personalDetails.result);
+            
     const handleNext =async () => {
         if (activeIndex < componentOrder.length - 1) {
             setActiveIndex(prevIndex => prevIndex + 1);
@@ -86,8 +85,10 @@ const UserOnboardings = () => {
             }
         }
         else if (activeKey === 'Education') {
+            const _data  = educationinfo.filter(item => item.fileName)
+
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${genId}`, educationinfo, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${genId}`, _data, 
                     { headers: { 'Content-Type': 'application/json' } });
 
                 console.log('Education data saved successfully:', response.data);

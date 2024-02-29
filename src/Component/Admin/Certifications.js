@@ -2,6 +2,7 @@ import React,{ useEffect } from 'react';
 import '../../Styles/certification.css'
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
+import { LiaFileSolid } from 'react-icons/lia';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
@@ -29,7 +30,8 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                 specialization: '',
                 duration: 0,
                 percentage: '',
-                proof:''
+                proof:'',
+                fileName: ''
             }])
         }},[certifications])
 
@@ -43,7 +45,8 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                 specialization: '',
                 duration: 0,
                 percentage: '',
-                proof:''
+                proof:'',
+                fileName: ''
             }
         ]);
     };
@@ -59,6 +62,26 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
         })
 
         setCertifications(update)
+    };
+    const handleFileGettingInput = (index, event) => {
+
+        convertToBase64(event, base64String => {
+            setCertifications(certifications?.map((data,ind) => {
+                if(ind === index){
+                    return { ...data , proof:base64String,fileName: event?.name }
+                }else return data
+            }))
+        })
+    };
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            callback(result);
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -148,13 +171,33 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                                         </select>
                                     </td>
                                     <td>
-                                        <input
-                                            className="choosefile" 
-                                            type="file"
-                                            value={certifications?.proof || ''}
-                                            onChange={event => handleInputChange(index,'proof', event.target.files[0])}
-                                        />
-                                    </td>                            
+                                        {certifications?.fileName === '' ? 
+                                            <input
+                                                className="choosefile" 
+                                                type="file"
+                                                onChange={event => handleFileGettingInput(index, event.target.files[0])}
+                                            /> : <div className="inline">
+                                                <LiaFileSolid />
+                                                <p>{certifications?.fileName}</p>                                    
+                                            </div>}
+                                        {/* {certifications?.proof === '' && certifications?.proof === null ? (
+                                            <div>
+                                                <input
+                                                    className="choosefile" 
+                                                    type="file"
+                                                    onChange={event => handleFileGettingInput(index,'proof', event.target.files[0])}
+                                                />
+                                                <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                                <p>You can drag and drop too</p>
+                                            </div>
+                                        ) : (
+                                            <div className="inline">
+                                                <LiaFileSolid />
+                                                <p>{certifications?.proof}</p>
+                                            </div>
+                                        )}
+                                        {certifications?.proof === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>} */}
+                                    </td>
                                 </tr>
                             )})}
 

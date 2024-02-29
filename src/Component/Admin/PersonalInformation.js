@@ -63,7 +63,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
     }, [userId])
 
     useEffect(() => {
-        if (Object.keys(personalDetails).length === 0) {
+        if (Object.keys(personalDetails).length === 0 || personalDetails?.result === null) {
             setPersonalDetails({
                 result: {
                     loginId: userId,
@@ -84,18 +84,18 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                         {
                             address1: '',
                             address2: '',
-                            country_Id: 1,
-                            state_Id: 1,
-                            city_Id: 1,
+                            country_Id: 0,
+                            state_Id: 0,
+                            city_Id: 0,
                             pincode: '',
                             addressType: 'present'
                         },
                         {
                             address1: '',
                             address2: '',
-                            country_Id: 1,
-                            state_Id: 1,
-                            city_Id: 1,
+                            country_Id: 0,
+                            state_Id: 0,
+                            city_Id: 0,
                             pincode: '',
                             addressType: 'Permanent'
                         }
@@ -275,6 +275,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
         reader.readAsDataURL(file);
     };
 
+    // console.log('hobby?.professionalBody',personalDetails?.result?.hobby?.professionalBody);
     return (
         <div className="personalinfo">
             <h4>General Info</h4>
@@ -624,7 +625,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col-4 ">
                         <h6>aadhar<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails&& (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.aadhar == '' ) ? (
+                            {personalDetails&& (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.aadhar == '' || personalDetails?.result === null) ? (
                                 <div>
                                     <input
                                         type="file"
@@ -648,7 +649,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col-4 ">
                         <h6>PAN<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails&&( personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.pan == '' )? (
+                            {personalDetails&&( personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.pan == '' || personalDetails?.result === null)? (
                                 <div>
                                     <input
                                         type="file"
@@ -669,7 +670,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col-4 ">
                         <h6>Driver License<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails && (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.driving_license == '' )? (
+                            {personalDetails && (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.driving_license == '' || personalDetails?.result === null)? (
                                 <div>
                                     <input
                                         type="file"
@@ -694,7 +695,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col-4 ">
                         <h6>passport<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails &&(personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.passport == '') ?  (
+                            {personalDetails &&(personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.passport == ''|| personalDetails?.result === null) ?  (
                                 <div>
                                     <input
                                         type="file"
