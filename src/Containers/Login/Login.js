@@ -75,7 +75,7 @@ const Login = ({ toastContainer }) => {
             if (responseLogin.data) {
                 toast.success('Login successful');
                 window.localStorage.setItem('userData', JSON.stringify(responseLogin.data));
-                Navigate('/admin/on-boarders');
+                Navigate('/admin');
             } else {
                 toast.error('Error during login');
             }

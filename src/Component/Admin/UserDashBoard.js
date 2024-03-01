@@ -31,7 +31,6 @@ const UserDashBoard = () => {
             fetchStatus();
         }
     }, []);
-    
 
     return (
         <div className="userDashBoard">

@@ -23,7 +23,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
 
     useEffect(() => {
         
-        if (existingbank.length === 0) {
+        if (existingbank && existingbank.length === 0) {
             setExistingbank([{
                 account_name: '',
                 bank_name: '',
@@ -34,7 +34,8 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                 proofSubmitted: [
                     ''
                 ],
-                bank_Documents: ''
+                bank_Documents: '',
+                fileName: ''
             }])
         }},[existingbank])
 
@@ -57,9 +58,10 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
         setFileName({ ...fileName,bank_Documents: file.name })
         
         convertToBase64(file, base64String => {
-            setExistingbank({ bank_Documents: base64String })
+            setExistingbank([{ bank_Documents: base64String }])
         })
     };
+
     const convertToBase64 = (file, callback) => {
         const reader = new FileReader();
 
@@ -164,7 +166,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                         <h6>Bank related Documents</h6>
                         <div className="col-6">
                             <div className="doc-box typography">
-                                {existingbank && (existingbank?.bank_Documents === '' || existingbank?.bank_Documents === null)  ? (
+                                {!existingbank.bank_Documents ? (
                                     <div>
                                         <input
                                             type="file"
@@ -178,7 +180,8 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                                     <div className="inline">
                                         <LiaFileSolid />
                                         <p>{fileName.bank_Documents}</p>
-                                    </div>)}
+                                    </div>
+                                )}
                             </div>
                             {existingbank?.bank_Documents === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}                        </div>
 

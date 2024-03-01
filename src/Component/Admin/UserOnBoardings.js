@@ -50,8 +50,6 @@ const UserOnboardings = () => {
             setUserData(storedUserData);
             const userId = Number(storedUserData.empId); 
             
-            // console.log('storedUserData',userId);
-
             setActiveIndex(0);
 
             axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${userId}`)
@@ -59,11 +57,22 @@ const UserOnboardings = () => {
                     const genId = response.data.result.genId;
 
                     setGenId(genId);    
-                    console.log('genId',genId);
                 })
                 .catch(error => {
                     console.error('Error fetching personalInfo:', error);
                 });
+            const fetchStatus = async () => {
+                try {
+                    const response = await axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetStatusByLoginId?loginId=${userId}`);
+        
+                    setSubmissionStatus(response.data);
+                } catch (error) {
+                    console.error('Error fetching status:', error);
+                }
+            };
+
+            fetchStatus();
+
         }}, []); 
             
     const handleNext =async () => {
@@ -175,7 +184,7 @@ const UserOnboardings = () => {
             setValidationError({ date: 'Please fill in the date field.' });
             return; 
         }
-        setSubmissionStatus('View');
+        
         setShowModal(false);
     };
 
@@ -187,7 +196,7 @@ const UserOnboardings = () => {
         renderButtons();
     };  
 
-    const handleRender = () => {
+    const handleRender = () => { 
         if(!submissionStatus) {
             const activeKey = componentOrder[activeIndex];
 
@@ -216,7 +225,7 @@ const UserOnboardings = () => {
                     <h5>All Fields were successfully Filled.</h5>
                 </div>
             );
-        } else if (submissionStatus === 'View') {
+        } else if (submissionStatus === 'Submitted') {
             return (
                 <div className="statusdesign">
                     <img src={View} alt="Under Review" />
@@ -263,28 +272,7 @@ const UserOnboardings = () => {
                         <Button className="nextbutton" onClick={handleNext}>Next</Button>
                     </ButtonToolbar>
                 );
-            } else if (activeKey === 'Education') {
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            } else if(activeKey === 'Certifications') {
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if(activeKey === 'Previous Experience'){
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if( activeKey === 'Health Information'){
+            } else if (activeKey === 'Education' ||activeKey === 'Certifications'||activeKey === 'Previous Experience'|| activeKey === 'Health Information') {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>
@@ -310,35 +298,15 @@ const UserOnboardings = () => {
                         <Button className="nextbutton" onClick={handleNext}>Next</Button>
                     </ButtonToolbar>
                 );
-            } else if (activeKey === 'Education') {
+            } else if (activeKey === 'Education' ||activeKey === 'Certifications'||activeKey === 'Previous Experience'|| activeKey === 'Health Information') {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>
                         <Button className="nextbutton" onClick={handleNext}>Next </Button>
                     </ButtonToolbar>
                 );
-            } else if(activeKey === 'Certifications') {
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if(activeKey === 'Previous Experience'){
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if( activeKey === 'Health Information'){
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            } else if (activeKey === 'Existing Bank Information') {
+            } 
+            else if (activeKey === 'Existing Bank Information') {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>

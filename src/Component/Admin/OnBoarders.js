@@ -13,6 +13,7 @@ import { MdOutlineClear } from 'react-icons/md';
 import { MdMailOutline } from 'react-icons/md';
 import { Modal, Button } from 'react-bootstrap'; 
 import { useNavigate } from 'react-router';
+import propTypes from 'prop-types';
 
 const OnBoarders = () => {
     const [ userData, setUserData ] = useState([]);
@@ -124,28 +125,36 @@ const OnBoarders = () => {
         setShowRejection(true);
         setShowAcceptance(false);
     };
-  
-    const handleAcceptPopup = async () => {
-        if (addValidUser()) {
-        
-            await axios.post(`${Endpoint.API_ENDPOINT}/userAccept`, {
-                empGen_Id: selectedUser.empGen_Id,
-                email_id: selectedUser.email_id
-            });
-            
-            handleClosePopup();
-        }
-    };
 
-    const handleRejectionPopup = async () => {
+    const handleAcceptPopup = genId => {
         if (addValidUser()) {
-            await axios.post(`${Endpoint.API_ENDPOINT}/comments`, {
-                empGen_Id: selectedUser.empGen_Id,
-                comments: comments
-            });
-            handleClosePopup();
+            try {
+                axios.post(`${Endpoint.API_ENDPOINT}/userAccept/${genId}`,
+                    {
+                        emp_id: selectedUser.empGen_Id,
+                        official_EmailId: selectedUser.email_id
+                    }
+                );
+                handleClosePopup();
+            } catch (error) {
+                console.error('Error accepting user:', error);
+            }
         }
     };
+    
+    const handleRejectionPopup = genId => {
+        if (addValidUser()) {
+            try {
+                axios.post(`${Endpoint.API_ENDPOINT}/comments/${genId}`,
+                    { comments: comments }
+                );
+                handleClosePopup();
+            } catch (error) {
+                console.error('Error posting comments:', error);
+            }
+        }
+    };
+    
     
     const clear = currentField => {
         setValidation({
@@ -362,4 +371,7 @@ const OnBoarders = () => {
     );
 };
 
+OnBoarders.propTypes = {
+    genId: propTypes.number.isRequired
+};
 export default OnBoarders

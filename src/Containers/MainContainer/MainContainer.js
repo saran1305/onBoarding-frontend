@@ -31,9 +31,10 @@ const MainContainer = ({ Children }) => {
     useEffect(() => {
         if (userData && userData.role) {
             if (userData.role === 'User') {
+                Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.HOME.URI);
                 setActiveNavOption(MainContainerTypes.HOME_TYPE);
             } else if (userData.role === 'Admin') {
-                console.log('else');
+                Navigate(MainContainerTypes.ADMIN_ROUTE + RoutePath.ON_BOARDERS.URI);
                 setActiveNavOption(MainContainerTypes.ON_BOARDERS_TYPE);
             }
         }
