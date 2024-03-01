@@ -11,6 +11,7 @@ import { MdAddBox } from 'react-icons/md';
 import { FaSquareMinus } from 'react-icons/fa6';    
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const TotalUsers = () => {
     const [ userData, setUserData ] = useState([]);
@@ -32,6 +33,8 @@ const TotalUsers = () => {
                 console.error('error fetching data :',error);
             })
     }, []);
+
+    const Navigate = useNavigate();
 
     const filterData = (data, search) => {
         let filtered = data;
@@ -142,9 +145,7 @@ const TotalUsers = () => {
     }
 
     const AddUserDirectly = () => (
-        <Modal>
-            <p>Add User Directly Popup Content</p>
-        </Modal>
+        Navigate('/admin/user-onboardings')
     );
 
     const AddMultipleUserDirectly = () => (

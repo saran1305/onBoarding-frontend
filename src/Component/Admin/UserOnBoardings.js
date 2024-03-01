@@ -50,7 +50,7 @@ const UserOnboardings = () => {
         if (storedUserData) {
             setUserData(storedUserData);
             const userId = Number(storedUserData.empId); 
-            
+
             setActiveIndex(0);
 
             axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${userId}`)
@@ -86,10 +86,21 @@ const UserOnboardings = () => {
 
         if(activeKey === 'Personal Information'){
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, personalDetails.result, 
-                    { headers: { 'Content-Type': 'application/json' } });
+                const storedUserData = JSON.parse(localStorage.getItem('userData'));
 
-                console.log('Education data saved successfully:', response.data);
+                if (storedUserData) {
+                    setUserData(storedUserData);
+                    const role = storedUserData.role
+
+                    const directAdd = role === 'Admin' ? true : false;
+
+                    const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, personalDetails.result, {
+                        params: { directAdd: directAdd },
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    console.log('Education data saved successfully:', response.data);
+                }
             }catch (error) {
                 console.error('Error in saving Education data:', error);
             }
