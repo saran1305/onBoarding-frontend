@@ -14,7 +14,6 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
         vaccine_certificate: ''
     });
 
-    console.log('healthInformation',healthInformation);
     useEffect(() => {
         if (genId) {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${genId}`)

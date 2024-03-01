@@ -64,7 +64,7 @@ const UserOnboardings = () => {
                 });
             const fetchStatus = async () => {
                 try {
-                    const response = await axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetStatusByLoginId?loginId=${userId}`);
+                    const response = await axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetStatusByLoginId/${userId}`);
         
                     setSubmissionStatus(response.data);
                 } catch (error) {
@@ -187,6 +187,7 @@ const UserOnboardings = () => {
         }
         
         setShowModal(false);
+        setSubmissionStatus('Done')
     };
 
     const handleIconClick = () => {

@@ -50,7 +50,6 @@ const OnBoarders = () => {
             response = await axios.get(`${Endpoint.API_ENDPOINT}/Admin/api/GetRejectedEmployeeDetails`);
         }
         setUserData(response.data);
-        // console.log('i am response of Onboard',response.data);
     };
 
     useEffect(() => {

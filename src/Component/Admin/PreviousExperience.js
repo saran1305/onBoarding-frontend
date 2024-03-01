@@ -238,7 +238,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     <tbody>
                         <tr>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.referral_name||''}
                                 placeholder="Name"
@@ -246,7 +246,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.designation ||''}
                                 placeholder="Role"
@@ -254,7 +254,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.company_name||''}
                                 placeholder="Name"
@@ -262,7 +262,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="number"
                                 value={reference?.contact_number || ''}
                                 placeholder="Contact No."
@@ -270,7 +270,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.email_Id ||''}
                                 placeholder="Name"

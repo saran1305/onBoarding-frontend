@@ -7,7 +7,6 @@ import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
 const Education = ({ educationinfo,setEducationinfo,genId }) => {
-    console.log('educationinfo',educationinfo);
     useEffect(() => {
         if (genId) {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${genId}`)

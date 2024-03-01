@@ -13,7 +13,6 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${genId}`)
                 .then(response => {
                     setCertifications(response.data);
-                    console.log('certifications get: ',response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data:', error);
@@ -180,23 +179,6 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                                                 <LiaFileSolid />
                                                 <p>{certifications?.fileName}</p>                                    
                                             </div>}
-                                        {/* {certifications?.proof === '' && certifications?.proof === null ? (
-                                            <div>
-                                                <input
-                                                    className="choosefile" 
-                                                    type="file"
-                                                    onChange={event => handleFileGettingInput(index,'proof', event.target.files[0])}
-                                                />
-                                                <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                                                <p>You can drag and drop too</p>
-                                            </div>
-                                        ) : (
-                                            <div className="inline">
-                                                <LiaFileSolid />
-                                                <p>{certifications?.proof}</p>
-                                            </div>
-                                        )}
-                                        {certifications?.proof === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>} */}
                                     </td>
                                 </tr>
                             )})}
