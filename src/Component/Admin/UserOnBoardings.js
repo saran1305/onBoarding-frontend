@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable max-statements */
 import React, { useEffect, useState } from 'react';
 import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
@@ -150,7 +151,7 @@ const UserOnboardings = () => {
         if (activeKey === 'Existing Bank Information') {
             axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${genId}`,existingbank,
                 { headers: { 'Content-Type':  'application/json'    } })
-                .then(response => {
+                .then(response => {    
                     console.log('Existing Bank data saved successfully:', response.data);
                 })
                 .catch(error => {
@@ -194,7 +195,7 @@ const UserOnboardings = () => {
         setActiveIndex(0);
         handleRender();
         renderButtons();
-    };  
+    };
 
     const handleRender = () => { 
         if(!submissionStatus) {
@@ -202,7 +203,7 @@ const UserOnboardings = () => {
 
             switch (activeKey) {
             case 'Personal Information':
-                return <PersonalInformation  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} userId={userData && userData.empId} genId={genId} setGenId={setGenId} />;
+                return <PersonalInformation  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} userId={userData && userData.empId} genId={genId} setGenId={setGenId} email={userData && userData.email} />;
             case 'Education':
                 return <Education educationinfo={educationinfo} setEducationinfo={setEducationinfo} genId={genId} setGenId={setGenId} />;
             case 'Certifications':

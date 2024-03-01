@@ -4,12 +4,13 @@
 import React, { useEffect, useState } from 'react';
 import '../../Styles/personalInformation.css'
 import propTypes from 'prop-types';
-import { LiaCloudUploadAltSolid, LiaFileSolid } from 'react-icons/lia';
+import { LiaCloudUploadAltSolid } from 'react-icons/lia';
+import { FaFilePdf } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 // import { convertToBase64 } from '../../Utils/Util'
-const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId }) => {
+const PersonalInformation = ({ setPersonalDetails,personalDetails, userId, genId, email }) => {
 
     const [ martialStatus, setMartialstatus ] = useState([])
     const [ gender, setGender ] = useState([])
@@ -23,8 +24,8 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
     
 
     useEffect(() => {
-        if (userId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${userId}`)
+        if (userId && email) {
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo?Id=${userId}&email=${email}`)
                 .then(response => {
                     setPersonalDetails(response.data);
                 })
@@ -60,13 +61,13 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                 });
 
         }
-    }, [userId])
+    }, [ userId, email ])
 
     useEffect(() => {
-        if (Object.keys(personalDetails).length === 0 || personalDetails?.result === null) {
+        if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && userId) {
             setPersonalDetails({
                 result: {
-                    loginId: userId,
+                    loginId: Number(userId),
                     genId: genId,
                     generalVM: {
                         empname: '',
@@ -148,7 +149,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
             })
         }
 
-    }, [personalDetails])
+    }, [ personalDetails, userId ])
 
     const handleMembershipStatusChange = status => {
         setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, hobby: { ...personalDetails.result.hobby, professionalBody: status } } })
@@ -270,12 +271,13 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
         reader.onload = event => {
             const result = event.target.result;
 
-            callback(result);
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
         };
         reader.readAsDataURL(file);
     };
 
-    // console.log('hobby?.professionalBody',personalDetails?.result?.hobby?.professionalBody);
     return (
         <div className="personalinfo">
             <h4>General Info</h4>
@@ -295,7 +297,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                             <h6>Date of Birth<span className="error"> * </span></h6>
                             <div>
                                 <input type="date" className="textbox"
-                                    value={personalDetails?.result?.generalVM?.dob|| ''}
+                                    value={personalDetails?.result?.generalVM?.dob || ''}
                                     onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, dob: event.target.value } } }))}
                                 />
                             </div>
@@ -336,7 +338,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
 
                         <div className="col-4">
                             <h6>Marriage Date (if applicable)</h6>
-                            <input type="date" className="textbox" />
+                            <input type="date" className="textbox" value={personalDetails?.result?.generalVM?.dateOfMarriage} onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, dateOfMarriage: value } } })} />
                         </div>
                     </div>
                 </div>
@@ -344,7 +346,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col">
                         <h6>Profile Picture<span className="error"> * </span></h6>
                         {personalDetails && personalDetails?.result?.generalVM?.profile_Pic !== '' ? (
-                            <img src={personalDetails?.result?.generalVM?.profile_Pic} alt="Profile" className="profile-picture" />
+                            <img src={`data:image/jpeg;base64,${personalDetails?.result?.generalVM?.profile_Pic}`} alt="Profile" className="profile-picture" />
 
                         ) : (
                             <div className="profile_Pic-box typography">
@@ -393,7 +395,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                             type="text"
                             className="textbox"
                             value={personalDetails?.result?.generalVM?.contact_no || ''}
-                            onChange={event => handleInputChange('contact_no', event.target.value)}
+                            onChange={event => handleInputChange('contact_no', Number(event.target.value))}
                         />
                     </div>
                 </div>
@@ -625,19 +627,21 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col-4 ">
                         <h6>aadhar<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails&& (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.aadhar == '' || personalDetails?.result === null) ? (
+                            {personalDetails&& (personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.aadhar || personalDetails?.result === null) ? (
                                 <div>
                                     <input
                                         type="file"
                                         accept=".doc, .pdf, .img"
                                         onChange={event => handleFileGettingInput('aadhar', event.target.files[0])}
                                     />
-                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>                    
                                     <p>You can drag and drop too</p>
                                 </div>
                             ) : (
                                 <div className="inline">
-                                    <LiaFileSolid />
+                                    <a href={`data:application/pdf;base64,${personalDetails?.result?.requiredDocuments?.aadhar}`} download="aadhar.pdf">
+                                        <FaFilePdf className="uploadedfile" />
+                                    </a>
                                     <p>{fileName.aadhar}</p>
                                 </div>
                             )
@@ -649,7 +653,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col-4 ">
                         <h6>PAN<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails&&( personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.pan == '' || personalDetails?.result === null)? (
+                            {personalDetails&&( personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.pan || personalDetails?.result === null)? (
                                 <div>
                                     <input
                                         type="file"
@@ -659,18 +663,21 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                                     <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                                     <p>You can drag and drop too</p>
                                 </div>
-                            ) : (
+                            )  : (
                                 <div className="inline">
-                                    <LiaFileSolid />
+                                    <a href={`data:application/pdf;base64,${personalDetails?.result?.requiredDocuments?.pan}`} download="pan.pdf">
+                                        <FaFilePdf className="uploadedfile" />
+                                    </a>
                                     <p>{fileName.pan}</p>
-                                </div>)}
+                                </div>
+                            )}
                         </div>
                         {personalDetails?.result?.requiredDocuments?.pan === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
                     </div>
                     <div className="col-4 ">
                         <h6>Driver License<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails && (personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.driving_license == '' || personalDetails?.result === null)? (
+                            {personalDetails && (personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.driving_license || personalDetails?.result === null)? (
                                 <div>
                                     <input
                                         type="file"
@@ -683,7 +690,9 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                                 </div>
                             ) : (
                                 <div className="inline">
-                                    <LiaFileSolid />
+                                    <a href={`data:application/pdf;base64,${personalDetails?.result?.requiredDocuments?.driving_license}`} download="driving_license.pdf">
+                                        <FaFilePdf className="uploadedfile" />
+                                    </a>
                                     <p>{fileName.driving_license}</p>
                                 </div>
                             )}
@@ -695,7 +704,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                     <div className="col-4 ">
                         <h6>passport<span className="error"> * </span></h6>
                         <div className="doc-box typography">
-                            {personalDetails &&(personalDetails?.result?.requiredDocuments === null || personalDetails?.result?.requiredDocuments?.passport == ''|| personalDetails?.result === null) ?  (
+                            {personalDetails &&(personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.passport || personalDetails?.result === null) ?  (
                                 <div>
                                     <input
                                         type="file"
@@ -706,9 +715,11 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId,genId 
                                     <p>Upload</p>
                                     <p>You can drag and drop too</p>
                                 </div>
-                            ) : (
+                            )  : (
                                 <div className="inline">
-                                    <LiaFileSolid />
+                                    <a href={`data:application/pdf;base64,${personalDetails?.result?.requiredDocuments?.passport}`} download="passport.pdf">
+                                        <FaFilePdf className="uploadedfile" />
+                                    </a>
                                     <p>{fileName.passport}</p>
                                 </div>
                             )}
@@ -725,6 +736,7 @@ PersonalInformation.propTypes = {
     personalDetails: propTypes.object.isRequired,
     setPersonalDetails: propTypes.object.isRequired,
     userId: propTypes.number.isRequired,
-    genId: propTypes.number.isRequired
+    genId: propTypes.number.isRequired,
+    email: propTypes.string.isRequired
 };
 export default PersonalInformation;
