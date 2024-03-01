@@ -96,8 +96,10 @@ const UserOnboardings = () => {
                 console.error('Error in saving Education data:', error);
             }
         } else if (activeKey === 'Certifications') {
+            const _data  = certifications.filter(item => item.fileName)
+
             try {
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${genId}`, certifications,
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${genId}`, _data,
                     { headers: { 'Content-Type': 'application/json' } }
                 );
 
@@ -106,13 +108,17 @@ const UserOnboardings = () => {
                 console.error('Error saving data in Certification:', error);
             }
         } else if (activeKey === 'Previous Experience') {
+            const _data  = previousExperience.filter(item => item.fileName)
+
             try {
-                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${genId}`, previousExperience);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${genId}`, _data);
                 await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${genId}`, reference);
             } catch (error) {
                 console.error('Error saving data:', error);
             }
         } else if (activeKey === 'Health Information') {
+            // const _data  = healthInformation.filter(item => item.fileName)
+
             axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${genId}`, healthInformation, 
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {

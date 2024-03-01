@@ -19,8 +19,9 @@ const TotalUsers = () => {
     const [ selectedOption, setSelectedOption ] = useState(null);
     const [ selectedUsers, setSelectedUsers ] = useState([{ name: '', emailid: '' }]);
     const [ validation, setValidation ] = useState({ name: '', emailid: '' });
+    const [ openInviteUserModal , setopenInviteUserModal ] = useState(false);
     const [ isInviteMultiple, setIsInviteMultiple ] = useState(false);
-    
+
     useEffect (() => {
         axios.get(`${Endpoint.API_ENDPOINT}/Admin/api/AdminDashboard`)
             .then(response => {                
@@ -84,12 +85,6 @@ const TotalUsers = () => {
         }
     };
     
-    const handleClosePopup = () => {
-        setSelectedUsers([{ name: '', emailid: '' }]);
-        setValidation({ name: '', emailid: '' });
-        setSelectedOption(null);
-    };
-
     const handleSearch = event => {
         setSearchInput(event.target.value);
     };
@@ -102,17 +97,12 @@ const TotalUsers = () => {
         setShowDropdown(!showDropdown);
     };
 
-    const handleAddUserPopup = option => {
-        setSelectedOption(option);
-        setIsInviteMultiple(option === 'inviteMultipleUser');
+    const handleClosePopup = () => {
         setSelectedUsers([{ name: '', emailid: '' }]);
-    };
-
-    const handleAddUserInput = () => {
-        setSelectedUsers(prevUsers => [ ...prevUsers, { name: '', emailid: '' }] );
+        setValidation({ name: '', emailid: '' });
+        setSelectedOption(null);
     };    
-    
-    const handleUserInputChange = (index, field, value) => {
+    const handleInputChange = (index, field, value) => {
         setSelectedUsers(prevUsers => {
             return prevUsers.map((user, i) => {
                 if (i === index) {
@@ -126,84 +116,30 @@ const TotalUsers = () => {
             });
         });
     };
+    const handleAddUserInput = () => {
+        setSelectedUsers(prevUsers => [ ...prevUsers, { name: '', emailid: '' }] );
+    };
     
     const handleRemoveUserInput = index => {
         setSelectedUsers(prevUsers => prevUsers.filter((user, i) => i !== index));
     };
-        
+
+    const handleAddUserPopup = option => {
+        setSelectedOption(option);
+        setSelectedUsers([{ name: '', emailid: '' }]);
+    };
+    
     const handlePopupClose = () => {
         setSelectedOption(null);
-        setShowDropdown(!showDropdown);
-    };
-
-    const [ openInviteUserModal , setopenInviteUserModal ] = useState(false);
-
-    const handleCloseInviteUserModal = () => {
         setopenInviteUserModal(false)
-    }
+    };
     
-    
-    const handleOpenInviteUserModal = () => {
+    const InviteUserPopup = option => {
+        setSelectedOption(option)
+        setSelectedUsers([{ name: '', emailid: '' }]);
         setopenInviteUserModal(true)
+        setIsInviteMultiple (option === 'inviteMultipleUser')
     }
-    
-    // const InviteUserPopup = () => (
-    //     <Modal show={true} className="invite-popup">
-    //         <Modal.Header >
-    //             <Modal.Title>
-    //                 {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
-    //             </Modal.Title>
-    //         </Modal.Header>
-    //         <Modal.Body>
-    //             {selectedUsers.map((user, index) => (
-    //                 <div key={index}>
-    //                     <div>
-    //                         <p>Name<span className="validation">*</span></p>
-    //                         <input
-    //                             type="text"
-    //                             placeholder="Name"
-    //                             value={user.name}
-    //                             onChange={event =>
-    //                                 handleUserInputChange(index, 'name', event.target.value)
-    //                             }
-    //                         />
-    //                         {validation && (
-    //                             <p className="text-danger">{validation.name}</p>
-    //                         )}
-    //                     </div>
-    //                     {index === 0 && isInviteMultiple && (
-    //                         <MdAddBox className="iconAdd" onClick={handleAddUserInput} />
-    //                     )}
-    //                     {index > 0 && (
-    //                         <FaSquareMinus className="iconMinus" onClick={() => handleRemoveUserInput(index)} />
-    //                     )}
-    //                     <div>
-    //                         <p>Email<span className="validation">*</span>{' '}</p>
-    //                         <input
-    //                             type="text"
-    //                             placeholder="Email ID"
-    //                             value={user.emailid}
-    //                             onChange={event =>
-    //                                 handleUserInputChange(index, 'emailid', event.target.value)
-    //                             }
-    //                         />
-    //                         {validation && (
-    //                             <p className="text-danger">{validation.emailid}</p>
-    //                         )}
-    //                     </div>
-    //                 </div>
-    //             ))}
-    //         </Modal.Body>
-    //         <Modal.Footer className="button-footer">
-    //             <Button className="close-popup" onClick={handleClosePopup}>
-    //                 Cancel
-    //             </Button>
-    //             <Button className="accept-popup" onClick={handleAcceptPopup}>
-    //                 Send
-    //             </Button>
-    //         </Modal.Footer>
-    //     </Modal>
-    // );
 
     const AddUserDirectly = () => (
         <Modal>
@@ -225,8 +161,8 @@ const TotalUsers = () => {
                 </button>
                 {showDropdown && (
                     <div className="dropdown-content">
-                        <p onClick={() => handleOpenInviteUserModal()}>Invite user</p>
-                        <p onClick={() => handleOpenInviteUserModal()}>Invite Multiple user</p>
+                        <p onClick={() => InviteUserPopup('inviteUser')}>Invite user</p>
+                        <p onClick={() => InviteUserPopup('inviteMultipleUser')}>Invite Multiple user</p>
                         <p onClick={() => handleAddUserPopup('addUserDirectly')}>Add user Directly</p>
                         <p onClick={() => handleAddUserPopup('addMultipleUserDirectly')}>Add Multiple user Directly</p>
                     </div>
@@ -294,24 +230,17 @@ const TotalUsers = () => {
                     <p></p>
                 </span>
             </div>
-            {/* {selectedOption === 'inviteUser' && (
-                <InviteUserPopup onClose={handlePopupClose} />
-            )}
-            {selectedOption === 'inviteMultipleUser' && (
-                <InviteUserPopup onClose={handlePopupClose} />
-            )} */}
             {selectedOption === 'addUserDirectly' && (
                 <AddUserDirectly onClose={handlePopupClose} />
             )}
             {selectedOption === 'addMultipleUserDirectly' && (
                 <AddMultipleUserDirectly onClose={handlePopupClose} />
             )}
-            <Modal show={openInviteUserModal} >
-                <Modal.Header className="invite-popup" >
-                    <Modal.Title>
-                        {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
-                    </Modal.Title>
-                </Modal.Header>
+
+            <Modal show={openInviteUserModal} className="invite-popup">
+                <Modal.Header ><Modal.Title>
+                    {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
+                </Modal.Title> </Modal.Header>
                 <Modal.Body>
                     {selectedUsers.map((user, index) => (
                         <div key={index}>
@@ -322,7 +251,7 @@ const TotalUsers = () => {
                                     placeholder="Name"
                                     value={user.name}
                                     onChange={event =>
-                                        handleUserInputChange(index, 'name', event.target.value)
+                                        handleInputChange(index, 'name', event.target.value)
                                     }
                                 />
                                 {validation && (
@@ -342,7 +271,7 @@ const TotalUsers = () => {
                                     placeholder="Email ID"
                                     value={user.emailid}
                                     onChange={event =>
-                                        handleUserInputChange(index, 'emailid', event.target.value)
+                                        handleInputChange(index, 'emailid', event.target.value)
                                     }
                                 />
                                 {validation && (
@@ -353,7 +282,7 @@ const TotalUsers = () => {
                     ))}
                 </Modal.Body>
                 <Modal.Footer className="button-footer">
-                    <Button className="close-popup" onClick={handleCloseInviteUserModal}>
+                    <Button className="close-popup" onClick={handlePopupClose}>
                         Cancel
                     </Button>
                     <Button className="accept-popup" onClick={handleAcceptPopup}>

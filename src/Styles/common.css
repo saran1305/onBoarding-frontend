@@ -49,26 +49,26 @@
 .navBottomTwo{
    display:flex;
    column-gap:4px;
-   margin-top: 12px;
+   margin-top: 5px;
 }
 .mailLogoLayout{
    width: 40px;
    height: 40px;
+   border-radius: 4000px;
+   background: #2D68FE;
    margin-left: 10px;
 }
 .mailLogo{
-   width: 40px;
-   height: 40px;
-   border-radius: 4000px;
-   background: #2D68FE;
    color: #FFFFFF;
    text-align: center;
+   font-size: 20px;
+   font-weight: 400;
+   margin-top: 3px;
 }
 .mailName{
-   text-align: left;
    margin-left: 2px;
    word-wrap: break-word;
-   font-size: 13px;
+   font-size: 14px;
    font-weight: 400;
 }
 .notification{
