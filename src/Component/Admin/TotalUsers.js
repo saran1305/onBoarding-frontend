@@ -148,12 +148,6 @@ const TotalUsers = () => {
         Navigate('/admin/user-onboardings')
     );
 
-    const AddMultipleUserDirectly = () => (
-        <Modal>
-            <p>Add Multiple User Directly Popup Content</p>
-        </Modal>
-    );
-
     return (
         <div className="container">
             <div className="dropdown">
@@ -165,7 +159,6 @@ const TotalUsers = () => {
                         <p onClick={() => InviteUserPopup('inviteUser')}>Invite user</p>
                         <p onClick={() => InviteUserPopup('inviteMultipleUser')}>Invite Multiple user</p>
                         <p onClick={() => handleAddUserPopup('addUserDirectly')}>Add user Directly</p>
-                        <p onClick={() => handleAddUserPopup('addMultipleUserDirectly')}>Add Multiple user Directly</p>
                     </div>
                 )}
             </div>
@@ -233,9 +226,6 @@ const TotalUsers = () => {
             </div>
             {selectedOption === 'addUserDirectly' && (
                 <AddUserDirectly onClose={handlePopupClose} />
-            )}
-            {selectedOption === 'addMultipleUserDirectly' && (
-                <AddMultipleUserDirectly onClose={handlePopupClose} />
             )}
 
             <Modal show={openInviteUserModal} className="invite-popup">

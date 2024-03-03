@@ -13,6 +13,7 @@ import { BsChatSquare } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import * as RoutePath from '../../Entities/RoutePath';
 import * as MainContainerTypes from '../../Entities/MainContainerTypes';
+import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 
 const MainContainer = ({ Children }) => {
@@ -25,6 +26,13 @@ const MainContainer = ({ Children }) => {
 
         if (storedUserData) {
             setUserData(storedUserData);
+        }
+
+        const loginSuccess = window.localStorage.getItem('success');
+
+        if (loginSuccess === 'true') {
+            toast.success('Login successful');
+            window.localStorage.removeItem('success');
         }
     }, []);
 
@@ -67,10 +75,16 @@ const MainContainer = ({ Children }) => {
     };
 
     return (
-        <div className="main-container">
+        <React.Fragment><div>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar
+                style={{ minWidth: '300px', zIndex: 9999 }} />
+        </div><div className="main-container">
             <div className="navbar">
                 <div>
-                    <img src={IdeassionLogo} alt="Ideassion Image" className="ideaImage"/>
+                    <img src={IdeassionLogo} alt="Ideassion Image" className="ideaImage" />
                     <div className="navbarTwo">
                         {userData && userData.role === 'User' && (
                             <React.Fragment>
@@ -87,11 +101,11 @@ const MainContainer = ({ Children }) => {
                         {userData && userData.role === 'Admin' && (
                             <React.Fragment>
                                 <div className={`nav-item ${activeNavOption === MainContainerTypes.ON_BOARDERS_TYPE ? 'active' : ''}`} onClick={() => handleClickNavOptions(MainContainerTypes.ON_BOARDERS_TYPE)}>
-                                    <p className="navIconLayout"><TbUserSquareRounded className="navIcon"/></p>
+                                    <p className="navIconLayout"><TbUserSquareRounded className="navIcon" /></p>
                                     <p className="para">Onboarders</p>
                                 </div>
                                 <div className={`nav-item ${activeNavOption === MainContainerTypes.TOTAL_USERS_TYPE ? 'active' : ''}`} onClick={() => handleClickNavOptions(MainContainerTypes.TOTAL_USERS_TYPE)}>
-                                    <p className="navIconLayout"><IoIosPeople className="navIcon"/></p>
+                                    <p className="navIconLayout"><IoIosPeople className="navIcon" /></p>
                                     <p className="para">TotalUsers</p>
                                 </div>
                             </React.Fragment>
@@ -100,19 +114,19 @@ const MainContainer = ({ Children }) => {
                 </div>
                 <div className="navBottom">
                     <div className="navBottomOne">
-                        <div className="nav-item" onClick={() => handleClickNavOptions(MainContainerTypes.MESSAGES_TYPE)}>  <p className="navIconLayout"> <BsChatSquare className="navIcon" /></p> 
-                            <p className="para">Messages</p> 
-                            <p className="notification" style={{ marginLeft: '38px' }}>2</p> 
+                        <div className="nav-item" onClick={() => handleClickNavOptions(MainContainerTypes.MESSAGES_TYPE)}>  <p className="navIconLayout"> <BsChatSquare className="navIcon" /></p>
+                            <p className="para">Messages</p>
+                            <p className="notification" style={{ marginLeft: '38px' }}>2</p>
                         </div>
-                        <div className="nav-item" onClick={() => handleClickNavOptions(MainContainerTypes.NOTIFICATIONS_TYPE)}>  <p className="navIconLayout"> <TiBell className="navIcon"  /></p> 
-                            <p className="para">Notifications</p> 
-                            <p className="notification" style={{ marginLeft: '15px' }}>2</p> 
+                        <div className="nav-item" onClick={() => handleClickNavOptions(MainContainerTypes.NOTIFICATIONS_TYPE)}>  <p className="navIconLayout"> <TiBell className="navIcon" /></p>
+                            <p className="para">Notifications</p>
+                            <p className="notification" style={{ marginLeft: '15px' }}>2</p>
                         </div>
-                        <div className="nav-item" onClick={() => (handleClickNavOptions)(MainContainerTypes.SETTINGS_TYPE)}>  <p className="navIconLayout"> <IoSettingsOutline className="navIcon"/></p>
-                            <p className="para">Settings</p> 
+                        <div className="nav-item" onClick={() => (handleClickNavOptions)(MainContainerTypes.SETTINGS_TYPE)}>  <p className="navIconLayout"> <IoSettingsOutline className="navIcon" /></p>
+                            <p className="para">Settings</p>
                         </div>
-                        <div className="nav-item" onClick={() => handleLogout(MainContainerTypes.LOGOUT_TYPE)}>  <p className="navIconLayout"> <RiLogoutCircleLine className="navIcon"/></p> 
-                            <p className="para">Logout</p> 
+                        <div className="nav-item" onClick={() => handleLogout(MainContainerTypes.LOGOUT_TYPE)}>  <p className="navIconLayout"> <RiLogoutCircleLine className="navIcon" /></p>
+                            <p className="para">Logout</p>
                         </div>
                     </div>
                     <div>
@@ -130,16 +144,11 @@ const MainContainer = ({ Children }) => {
                     </div>
                 </div>
             </div>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar
-                style={{ minWidth: '300px', zIndex: 9999 }}
-            />
+
             <div>
                 {Children}
             </div>
-        </div>
+        </div></React.Fragment>
     );
 };
 

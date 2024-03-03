@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 import { useNavigate } from 'react-router-dom';
-import propTypes from 'prop-types';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import validator from 'validator';
 import { Button, Form, Container, Col, Row } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import IdeassionLogomini from '../../Assets/IdeassionLogomini.png';
 import box from '../../Assets/box.png';
 import girl from '../../Assets/girl.png';
@@ -18,7 +18,7 @@ import group from '../../Assets/Group.png';
 import '../../Styles/login.css';
 import ForgotPasswordModal from '../../Containers/Login/ForgotPasswordModal';
 
-const Login = ({ toastContainer }) => {
+const Login = () => {
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
     // const [ emailError, setEmailError ] = useState('');
@@ -27,6 +27,9 @@ const Login = ({ toastContainer }) => {
     const [ emailValid, setEmailValid ] = useState(false);
     const [ showSecondModal, setShowSecondModal ] = useState(false);
     const [ showThird, setShowThird ] = useState(false);
+    // const [ success, setSuccess ]= useState(false);
+
+    
 
     const handleCloseForgotPasswordModal = () => setShowForgotPasswordModal(false);
 
@@ -73,8 +76,8 @@ const Login = ({ toastContainer }) => {
             });
     
             if (responseLogin.data) {
-                toast.success('Login successful');
                 window.localStorage.setItem('userData', JSON.stringify(responseLogin.data));
+                window.localStorage.setItem('success','true');
                 Navigate('/admin');
             } else {
                 toast.error('Error during login');
@@ -83,12 +86,13 @@ const Login = ({ toastContainer }) => {
             console.error('Error during login:', error);
             toast.error('Error during login');
         }
-    };     
+    };   
+    
+
 
     return (
         <React.Fragment>
             <Container fluid>
-                {toastContainer}
                 <Row sm={12}>
                     <Col sm={6} className="column">
                         <img src={box} alt="box" className="box" />
@@ -148,6 +152,12 @@ const Login = ({ toastContainer }) => {
                     </Col>
                 </Row>
             </Container>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar
+                style={{ minWidth: '300px', zIndex: 9999 }}
+            />
             <ForgotPasswordModal 
                 show={showForgotPasswordModal} 
                 setShow={setShowForgotPasswordModal}
@@ -163,8 +173,5 @@ const Login = ({ toastContainer }) => {
     );
 };
 
-Login.propTypes = {
-    toastContainer: propTypes.object.isRequired
-};
 
 export default Login;

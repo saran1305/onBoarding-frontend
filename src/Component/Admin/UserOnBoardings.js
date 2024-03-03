@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
 import { SiGoogleforms } from 'react-icons/si';
 import { RxReload } from 'react-icons/rx';
+import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../Styles/userOnboardings.css';
 import axios from 'axios';
@@ -77,11 +78,6 @@ const UserOnboardings = () => {
         }}, []); 
             
     const handleNext =async () => {
-        if (activeIndex < componentOrder.length - 1) {
-            setActiveIndex(prevIndex => prevIndex + 1);
-        }
-        // const userId = Number(userData.empId);
-
         const activeKey = componentOrder[activeIndex];
 
         if(activeKey === 'Personal Information'){
@@ -99,10 +95,14 @@ const UserOnboardings = () => {
                         headers: { 'Content-Type': 'application/json' }
                     });
 
+                    if (activeIndex < componentOrder.length - 1) {
+                        setActiveIndex(prevIndex => prevIndex + 1);
+                    }
                     console.log('Education data saved successfully:', response.data);
                 }
             }catch (error) {
                 console.error('Error in saving Education data:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         }
         else if (activeKey === 'Education') {
@@ -112,9 +112,13 @@ const UserOnboardings = () => {
                 const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${genId}`, _data, 
                     { headers: { 'Content-Type': 'application/json' } });
 
+                if (activeIndex < componentOrder.length - 1) {
+                    setActiveIndex(prevIndex => prevIndex + 1);
+                }
                 console.log('Education data saved successfully:', response.data);
             }catch (error) {
                 console.error('Error in saving Education data:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Certifications') {
             const _data  = certifications.filter(item => item.fileName)
@@ -124,9 +128,13 @@ const UserOnboardings = () => {
                     { headers: { 'Content-Type': 'application/json' } }
                 );
 
+                if (activeIndex < componentOrder.length - 1) {
+                    setActiveIndex(prevIndex => prevIndex + 1);
+                }
                 console.log('Certifications Data saved successfully:', response.data);
             } catch (error) {
                 console.error('Error saving data in Certification:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Previous Experience') {
             const _data  = previousExperience.filter(item => item.fileName)
@@ -134,19 +142,27 @@ const UserOnboardings = () => {
             try {
                 await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${genId}`, _data);
                 await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${genId}`, reference);
+
+                if (activeIndex < componentOrder.length - 1) {
+                    setActiveIndex(prevIndex => prevIndex + 1);
+                }
             } catch (error) {
                 console.error('Error saving data:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Health Information') {
-            // const _data  = healthInformation.filter(item => item.fileName)
 
             axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${genId}`, healthInformation, 
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {
+                    if (activeIndex < componentOrder.length - 1) {
+                        setActiveIndex(prevIndex => prevIndex + 1);
+                    }
                     console.log('Data saved successfully HealthInfo:', response.data);
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.message || error);
+                    toast.error('Failed to save data. Please try again.');
                 });
         } 
     };
@@ -163,13 +179,14 @@ const UserOnboardings = () => {
             axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${genId}`,existingbank,
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {    
+                    setShowModal(true);
                     console.log('Existing Bank data saved successfully:', response.data);
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.message || error);
+                    toast.error('Failed to save data. Please try again.');
                 });
         }
-        setShowModal(true);
     };
 
     const handleModalClose = () => {

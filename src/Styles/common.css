@@ -16,8 +16,10 @@
     height: 85px;
     margin-left: 10px;
 }
-.navBottomOne div,
 .navbarTwo div{
+   margin-left: 10px;
+}
+.navBottomOne div{
    margin-left: 25px;
 }
 .navbarTwo{
@@ -67,9 +69,15 @@
 }
 .mailName{
    margin-left: 2px;
-   word-wrap: break-word;
+   overflow-wrap: break-word;
    font-size: 14px;
    font-weight: 400;
+}
+.overflow-text {
+   color: #71839B;
+   max-width: 150px;
+   text-overflow: ellipsis;
+   white-space: wrap;
 }
 .notification{
    display: inline-block;
