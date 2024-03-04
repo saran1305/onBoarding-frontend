@@ -1,17 +1,20 @@
 import React, { useEffect,useState } from 'react';
 import '../../Styles/existingbank.css';
 import '../../Styles/previousExperience.css';
-import { LiaCloudUploadAltSolid, LiaFileSolid } from 'react-icons/lia';
+import { LiaCloudUploadAltSolid } from 'react-icons/lia';
+import { FaFilePdf } from 'react-icons/fa';
 import propTypes from 'prop-types';import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 
-const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => { 
+const ExistingBankInformation = ({ existingbank,setExistingbank }) => { 
 
     const [ fileName, setFileName ] = useState({ bank_Documents:'' })
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
 
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setExistingbank(response.data);
                 })
@@ -19,11 +22,11 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                     console.error('Error saving data Existing bank infos :', error);
                     
                 });
-        }},[genId])
+        }},[])
 
     useEffect(() => {
         
-        if (existingbank && existingbank.length === 0) {
+        if (!existingbank) {
             setExistingbank([{
                 account_name: '',
                 bank_name: '',
@@ -34,7 +37,6 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                 proofSubmitted: [
                     ''
                 ],
-                bank_Documents: '',
                 fileName: ''
             }])
         }},[existingbank])
@@ -55,10 +57,10 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
 
     const handleFileGettingInput = (field, file) => {
 
-        setFileName({ ...fileName,bank_Documents: file.name })
-        
+
+        setFileName({ ...fileName, bank_Documents: file.name })
         convertToBase64(file, base64String => {
-            setExistingbank([{ bank_Documents: base64String }])
+            setExistingbank({ ...existingbank, bank_Documents: [base64String] })
         })
     };
 
@@ -68,11 +70,12 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
         reader.onload = event => {
             const result = event.target.result;
 
-            callback(result);
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
         };
         reader.readAsDataURL(file);
     };
-    const handleProofChange = ()  => {}
 
     return (
         <div className="existingbank">
@@ -178,8 +181,10 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                                     </div>
                                 ) : (
                                     <div className="inline">
-                                        <LiaFileSolid />
-                                        <p>{fileName.bank_Documents}</p>
+                                        <a href={`data:application/pdf;base64,${existingbank.bank_Documents}`} download="bank_Documents.pdf">
+                                            <FaFilePdf className="uploadedfile" />
+                                        </a>
+                                        <p>{fileName?.bank_Documents}</p>
                                     </div>
                                 )}
                             </div>
@@ -189,9 +194,9 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
                 </div>
                 <div className="col-6">
                     <h6>Proof Submitted (To be updated by HR)</h6>
-                    <div className="checkbox-container" >
+                    <div className="checkbox-container">
                         {/* {existingbank?.proofSubmitted?.map((proof, index) => ( */}
-                        <div><input type="checkbox" className="checkbox" onChange={handleProofChange}/>Cheque Leaf</div>
+                        <div><input type="checkbox" className="checkbox"/>Cheque Leaf</div>
                         <div><input type="checkbox" className="checkbox" />Bank Statement</div>
                         <div><input type="checkbox" className="checkbox" />Passbook Copy</div>
                         <div><input type="checkbox" className="checkbox" />Cheque main page</div>
@@ -206,7 +211,6 @@ const ExistingBankInformation = ({ existingbank,setExistingbank,genId }) => {
 
 ExistingBankInformation.propTypes = {
     existingbank: propTypes.object.isRequired,
-    setExistingbank: propTypes.func.isRequired,
-    genId: propTypes.number.isRequired
+    setExistingbank: propTypes.func.isRequired
 };
 export default ExistingBankInformation;

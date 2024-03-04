@@ -10,7 +10,7 @@ import { IoMdAdd } from 'react-icons/io';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
 // import { convertToBase64 } from '../../Utils/Util'
-const PersonalInformation = ({ setPersonalDetails,personalDetails, userId, genId, email }) => {
+const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
 
     const [ martialStatus, setMartialstatus ] = useState([])
     const [ gender, setGender ] = useState([])
@@ -21,11 +21,11 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId, genId
         driving_license: '',
         passport: ''
     })
-    
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
 
     useEffect(() => {
-        if (userId && email) {
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo?Id=${userId}&email=${email}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${_dashboardUserDetail.genId}?Id=${_dashboardUserDetail.userId}&email=${_dashboardUserDetail.email}`)
                 .then(response => {
                     setPersonalDetails(response.data);
                 })
@@ -61,14 +61,14 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId, genId
                 });
 
         }
-    }, [ userId, email ])
+    }, [])
 
     useEffect(() => {
-        if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && userId) {
+        if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && _dashboardUserDetail) {
             setPersonalDetails({
                 result: {
-                    loginId: Number(userId),
-                    genId: genId,
+                    loginId: Number(_dashboardUserDetail.userId),
+                    genId: Number(_dashboardUserDetail.genId),
                     generalVM: {
                         empname: '',
                         personal_Emailid: '',
@@ -149,7 +149,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails, userId, genId
             })
         }
 
-    }, [ personalDetails, userId ])
+    }, [])
 
     const handleMembershipStatusChange = status => {
         setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, hobby: { ...personalDetails.result.hobby, professionalBody: status } } })

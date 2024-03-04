@@ -2,15 +2,18 @@ import React,{ useEffect } from 'react';
 import '../../Styles/certification.css'
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
-import { LiaFileSolid } from 'react-icons/lia';
+import { FaFilePdf } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const Certifications = ({ certifications,setCertifications,genId }) => {
+const Certifications = ({ certifications,setCertifications }) => {
+
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
 
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setCertifications(response.data);
                 })
@@ -18,7 +21,7 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                     console.error('Error saving data:', error);
                     
                 });
-        }},[genId])
+        }},[])
 
     useEffect(() => {
         if (certifications && certifications?.length === 0) {
@@ -78,7 +81,11 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
         reader.onload = event => {
             const result = event.target.result;
 
-            callback(result);
+            
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
+
         };
         reader.readAsDataURL(file);
     };
@@ -170,13 +177,15 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                                         </select>
                                     </td>
                                     <td>
-                                        {certifications?.fileName === '' ? 
+                                        {!certifications?.proof ? 
                                             <input
                                                 className="choosefile" 
                                                 type="file"
                                                 onChange={event => handleFileGettingInput(index, event.target.files[0])}
                                             /> : <div className="inline">
-                                                <LiaFileSolid />
+                                                <a href={`data:application/pdf;base64,${certifications?.proof}`} download="certificate.pdf">
+                                                    <FaFilePdf className="uploadedfile" />
+                                                </a>
                                                 <p>{certifications?.fileName}</p>                                    
                                             </div>}
                                     </td>
@@ -197,8 +206,7 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
 
 Certifications.propTypes = {
     certifications: propTypes.array.isRequired,
-    setCertifications:  propTypes.func.isRequired,
-    genId: propTypes.number.isRequired
+    setCertifications:  propTypes.func.isRequired
 };
 
 export default Certifications;

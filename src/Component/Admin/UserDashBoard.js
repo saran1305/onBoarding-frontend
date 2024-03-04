@@ -6,10 +6,11 @@ import * as Endpoint from '../../Entities/Endpoint';
 import '../../Styles/userDashBoard.css';
 const UserDashBoard = () => {
 
-    const [ status, setStatus ] = useState('');
+    const [ status, setStatus ] = useState([]);
     const navigate = useNavigate();
-    
-    const handleNav = () => {
+
+    const handleNav = item => {
+        window.localStorage.setItem('dashboardUserDetail', JSON.stringify(item));
         navigate('/admin/user-onboardings');
     };
     
@@ -32,29 +33,50 @@ const UserDashBoard = () => {
         }
     }, []);
 
+    const handleOnboardingForm = () => {
+        if (status.length > 0) {
+            return status.map((item, index) => {
+                return (
+                    <div className="userDashBoard" key={index}>
+                        <button className="card" onClick={() => handleNav(item)}>
+                            <img className="outerlayout" src={OnclickOnboarding} alt="Formimage" />
+                            <br />
+                            <p className="textalign">Onboarding Form {index + 1}</p>    
+                            {item.status === 'Submitted' && (
+                                <div className="innerlayout">
+                                    <p className="insidelayout">!</p>
+                                </div>
+                            )}
+                            {item.status === 'Confirmed' && (
+                                <div className="innerlayout">
+                                    <p className="insidelayout2">&#10003;</p>
+                                </div>
+                            )}
+                            {item.status === 'Rejected' && (
+                                <div className="innerlayout">
+                                    <p className="insidelayout3">&#10060;</p>
+                                </div>
+                            )}     
+                        </button> 
+                    </div>
+                )
+            })
+        } else {
+            return (
+                <div className="userDashBoard">
+                    <button className="card" onClick={handleNav}>
+                        <img className="outerlayout" src={OnclickOnboarding} alt="Formimage" />
+                        <br />
+                        <p className="textalign">Onboarding Form</p>    
+                    </button> 
+                </div>
+            )
+        }
+    }   
+
+
     return (
-        <div className="userDashBoard">
-            <button className="card" onClick={handleNav}>
-                <img className="outerlayout" src={OnclickOnboarding} alt="Formimage" />
-                <br />
-                <p className="textalign">Onboarding Form</p>    
-                {status === 'Submitted' && (
-                    <div className="innerlayout">
-                        <p className="insidelayout">!</p>
-                    </div>
-                )}
-                {status === 'Confirmed' && (
-                    <div className="innerlayout">
-                        <p className="insidelayout2">&#10003;</p>
-                    </div>
-                )}
-                {status === 'Rejected' && (
-                    <div className="innerlayout">
-                        <p className="insidelayout3">&#10060;</p>
-                    </div>
-                )}     
-            </button> 
-        </div>
+        handleOnboardingForm()
     )
 }
 

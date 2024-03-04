@@ -2,15 +2,18 @@ import React, { useEffect } from 'react';
 import '../../Styles/previousExperience.css';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
-import { LiaFileSolid } from 'react-icons/lia';
+import { FaFilePdf } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference,genId }) => {
+const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference }) => {
+
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
 
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setPreviousExperience(response.data);
                 })
@@ -18,7 +21,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     console.error('Error saving data:', error);
                     
                 });
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${genId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setReference(response.data);
                 })
@@ -26,7 +29,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     console.error('Error saving data:', error);
                     
                 });
-        }},[genId])
+        }},[])
         
     useEffect(() => {
         if (previousExperience && previousExperience?.length == 0) {
@@ -116,7 +119,9 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
         reader.onload = event => {
             const result = event.target.result;
 
-            callback(result);
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
         };
         reader.readAsDataURL(file);
     };
@@ -203,13 +208,15 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                                         />
                                     </td>
                                     <td>
-                                        {experience?.fileName === '' ? 
+                                        {!experience?.exp_Certificate ? 
                                             <input
                                                 className="choosefile" 
                                                 type="file"
                                                 onChange={event => handleFileGettingInput(index, event.target.files[0])}
                                             /> : <div className="inline">
-                                                <LiaFileSolid />
+                                                <a href={`data:application/pdf;base64,${experience?.exp_Certificate}`} download="exp_Certificate.pdf">
+                                                    <FaFilePdf className="uploadedfile" />
+                                                </a>
                                                 <p>{experience?.fileName}</p>                                    
                                             </div>}
                                     </td>
@@ -296,8 +303,7 @@ PreviousExperience.propTypes = {
     previousExperience:propTypes.array.isRequired,
     setPreviousExperience:propTypes.func.isRequired,
     reference:propTypes.object.isRequired,
-    setReference:propTypes.func.isRequired,
-    genId: propTypes.number.isRequired
+    setReference:propTypes.func.isRequired
 };
 
 export default PreviousExperience;

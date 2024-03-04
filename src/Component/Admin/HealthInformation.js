@@ -1,22 +1,25 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0,1,2,3] }] */
 import React, { useState,useEffect } from 'react';
 import '../../Styles/healthInformation.css';
-import { LiaCloudUploadAltSolid,LiaFileSolid } from 'react-icons/lia';
+import { LiaCloudUploadAltSolid } from 'react-icons/lia';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
+import { FaFilePdf } from 'react-icons/fa';
 import propTypes from 'prop-types';
 
-const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => {
+const HealthInformation = ({ healthInformation,setHealthInformation }) => {
 
     const [ fileName, setFileName ] = useState({ vaccine_certificate:'',health_documents:'' })
     const [ validationErrors, setValidationErrors ] = useState({
         covidVaccine: '',
         vaccine_certificate: ''
     });
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
 
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setHealthInformation(response.data);
                 })
@@ -32,7 +35,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
                 .catch(error => {
                     console.error('Error fetching vaccination status:', error);
                 });
-        }},[genId])
+        }},[])
 
     useEffect(() => {
         if (healthInformation) {
@@ -50,30 +53,6 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
             });
         }
     },[])
-
-    // const validateVaccinationStatus = () => {
-    //     if (!covidVaccine) {
-    //         setValidationErrors(prevErrors => ({
-    //             ...prevErrors,
-    //             covidVaccine: 'Please select your vaccination status.'
-    //         }));
-    //         return false;
-    //     }
-    //     setValidationErrors(prevErrors => ({ ...prevErrors, covidVaccine: '' }));
-    //     return true;
-    // };
-    
-    // const validateVaccineCertificate = () => {
-    //     if (!vaccineCertificate) {
-    //         setValidationErrors(prevErrors => ({
-    //             ...prevErrors,
-    //             vaccine_certificate: 'Please upload your vaccine certificate.'
-    //         }));
-    //         return false;
-    //     }
-    //     setValidationErrors(prevErrors => ({ ...prevErrors, vaccine_certificate: '' }));
-    //     return true;
-    // };
 
     const handleVaccinationStatusChange = value => {
         setHealthInformation(prevState => ({
@@ -101,7 +80,9 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
         reader.onload = event => {
             const result = event.target.result;
 
-            callback(result);
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
         };
         reader.readAsDataURL(file);
     };
@@ -315,7 +296,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
                 <div className="col-6">
                     <h6>Vaccine Certificate <span className="validation">*</span></h6>
                     <div className="col-6 doc-box typography">
-                        {healthInformation && (healthInformation?.vaccine_certificate === '' || healthInformation?.vaccine_certificate=== null) ? (
+                        {healthInformation && !healthInformation?.vaccine_certificate ? (
                             <div>
                                 <input
                                     type="file"
@@ -327,7 +308,9 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
                             </div>
                         ) : (
                             <div className="inline">
-                                <LiaFileSolid />
+                                <a href={`data:application/pdf;base64,${healthInformation?.vaccine_certificate}`} download="vaccine_certificate.pdf">
+                                    <FaFilePdf className="uploadedfile" />
+                                </a>
                                 <p>{fileName.vaccine_certificate}</p>
                             </div>
                         )}
@@ -350,7 +333,9 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
                         </div>
                     ) : (
                         <div className="inline">
-                            <LiaFileSolid />
+                            <a href={`data:application/pdf;base64,${healthInformation?.health_documents}`} download="aadhar.pdf">
+                                <FaFilePdf className="uploadedfile" />
+                            </a>
                             <p>{fileName.health_documents}</p>
                         </div>
                     )}
@@ -365,8 +350,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
 
 HealthInformation.propTypes = {
     healthInformation: propTypes.object.isRequired,
-    setHealthInformation: propTypes.object.isRequired,
-    genId: propTypes.number.isRequired
+    setHealthInformation: propTypes.object.isRequired
 };
 
 export default HealthInformation;

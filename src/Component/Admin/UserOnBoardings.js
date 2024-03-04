@@ -27,7 +27,7 @@ const UserOnboardings = () => {
     const [ formData, setFormData ] = useState({ name: '', date: '' });
     const [ validationError, setValidationError ] = useState({});
     const [ submissionStatus, setSubmissionStatus ] = useState(false);
-    const [ componentView, setComponentView ] = useState(false);
+    const [ componentView, setComponentView ] = useState(true);
     const componentOrder = [
         'Personal Information',
         'Education',
@@ -44,38 +44,21 @@ const UserOnboardings = () => {
     const [ healthInformation, setHealthInformation ] = useState({});
     const [ existingbank, setExistingbank ] = useState({});
     const [ genId, setGenId ] = useState(null);
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
 
+    console.log('_dashboardUserDetail', _dashboardUserDetail)
+
+    
     useEffect(() => {
-        const storedUserData = JSON.parse(localStorage.getItem('userData'));
+        if (_dashboardUserDetail) {
 
-        if (storedUserData) {
-            setUserData(storedUserData);
-            const userId = Number(storedUserData.empId); 
+            setSubmissionStatus(_dashboardUserDetail.status);
+        }
 
-            setActiveIndex(0);
+        console.log('setSubmissionStatus', submissionStatus)
 
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${userId}`)
-                .then(response => {
-                    const genId = response.data.result.genId;
 
-                    setGenId(genId);    
-                })
-                .catch(error => {
-                    console.error('Error fetching personalInfo:', error);
-                });
-            const fetchStatus = async () => {
-                try {
-                    const response = await axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetStatusByLoginId/${userId}`);
-        
-                    setSubmissionStatus(response.data);
-                } catch (error) {
-                    console.error('Error fetching status:', error);
-                }
-            };
-
-            fetchStatus();
-
-        }}, []); 
+    }, [])
             
     const handleNext =async () => {
         const activeKey = componentOrder[activeIndex];
@@ -109,7 +92,7 @@ const UserOnboardings = () => {
             const _data  = educationinfo.filter(item => item.fileName)
 
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${genId}`, _data, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId}`, _data, 
                     { headers: { 'Content-Type': 'application/json' } });
 
                 if (activeIndex < componentOrder.length - 1) {
@@ -124,7 +107,7 @@ const UserOnboardings = () => {
             const _data  = certifications.filter(item => item.fileName)
 
             try {
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${genId}`, _data,
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${_dashboardUserDetail.genId}`, _data,
                     { headers: { 'Content-Type': 'application/json' } }
                 );
 
@@ -140,8 +123,8 @@ const UserOnboardings = () => {
             const _data  = previousExperience.filter(item => item.fileName)
 
             try {
-                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${genId}`, _data);
-                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${genId}`, reference);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${_dashboardUserDetail.genId}`, _data);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${_dashboardUserDetail.genId}`, reference);
 
                 if (activeIndex < componentOrder.length - 1) {
                     setActiveIndex(prevIndex => prevIndex + 1);
@@ -152,7 +135,7 @@ const UserOnboardings = () => {
             }
         } else if (activeKey === 'Health Information') {
 
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${genId}`, healthInformation, 
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${_dashboardUserDetail.genId}`, healthInformation, 
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {
                     if (activeIndex < componentOrder.length - 1) {
@@ -176,7 +159,7 @@ const UserOnboardings = () => {
         const activeKey = componentOrder[activeIndex];
 
         if (activeKey === 'Existing Bank Information') {
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${genId}`,existingbank,
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${_dashboardUserDetail.genId}`,existingbank,
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {    
                     setShowModal(true);
@@ -227,7 +210,7 @@ const UserOnboardings = () => {
     };
 
     const handleRender = () => { 
-        if(!submissionStatus) {
+        if(!submissionStatus || submissionStatus.length === 0) {
             const activeKey = componentOrder[activeIndex];
 
             switch (activeKey) {
@@ -292,8 +275,12 @@ const UserOnboardings = () => {
             );
         }
     };
+
     const renderButtons = () => {
         const activeKey = componentOrder[activeIndex];
+
+        console.log('active', activeKey)
+
 
         if(componentView){
             if (activeKey === 'Personal Information') {
@@ -313,6 +300,7 @@ const UserOnboardings = () => {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="submitbutton" onClick={handleSubmit}>Submit</Button>
                     </ButtonToolbar>
                 );
             }else{
@@ -321,6 +309,7 @@ const UserOnboardings = () => {
         if(submissionStatus !== false) {
             return null;
         }
+
         if(!componentView){
             if (activeKey === 'Personal Information') {
                 return (

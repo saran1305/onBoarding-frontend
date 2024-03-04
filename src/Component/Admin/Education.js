@@ -2,14 +2,17 @@ import React, { useEffect } from 'react';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
 import '../../Styles/education.css';
-import { LiaFileSolid } from 'react-icons/lia';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
+import { FaFilePdf } from 'react-icons/fa';
 
 const Education = ({ educationinfo,setEducationinfo,genId }) => {
+
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setEducationinfo(response.data);
                 })
@@ -78,7 +81,9 @@ const Education = ({ educationinfo,setEducationinfo,genId }) => {
         reader.onload = event => {
             const result = event.target.result;
 
-            callback(result);
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
         };
         reader.readAsDataURL(file);
     };
@@ -168,13 +173,15 @@ const Education = ({ educationinfo,setEducationinfo,genId }) => {
                                         />
                                     </td>
                                     <td>
-                                        {education?.fileName === '' ? 
+                                        {!education?.edu_certificate ? 
                                             <input
                                                 className="choosefile" 
                                                 type="file"
                                                 onChange={event => handleFileGettingInput(index, event.target.files[0])}
                                             /> : <div className="inline">
-                                                <LiaFileSolid />
+                                                <a href={`data:application/pdf;base64,${education?.edu_certificate}`} download="edu_certificate.pdf">
+                                                    <FaFilePdf className="uploadedfile" />
+                                                </a>
                                                 <p>{education?.fileName}</p>                                    
                                             </div>}
                                     </td>
