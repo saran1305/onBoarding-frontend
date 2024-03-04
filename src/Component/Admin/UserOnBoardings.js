@@ -89,7 +89,7 @@ const UserOnboardings = () => {
             }
         }
         else if (activeKey === 'Education') {
-            const _data  = educationinfo.filter(item => item.fileName)
+            const _data  = educationinfo.filter(item => item?.fileName)
 
             try{
                 const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId}`, _data, 
@@ -279,9 +279,6 @@ const UserOnboardings = () => {
     const renderButtons = () => {
         const activeKey = componentOrder[activeIndex];
 
-        console.log('active', activeKey)
-
-
         if(componentView){
             if (activeKey === 'Personal Information') {
                 return (
@@ -379,9 +376,8 @@ const UserOnboardings = () => {
                                 type="text"
                                 placeholder="Name"
                                 name="name"
-                                value={formData.name}
-                                onChange={handleInputChange}
-                                disabled={componentView}
+                                value={formData?.name}
+                                onChange={event => handleInputChange(event)}
                             />
                             <p>{validationError.name && <span style={{ color: 'red' }}>{validationError.name}</span>}</p>
                         </div>
@@ -390,9 +386,8 @@ const UserOnboardings = () => {
                             <input
                                 type="date"
                                 name="date"
-                                value={formData.date}
-                                onChange={handleInputChange}
-                                disabled={componentView}
+                                value={formData?.date}
+                                onChange={event => handleInputChange(event)}
                             />
                             <p>{validationError.date && <span style={{ color: 'red' }}>{validationError.date}</span>}</p>
                         </div>
@@ -402,7 +397,7 @@ const UserOnboardings = () => {
                     <Button className="close-popup" onClick={handleModalClose}>
                         Cancel
                     </Button>
-                    <Button className="accept-popup" onClick={handleViewStatus}>
+                    <Button className="accept-popup" onClick={() => handleViewStatus()}>
                         Submit
                     </Button>
                 </Modal.Footer>
