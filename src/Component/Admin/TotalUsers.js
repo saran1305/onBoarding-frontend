@@ -217,12 +217,6 @@ const TotalUsers = () => {
                         ))}
                     </tbody>
                 </table>
-                <span>
-                    <p className="bottom-row">
-                        Showing data 1 to 8 of 150 entries
-                    </p>{' '}
-                    <p></p>
-                </span>
             </div>
             {selectedOption === 'addUserDirectly' && (
                 <AddUserDirectly onClose={handlePopupClose} />

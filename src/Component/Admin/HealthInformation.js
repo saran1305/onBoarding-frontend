@@ -87,20 +87,17 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
         reader.readAsDataURL(file);
     };
     
-    const handleRecentSurgeryChange = event => {
-        const value = event.target.id; 
+    const handleRecentSurgeryChange = status => {
 
-        handleInputChange('surgery', value);
+        handleInputChange('surgery', status === 'yes' ? true : false);
     };
-    const handleWorkInRotationalShiftsChange = event => {
-        const value = event.target.id;
+    const handleWorkInRotationalShiftsChange = status => {
 
-        handleInputChange('night_shifts', value);
+        handleInputChange('night_shifts', status === 'yes' ? true : false);
     };
-    const handleDisabilitiesChange = event => {
-        const value = event.target.id; 
+    const handleDisabilitiesChange = status => {
 
-        handleInputChange('disability', value);
+        handleInputChange('disability', status === 'yes' ? true : false);
     };
 
     const handleInputChange = (field, value) => {
@@ -150,7 +147,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
                                 name="surgery"
                                 id="yes"
                                 className="radiodesign"
-                                onChange={handleRecentSurgeryChange}
+                                onChange={() => handleRecentSurgeryChange('yes')}
                                 checked={healthInformation?.surgery|| '' }
                             />
                             <label htmlFor="yes">Yes</label>
@@ -161,7 +158,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
                                 name="surgery"
                                 id="no"
                                 className="radiodesign"
-                                onChange={handleRecentSurgeryChange}
+                                onChange={() => handleRecentSurgeryChange('no')}
                                 checked={!healthInformation?.surgery|| '' }
                             />
                             <label htmlFor="no">No</label>
@@ -193,7 +190,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
                                 name="shifts"
                                 id="yes"
                                 className="radiodesign"
-                                onChange={handleWorkInRotationalShiftsChange}
+                                onChange={() => handleWorkInRotationalShiftsChange('yes')}
                                 checked={healthInformation?.night_shifts|| '' }
                             />
                             <label htmlFor="yes">Yes</label>
@@ -204,7 +201,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
                                 name="shifts"
                                 id="no"
                                 className="radiodesign"
-                                onChange={handleWorkInRotationalShiftsChange}
+                                onChange={() => handleWorkInRotationalShiftsChange('no')}
                                 checked={!healthInformation?.night_shifts|| '' }
                             />
                             <label htmlFor="no">No</label>
@@ -222,7 +219,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
                                 name="disability"
                                 id="yes"
                                 className="radiodesign"
-                                onChange={handleDisabilitiesChange}
+                                onChange={() => handleDisabilitiesChange('yes')}
                                 checked={healthInformation?.disability|| ''}
                             />
                             <label htmlFor="yes">Yes</label>
@@ -233,7 +230,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
                                 name="disability"
                                 id="no"
                                 className="radiodesign"
-                                onChange={handleDisabilitiesChange}
+                                onChange={() => handleDisabilitiesChange('no')}
                                 checked={!healthInformation?.disability|| '' }
                             />
                             <label htmlFor="no">No</label>
@@ -321,7 +318,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
             <div className="col-6">
                 <h6>Health Related Documents</h6>
                 <div className="col-6 doc-box typography" >
-                    {healthInformation && (healthInformation?.health_documents === ''|| healthInformation?.health_documents === null )? (
+                    {healthInformation && !healthInformation?.health_documents ? (
                         <div>
                             <input
                                 type="file"

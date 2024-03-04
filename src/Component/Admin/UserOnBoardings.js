@@ -26,7 +26,7 @@ const UserOnboardings = () => {
     const [ showModal, setShowModal ] = useState(false);
     const [ formData, setFormData ] = useState({ name: '', date: '' });
     const [ validationError, setValidationError ] = useState({});
-    const [ submissionStatus, setSubmissionStatus ] = useState(false);
+    const [ submissionStatus, setSubmissionStatus ] = useState('');
     const [ componentView, setComponentView ] = useState(true);
     const componentOrder = [
         'Personal Information',
@@ -46,20 +46,14 @@ const UserOnboardings = () => {
     const [ genId, setGenId ] = useState(null);
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
 
-    console.log('_dashboardUserDetail', _dashboardUserDetail)
-
-    
     useEffect(() => {
         if (_dashboardUserDetail) {
 
-            setSubmissionStatus(_dashboardUserDetail.status);
+            setSubmissionStatus(_dashboardUserDetail?.status);
         }
-
-        console.log('setSubmissionStatus', submissionStatus)
-
-
+        
     }, [])
-            
+
     const handleNext =async () => {
         const activeKey = componentOrder[activeIndex];
 
@@ -73,7 +67,11 @@ const UserOnboardings = () => {
 
                     const directAdd = role === 'Admin' ? true : false;
 
-                    const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, personalDetails.result, {
+                    const _data = personalDetails.result
+
+                    delete _data.genId
+
+                    const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, _data, {
                         params: { directAdd: directAdd },
                         headers: { 'Content-Type': 'application/json' }
                     });
@@ -159,6 +157,10 @@ const UserOnboardings = () => {
         const activeKey = componentOrder[activeIndex];
 
         if (activeKey === 'Existing Bank Information') {
+
+            
+            delete existingbank.fileName
+
             axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${_dashboardUserDetail.genId}`,existingbank,
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {    
@@ -210,7 +212,7 @@ const UserOnboardings = () => {
     };
 
     const handleRender = () => { 
-        if(!submissionStatus || submissionStatus.length === 0) {
+        if(!submissionStatus || submissionStatus.length === 0 || submissionStatus === 'Invited') {
             const activeKey = componentOrder[activeIndex];
 
             switch (activeKey) {

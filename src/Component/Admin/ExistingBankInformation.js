@@ -34,9 +34,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
                 account_number: 0,
                 ifsC_code: '',
                 joint_Account: '',
-                proofSubmitted: [
-                    ''
-                ],
+                proofSubmitted: [],
                 fileName: ''
             })
         }},[existingbank])
@@ -54,7 +52,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
 
         setFileName({ ...fileName, bank_Documents: file.name })
         convertToBase64(file, base64String => {
-            setExistingbank({ ...existingbank, bank_Documents: [base64String] })
+            setExistingbank({ ...existingbank, bank_Documents: base64String })
         })
     };
 
@@ -119,7 +117,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
                             placeholder="Account Number"
                             className="textbox"
                             value={existingbank.account_number|| '' }
-                            onChange={event => handleInputChange('account_number', event.target.value)}
+                            onChange={event => handleInputChange('account_number', Number(event.target.value))}
                         />                     
                     </div>
                 </div>

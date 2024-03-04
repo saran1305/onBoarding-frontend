@@ -24,7 +24,6 @@ const ForgotPasswordModal = ({ show,setShow,handleClose,handleCloseTwo,showSecon
                         }
                     });
     
-                    console.log('email:', email);
                     if (responseForgotPassword.status) {
                         console.log('Forgot password request sent successfully');
                     } else {

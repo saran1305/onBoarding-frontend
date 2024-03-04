@@ -25,7 +25,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
 
     useEffect(() => {
         if (_dashboardUserDetail) {
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${_dashboardUserDetail.genId}?Id=${_dashboardUserDetail.userId}&email=${_dashboardUserDetail.email}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${_dashboardUserDetail?.genId}?Id=${_dashboardUserDetail?.userId}&email=${_dashboardUserDetail?.email}`)
                 .then(response => {
                     setPersonalDetails(response.data);
                 })
@@ -67,7 +67,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
         if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && _dashboardUserDetail) {
             setPersonalDetails({
                 result: {
-                    loginId: Number(_dashboardUserDetail.userId),
+                    loginId: Number(_dashboardUserDetail.loginId),
                     genId: Number(_dashboardUserDetail.genId),
                     generalVM: {
                         empname: '',
@@ -75,10 +75,10 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                         contact_no: '',
                         dob: '',
                         nationality: '',
-                        gender: '',
-                        maritalStatus: '',
+                        gender: 0,
+                        maritalStatus: 0,
                         dateOfMarriage: '',
-                        bloodGrp: '',
+                        bloodGrp: 0,
                         profile_Pic: ''
                     },
                     contact: [

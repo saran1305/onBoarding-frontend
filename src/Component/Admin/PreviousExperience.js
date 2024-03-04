@@ -45,7 +45,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                 fileName: ''
 
             }])
-            if (reference) {
+            if (Object.keys(reference).lenght === 0) {
                 setReference({
                     referral_name: '',
                     designation: '',
@@ -231,7 +231,6 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     </tbody>
                 </table>
             </div>
-
             <h4>Reference Details</h4>
             <div className="row">
                 <table className="family reference">
