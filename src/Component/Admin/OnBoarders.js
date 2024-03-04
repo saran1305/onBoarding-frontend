@@ -30,6 +30,7 @@ const OnBoarders = () => {
         empGen_Id: '',
         email_id: ''
     });
+    const [ userGenId, setUserGenid ] = useState(0)
 
     const Navigate = useNavigate();
     const handleNavClick = () => {
@@ -106,7 +107,8 @@ const OnBoarders = () => {
         setSearchInput('');
     };
   
-    const handleAcceptance = () => {
+    const handleAcceptance = user => {
+        setUserGenid(user?.empGen_Id)
         setShowAcceptance(true);
         setShowRejection(false);
         setComments('');
@@ -120,15 +122,16 @@ const OnBoarders = () => {
         setValidation({ empGen_Id: '', email_id: '' });
     };
   
-    const handleRejection = () => {
+    const handleRejection = user => {
+        setUserGenid(user.empGen_Id)
         setShowRejection(true);
         setShowAcceptance(false);
     };
 
-    const handleAcceptPopup = genId => {
+    const handleAcceptPopup = () => {
         if (addValidUser()) {
             try {
-                axios.post(`${Endpoint.API_ENDPOINT}/userAccept/${genId}`,
+                axios.post(`${Endpoint.API_ENDPOINT}/Status/approve/${userGenId}`,
                     {
                         emp_id: selectedUser.empGen_Id,
                         official_EmailId: selectedUser.email_id
@@ -141,10 +144,10 @@ const OnBoarders = () => {
         }
     };
     
-    const handleRejectionPopup = genId => {
+    const handleRejectionPopup = () => {
         if (addValidUser()) {
             try {
-                axios.post(`${Endpoint.API_ENDPOINT}/comments/${genId}`,
+                axios.post(`${Endpoint.API_ENDPOINT}/Status/reject/${userGenId}`,
                     { comments: comments }
                 );
                 handleClosePopup();
@@ -173,7 +176,7 @@ const OnBoarders = () => {
         if (!comments && showRejection) {
             validUser.comments = 'Please enter comments';
         }
-    
+
         setValidation(validUser);
         return Object.values(validUser).every(value => value === '');
     };    
@@ -362,9 +365,6 @@ const OnBoarders = () => {
                         </Modal.Footer>
                     </Modal>
                 )}
-                <span>
-                    <p className="bottom-row">Showing data 1 to 8 of 150 entries</p> <p></p>
-                </span>
             </div>
         </div>
     );

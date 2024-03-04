@@ -10,7 +10,11 @@ const UserDashBoard = () => {
     const navigate = useNavigate();
 
     const handleNav = item => {
-        window.localStorage.setItem('dashboardUserDetail', JSON.stringify(item));
+        if (status.length > 0) {
+            window.localStorage.setItem('dashboardUserDetail', JSON.stringify(item));
+        } else {
+            window.localStorage.setItem('dashboardUserDetail', null);
+        }
         navigate('/admin/user-onboardings');
     };
     
@@ -47,7 +51,7 @@ const UserDashBoard = () => {
                                     <p className="insidelayout">!</p>
                                 </div>
                             )}
-                            {item.status === 'Confirmed' && (
+                            {item.status === 'Approved' && (
                                 <div className="innerlayout">
                                     <p className="insidelayout2">&#10003;</p>
                                 </div>
