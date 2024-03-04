@@ -26,33 +26,27 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
 
     useEffect(() => {
         
-        if (!existingbank) {
-            setExistingbank([{
+        if (!existingbank || existingbank.lenght === 0) {
+            setExistingbank({
                 account_name: '',
                 bank_name: '',
                 bank_Branch: '',
                 account_number: 0,
                 ifsC_code: '',
-                joint_Account: true,
+                joint_Account: '',
                 proofSubmitted: [
                     ''
                 ],
                 fileName: ''
-            }])
+            })
         }},[existingbank])
 
     const handleInputChange = (field, value) => {
-        setExistingbank(prevData => ({
-            ...prevData,
-            [field]: value
-        }));
+        setExistingbank({ ...existingbank, [field]: value })
     };
 
     const handleCheckboxChange = (field, checked) => {
-        setExistingbank(prevData => ({
-            ...prevData,
-            [field]: checked
-        }));
+        setExistingbank({ ...existingbank, [field]: checked })
     };
 
     const handleFileGettingInput = (field, file) => {
@@ -188,7 +182,8 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
                                     </div>
                                 )}
                             </div>
-                            {existingbank?.bank_Documents === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}                        </div>
+                            {existingbank?.bank_Documents === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
+                        </div>
 
                     </div>
                 </div>
@@ -196,7 +191,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
                     <h6>Proof Submitted (To be updated by HR)</h6>
                     <div className="checkbox-container">
                         {/* {existingbank?.proofSubmitted?.map((proof, index) => ( */}
-                        <div><input type="checkbox" className="checkbox"/>Cheque Leaf</div>
+                        <div><input type="checkbox" className="checkbox" />Cheque Leaf</div>
                         <div><input type="checkbox" className="checkbox" />Bank Statement</div>
                         <div><input type="checkbox" className="checkbox" />Passbook Copy</div>
                         <div><input type="checkbox" className="checkbox" />Cheque main page</div>

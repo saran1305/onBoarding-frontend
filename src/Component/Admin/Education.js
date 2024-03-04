@@ -53,7 +53,7 @@ const Education = ({ educationinfo,setEducationinfo,genId }) => {
             }
         ]);
     };
-   
+
     const handleInputChange = (index, field, value) => {
         const update = educationinfo?.map((education, idx) => {
             if (index === idx) {
