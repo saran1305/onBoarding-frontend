@@ -4,19 +4,20 @@ import axios from 'axios';
 import '../../Styles/education.css';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
+import { FaFilePdf } from 'react-icons/fa';
 
 const Education = ({ educationinfo,setEducationinfo,genId }) => {
 
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setEducationinfo(response.data);
-                    console.log('Education in UserOnboarding: ',response.data); 
                 })
                 .catch(error => { 
-                    console.error('Error saving data:', error);
-                
+                    console.error('Error saving data:', error);                
                 });
         }},[genId])
 
@@ -31,10 +32,11 @@ const Education = ({ educationinfo,setEducationinfo,genId }) => {
                 specialization: '',
                 passoutyear: 0,
                 percentage: '',
-                edu_certificate: ''
+                edu_certificate: '',
+                fileName: ''
             }])
         }},[educationinfo])
-
+        
     const handleAddEducation = () => {
         setEducationinfo(prevDetails => [
             ...prevDetails,
@@ -46,7 +48,8 @@ const Education = ({ educationinfo,setEducationinfo,genId }) => {
                 specialization: '',
                 passoutyear: 0,
                 percentage: '',
-                edu_certificate: ''
+                edu_certificate: '',
+                fileName: ''
             }
         ]);
     };
@@ -62,7 +65,28 @@ const Education = ({ educationinfo,setEducationinfo,genId }) => {
 
         setEducationinfo(update)
     };
-    
+    const handleFileGettingInput = (index, event) => {
+
+        convertToBase64(event, base64String => {
+            setEducationinfo(educationinfo?.map((data,ind) => {
+                if(ind === index){
+                    return { ...data , edu_certificate:base64String,fileName: event?.name }
+                }else return data
+            }))
+        })
+    };
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
+        };
+        reader.readAsDataURL(file);
+    };
 
     return (
         <div className="education">
@@ -149,12 +173,17 @@ const Education = ({ educationinfo,setEducationinfo,genId }) => {
                                         />
                                     </td>
                                     <td>
-                                        <input
-                                            className="textbox"
-                                            type="file"
-                                            value={ education?.edu_certificate||''}
-                                            onChange={event => handleInputChange(index,'edu_certificate', event.target.files[0])}
-                                        />
+                                        {!education?.edu_certificate ? 
+                                            <input
+                                                className="choosefile" 
+                                                type="file"
+                                                onChange={event => handleFileGettingInput(index, event.target.files[0])}
+                                            /> : <div className="inline">
+                                                <a href={`data:application/pdf;base64,${education?.edu_certificate}`} download="edu_certificate.pdf">
+                                                    <FaFilePdf className="uploadedfile" />
+                                                </a>
+                                                <p>{education?.fileName}</p>                                    
+                                            </div>}
                                     </td>
                                 </tr>
                             )

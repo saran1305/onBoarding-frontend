@@ -2,14 +2,18 @@ import React, { useEffect } from 'react';
 import '../../Styles/previousExperience.css';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
+import { FaFilePdf } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference,genId }) => {
+const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference }) => {
+
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
 
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setPreviousExperience(response.data);
                 })
@@ -17,7 +21,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     console.error('Error saving data:', error);
                     
                 });
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${genId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setReference(response.data);
                 })
@@ -25,7 +29,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     console.error('Error saving data:', error);
                     
                 });
-        }},[genId])
+        }},[])
         
     useEffect(() => {
         if (previousExperience && previousExperience?.length == 0) {
@@ -37,7 +41,9 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                 reporting_to: '',
                 reason: '',
                 location: '',
-                exp_Certificate: ''
+                exp_Certificate: '',
+                fileName: ''
+
             }])
             if (reference) {
                 setReference({
@@ -62,7 +68,8 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                 reporting_to: '',
                 reason: '',
                 location: '',
-                exp_Certificate: ''
+                exp_Certificate: '',
+                fileName: ''
             }
         ]);
     };
@@ -96,7 +103,29 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
             authorize: checked
         }));
     };
-    
+    const handleFileGettingInput = (index, event) => {
+
+        convertToBase64(event, base64String => {
+            setPreviousExperience(previousExperience?.map((data,ind) => {
+                if(ind === index){
+                    return { ...data , exp_Certificate:base64String,fileName: event?.name }
+                }else return data
+            }))
+        })
+    };
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
+        };
+        reader.readAsDataURL(file);
+    };
+
     return (
         <div className="previousExp">
             <h4>Previous Experience</h4>
@@ -178,14 +207,18 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                                             onChange={event => handleInputChange(index, 'location', event.target.value)}
                                         />
                                     </td>
-                                    <td><button 
-                                        className="choosefile"
-                                        type="file"
-                                        value={experience?.exp_Certificate ||''}
-                                        placeholder="Proof of Attachments"
-                                        onChange={event => handleInputChange(index, 'exp_Certificate', event.target.files[0])}
-                                    
-                                    >Choose File</button>
+                                    <td>
+                                        {!experience?.exp_Certificate ? 
+                                            <input
+                                                className="choosefile" 
+                                                type="file"
+                                                onChange={event => handleFileGettingInput(index, event.target.files[0])}
+                                            /> : <div className="inline">
+                                                <a href={`data:application/pdf;base64,${experience?.exp_Certificate}`} download="exp_Certificate.pdf">
+                                                    <FaFilePdf className="uploadedfile" />
+                                                </a>
+                                                <p>{experience?.fileName}</p>                                    
+                                            </div>}
                                     </td>
                                 </tr>
                             )})}
@@ -212,7 +245,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     <tbody>
                         <tr>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.referral_name||''}
                                 placeholder="Name"
@@ -220,7 +253,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.designation ||''}
                                 placeholder="Role"
@@ -228,7 +261,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.company_name||''}
                                 placeholder="Name"
@@ -236,7 +269,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="number"
                                 value={reference?.contact_number || ''}
                                 placeholder="Contact No."
@@ -244,7 +277,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                             />
                             </td>
                             <td><input
-                                className="textbox"
+                                className="textbox2"
                                 type="text"
                                 value={reference?.email_Id ||''}
                                 placeholder="Name"
@@ -270,8 +303,7 @@ PreviousExperience.propTypes = {
     previousExperience:propTypes.array.isRequired,
     setPreviousExperience:propTypes.func.isRequired,
     reference:propTypes.object.isRequired,
-    setReference:propTypes.func.isRequired,
-    genId: propTypes.number.isRequired
+    setReference:propTypes.func.isRequired
 };
 
 export default PreviousExperience;

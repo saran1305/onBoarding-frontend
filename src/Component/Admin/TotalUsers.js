@@ -1,5 +1,5 @@
 /* eslint-disable max-statements */
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 3] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0,1, 3] }] */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as Endpoint from '../../Entities/Endpoint';
@@ -8,50 +8,33 @@ import { MdOutlineClear } from 'react-icons/md';
 import { RiFileUserFill } from 'react-icons/ri';
 import { MdLocalPrintshop } from 'react-icons/md';
 import { MdAddBox } from 'react-icons/md';
-import { FaSquareMinus } from 'react-icons/fa6';
+import { FaSquareMinus } from 'react-icons/fa6';    
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const TotalUsers = () => {
     const [ userData, setUserData ] = useState([]);
     const [ searchInput, setSearchInput ] = useState('');
     const [ showDropdown, setShowDropdown ] = useState(false);
     const [ selectedOption, setSelectedOption ] = useState(null);
-    const [ selectedUsers, setSelectedUsers ] = useState([]);
-    const [ validation, setValidation ] = useState({ empname: '', email: '' });
+    const [ selectedUsers, setSelectedUsers ] = useState([{ name: '', emailid: '' }]);
+    const [ validation, setValidation ] = useState({ name: '', emailid: '' });
+    const [ openInviteUserModal , setopenInviteUserModal ] = useState(false);
     const [ isInviteMultiple, setIsInviteMultiple ] = useState(false);
 
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         // const responsePending = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetPendingEmployeeDetails`);
-    //         // const responseInvited = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetInvitedEmployeeDetails`);
-    //         // const responseExpired = await axios.get(`${Endpoint.API_ENDPOINT}/api/Admin/api/GetRejectedEmployeeDetails`);
-
-    //         const combinedData = [
-    //             ...responsePending.data,
-    //             ...responseInvited.data,
-    //             ...responseExpired.data
-    //         ];
-
-    //         setUserData(combinedData);
-    //         filterData(combinedData, searchInput);
-    //     };
-
-    //     fetchUserData();
-    // }, [searchInput]);
-    
     useEffect (() => {
         axios.get(`${Endpoint.API_ENDPOINT}/Admin/api/AdminDashboard`)
-            .then(response => {
-                console.log('Data getted successflly', response.data);
-                
+            .then(response => {                
                 setUserData(response.data);
                 filterData(response.data, searchInput);
             })
             .catch(error => {
                 console.error('error fetching data :',error);
             })
-    }, [searchInput]);
+    }, []);
+
+    const Navigate = useNavigate();
 
     const filterData = (data, search) => {
         let filtered = data;
@@ -78,39 +61,33 @@ const TotalUsers = () => {
     };
 
     const addValidUser = () => {
-        const validUser = { empname: '', email: '' };
+        const validUser = { name: '', emailid: '' };
 
-        if (!selectedUsers.every(user => user.empname)) {
-            validUser.empname = 'Name is required.';
+        if (!selectedUsers.every(user => user.name)) {
+            validUser.name = 'Name is required.';
         }
-        if (!selectedUsers.every(user => user.email)) {
-            validUser.email = 'Email address is required';
+        if (!selectedUsers.every(user => user.emailid)) {
+            validUser.emailid = 'Email address is required';
         }
 
         setValidation(validUser);
-        return Object.values(validUser).every(value => value === '');
+        return Object.values(validUser).every(value => value === '');    
     };
 
-    const handleAcceptPopup = async () => {
-        if (addValidUser()) {            
-            await Promise.all(selectedUsers.map(async user => {
-                await axios.post(`${Endpoint.API_ENDPOINT}/inviteUser`, {
-                    empname: user.empname,
-                    email: user.email
-                });
-            }));
-    
-            handleClosePopup();
+    const handleAcceptPopup = () => {
+        if (addValidUser()) {
+            try {
+                const response = axios.post(`${Endpoint.API_ENDPOINT}/Login/LoginInvite`, selectedUsers, 
+                    { headers: { 'Content-Type': 'application/json' } });
+
+                console.log('Invite data sent successfully:', response);
+                handleClosePopup();
+            } catch (error) {
+                console.error('Error inviting users:', error);
+            }
         }
     };
     
-
-    const handleClosePopup = () => {
-        setSelectedUsers([{ empname: '', email: '' }]);
-        setValidation({ empname: '', email: '' });
-        setSelectedOption(null);
-    };
-
     const handleSearch = event => {
         setSearchInput(event.target.value);
     };
@@ -123,17 +100,12 @@ const TotalUsers = () => {
         setShowDropdown(!showDropdown);
     };
 
-    const handleAddUserPopup = option => {
-        setSelectedOption(option);
-        setIsInviteMultiple(option === 'inviteMultipleUser');
-        setSelectedUsers([{ empname: '', email: '' }]);
-    };
-
-    const handleAddUserInput = () => {
-        setSelectedUsers(prevUsers => [ ...prevUsers, { empname: '', email: '' }] );
+    const handleClosePopup = () => {
+        setSelectedUsers([{ name: '', emailid: '' }]);
+        setValidation({ name: '', emailid: '' });
+        setSelectedOption(null);
     };    
-
-    const handleUserInputChange = (index, field, value) => {
+    const handleInputChange = (index, field, value) => {
         setSelectedUsers(prevUsers => {
             return prevUsers.map((user, i) => {
                 if (i === index) {
@@ -147,84 +119,33 @@ const TotalUsers = () => {
             });
         });
     };
+    const handleAddUserInput = () => {
+        setSelectedUsers(prevUsers => [ ...prevUsers, { name: '', emailid: '' }] );
+    };
     
     const handleRemoveUserInput = index => {
         setSelectedUsers(prevUsers => prevUsers.filter((user, i) => i !== index));
     };
+
+    const handleAddUserPopup = option => {
+        setSelectedOption(option);
+        setSelectedUsers([{ name: '', emailid: '' }]);
+    };
     
     const handlePopupClose = () => {
         setSelectedOption(null);
-        setShowDropdown(!showDropdown);
+        setopenInviteUserModal(false)
     };
     
-    const InviteUserPopup = () => (
-        <Modal show={true} className="invite-popup">
-            <Modal.Header >
-                <Modal.Title>
-                    {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {selectedUsers.map((user, index) => (
-                    <div key={index}>
-                        <Form.Group>
-                            <Form.Label>Name<span className="validation">*</span></Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Name"
-                                value={user.empname}
-                                onChange={event =>
-                                    handleUserInputChange(index, 'empname', event.target.value)
-                                }
-                            />
-                            {validation && (
-                                <Form.Text className="text-danger">{validation.empname}</Form.Text>
-                            )}
-                        </Form.Group>
-                        {index === 0 && isInviteMultiple && (
-                            <MdAddBox className="iconAdd" onClick={handleAddUserInput} />
-                        )}
-                        {index > 0 && (
-                            <FaSquareMinus className="iconMinus" onClick={() => handleRemoveUserInput(index)} />
-                        )}
-                        <Form.Group>
-                            <Form.Label>Email<span className="validation">*</span>{' '}</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Email ID"
-                                value={user.email}
-                                onChange={event =>
-                                    handleUserInputChange(index, 'email', event.target.value)
-                                }
-                            />
-                            {validation && (
-                                <Form.Text className="text-danger">{validation.email}</Form.Text>
-                            )}
-                        </Form.Group>
-                    </div>
-                ))}
-            </Modal.Body>
-            <Modal.Footer className="button-footer">
-                <Button className="close-popup" onClick={handleClosePopup}>
-                    Cancel
-                </Button>
-                <Button className="accept-popup" onClick={handleAcceptPopup}>
-                    Send
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+    const InviteUserPopup = option => {
+        setSelectedOption(option)
+        setSelectedUsers([{ name: '', emailid: '' }]);
+        setopenInviteUserModal(true)
+        setIsInviteMultiple (option === 'inviteMultipleUser')
+    }
 
     const AddUserDirectly = () => (
-        <Modal>
-            <p>Add User Directly Popup Content</p>
-        </Modal>
-    );
-
-    const AddMultipleUserDirectly = () => (
-        <Modal>
-            <p>Add Multiple User Directly Popup Content</p>
-        </Modal>
+        Navigate('/admin/user-onboardings')
     );
 
     return (
@@ -235,10 +156,9 @@ const TotalUsers = () => {
                 </button>
                 {showDropdown && (
                     <div className="dropdown-content">
-                        <p onClick={() => handleAddUserPopup('inviteUser')}>Invite user</p>
-                        <p onClick={() => handleAddUserPopup('inviteMultipleUser')}>Invite Multiple user</p>
+                        <p onClick={() => InviteUserPopup('inviteUser')}>Invite user</p>
+                        <p onClick={() => InviteUserPopup('inviteMultipleUser')}>Invite Multiple user</p>
                         <p onClick={() => handleAddUserPopup('addUserDirectly')}>Add user Directly</p>
-                        <p onClick={() => handleAddUserPopup('addMultipleUserDirectly')}>Add Multiple user Directly</p>
                     </div>
                 )}
             </div>
@@ -304,18 +224,63 @@ const TotalUsers = () => {
                     <p></p>
                 </span>
             </div>
-            {selectedOption === 'inviteUser' && (
-                <InviteUserPopup onClose={handlePopupClose} />
-            )}
-            {selectedOption === 'inviteMultipleUser' && (
-                <InviteUserPopup onClose={handlePopupClose} />
-            )}
             {selectedOption === 'addUserDirectly' && (
                 <AddUserDirectly onClose={handlePopupClose} />
             )}
-            {selectedOption === 'addMultipleUserDirectly' && (
-                <AddMultipleUserDirectly onClose={handlePopupClose} />
-            )}
+
+            <Modal show={openInviteUserModal} className="invite-popup">
+                <Modal.Header ><Modal.Title>
+                    {isInviteMultiple ? 'Invite Multiple Users' : 'Invite User'}
+                </Modal.Title> </Modal.Header>
+                <Modal.Body>
+                    {selectedUsers.map((user, index) => (
+                        <div key={index}>
+                            <div>
+                                <p>Name<span className="validation">*</span></p>
+                                <input
+                                    type="text"
+                                    placeholder="Name"
+                                    value={user.name}
+                                    onChange={event =>
+                                        handleInputChange(index, 'name', event.target.value)
+                                    }
+                                />
+                                {validation && (
+                                    <p className="text-danger">{validation.name}</p>
+                                )}
+                            </div>
+                            {index === 0 && isInviteMultiple && (
+                                <MdAddBox className="iconAdd" onClick={handleAddUserInput} />
+                            )}
+                            {index > 0 && (
+                                <FaSquareMinus className="iconMinus" onClick={() => handleRemoveUserInput(index)} />
+                            )}
+                            <div>
+                                <p>Email<span className="validation">*</span>{' '}</p>
+                                <input
+                                    type="text"
+                                    placeholder="Email ID"
+                                    value={user.emailid}
+                                    onChange={event =>
+                                        handleInputChange(index, 'emailid', event.target.value)
+                                    }
+                                />
+                                {validation && (
+                                    <p className="text-danger">{validation.emailid}</p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </Modal.Body>
+                <Modal.Footer className="button-footer">
+                    <Button className="close-popup" onClick={handlePopupClose}>
+                        Cancel
+                    </Button>
+                    <Button className="accept-popup" onClick={handleAcceptPopup}>
+                        Send
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

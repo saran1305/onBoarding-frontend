@@ -1,8 +1,10 @@
+/* eslint-disable max-len */
 /* eslint-disable max-statements */
 import React, { useEffect, useState } from 'react';
 import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
 import { SiGoogleforms } from 'react-icons/si';
 import { RxReload } from 'react-icons/rx';
+import { toast } from 'react-toastify';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../Styles/userOnboardings.css';
 import axios from 'axios';
@@ -25,7 +27,7 @@ const UserOnboardings = () => {
     const [ formData, setFormData ] = useState({ name: '', date: '' });
     const [ validationError, setValidationError ] = useState({});
     const [ submissionStatus, setSubmissionStatus ] = useState(false);
-    const [ componentView, setComponentView ] = useState(false);
+    const [ componentView, setComponentView ] = useState(true);
     const componentOrder = [
         'Personal Information',
         'Education',
@@ -42,83 +44,108 @@ const UserOnboardings = () => {
     const [ healthInformation, setHealthInformation ] = useState({});
     const [ existingbank, setExistingbank ] = useState({});
     const [ genId, setGenId ] = useState(null);
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
 
+    console.log('_dashboardUserDetail', _dashboardUserDetail)
+
+    
     useEffect(() => {
-        const storedUserData = JSON.parse(localStorage.getItem('userData'));
+        if (_dashboardUserDetail) {
 
-        if (storedUserData) {
-            setUserData(storedUserData);
-            const userId = Number(storedUserData.empId); 
-            
-            // console.log('storedUserData',userId);
-
-            setActiveIndex(0);
-
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${userId}`)
-                .then(response => {
-                    const genId = response.data.result.genId;
-
-                    setGenId(genId);    
-                    console.log('genId',genId);
-                })
-                .catch(error => {
-                    console.error('Error fetching personalInfo:', error);
-                });
-        }}, []); 
-        
-    console.log('personalDetails.result',personalDetails.result);
-    const handleNext =async () => {
-        if (activeIndex < componentOrder.length - 1) {
-            setActiveIndex(prevIndex => prevIndex + 1);
+            setSubmissionStatus(_dashboardUserDetail.status);
         }
-        // const userId = Number(userData.empId);
 
+        console.log('setSubmissionStatus', submissionStatus)
+
+
+    }, [])
+            
+    const handleNext =async () => {
         const activeKey = componentOrder[activeIndex];
 
         if(activeKey === 'Personal Information'){
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, personalDetails.result, 
-                    { headers: { 'Content-Type': 'application/json' } });
+                const storedUserData = JSON.parse(localStorage.getItem('userData'));
 
-                console.log('Education data saved successfully:', response.data);
+                if (storedUserData) {
+                    setUserData(storedUserData);
+                    const role = storedUserData.role
+
+                    const directAdd = role === 'Admin' ? true : false;
+
+                    const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, personalDetails.result, {
+                        params: { directAdd: directAdd },
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (activeIndex < componentOrder.length - 1) {
+                        setActiveIndex(prevIndex => prevIndex + 1);
+                    }
+                    console.log('Education data saved successfully:', response.data);
+                }
             }catch (error) {
                 console.error('Error in saving Education data:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         }
         else if (activeKey === 'Education') {
+            const _data  = educationinfo.filter(item => item.fileName)
+
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${genId}`, educationinfo, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId}`, _data, 
                     { headers: { 'Content-Type': 'application/json' } });
 
+                if (activeIndex < componentOrder.length - 1) {
+                    setActiveIndex(prevIndex => prevIndex + 1);
+                }
                 console.log('Education data saved successfully:', response.data);
             }catch (error) {
                 console.error('Error in saving Education data:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Certifications') {
+            const _data  = certifications.filter(item => item.fileName)
+
             try {
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${genId}`, certifications,
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${_dashboardUserDetail.genId}`, _data,
                     { headers: { 'Content-Type': 'application/json' } }
                 );
 
+                if (activeIndex < componentOrder.length - 1) {
+                    setActiveIndex(prevIndex => prevIndex + 1);
+                }
                 console.log('Certifications Data saved successfully:', response.data);
             } catch (error) {
                 console.error('Error saving data in Certification:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Previous Experience') {
+            const _data  = previousExperience.filter(item => item.fileName)
+
             try {
-                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${genId}`, previousExperience);
-                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${genId}`, reference);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${_dashboardUserDetail.genId}`, _data);
+                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${_dashboardUserDetail.genId}`, reference);
+
+                if (activeIndex < componentOrder.length - 1) {
+                    setActiveIndex(prevIndex => prevIndex + 1);
+                }
             } catch (error) {
                 console.error('Error saving data:', error);
+                toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Health Information') {
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${genId}`, healthInformation, 
+
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${_dashboardUserDetail.genId}`, healthInformation, 
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {
+                    if (activeIndex < componentOrder.length - 1) {
+                        setActiveIndex(prevIndex => prevIndex + 1);
+                    }
                     console.log('Data saved successfully HealthInfo:', response.data);
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.message || error);
+                    toast.error('Failed to save data. Please try again.');
                 });
         } 
     };
@@ -132,16 +159,17 @@ const UserOnboardings = () => {
         const activeKey = componentOrder[activeIndex];
 
         if (activeKey === 'Existing Bank Information') {
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${genId}`,existingbank,
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${_dashboardUserDetail.genId}`,existingbank,
                 { headers: { 'Content-Type':  'application/json'    } })
-                .then(response => {
+                .then(response => {    
+                    setShowModal(true);
                     console.log('Existing Bank data saved successfully:', response.data);
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.message || error);
+                    toast.error('Failed to save data. Please try again.');
                 });
         }
-        setShowModal(true);
     };
 
     const handleModalClose = () => {
@@ -168,8 +196,9 @@ const UserOnboardings = () => {
             setValidationError({ date: 'Please fill in the date field.' });
             return; 
         }
-        setSubmissionStatus('View');
+        
         setShowModal(false);
+        setSubmissionStatus('Done')
     };
 
     const handleIconClick = () => {
@@ -178,15 +207,15 @@ const UserOnboardings = () => {
         setActiveIndex(0);
         handleRender();
         renderButtons();
-    };  
+    };
 
-    const handleRender = () => {
-        if(!submissionStatus) {
+    const handleRender = () => { 
+        if(!submissionStatus || submissionStatus.length === 0) {
             const activeKey = componentOrder[activeIndex];
 
             switch (activeKey) {
             case 'Personal Information':
-                return <PersonalInformation  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} userId={userData && userData.empId} genId={genId} setGenId={setGenId} />;
+                return <PersonalInformation  personalDetails={personalDetails} setPersonalDetails={setPersonalDetails} userId={userData && userData.empId} genId={genId} setGenId={setGenId} email={userData && userData.email} />;
             case 'Education':
                 return <Education educationinfo={educationinfo} setEducationinfo={setEducationinfo} genId={genId} setGenId={setGenId} />;
             case 'Certifications':
@@ -209,7 +238,7 @@ const UserOnboardings = () => {
                     <h5>All Fields were successfully Filled.</h5>
                 </div>
             );
-        } else if (submissionStatus === 'View') {
+        } else if (submissionStatus === 'Submitted') {
             return (
                 <div className="statusdesign">
                     <img src={View} alt="Under Review" />
@@ -246,8 +275,12 @@ const UserOnboardings = () => {
             );
         }
     };
+
     const renderButtons = () => {
         const activeKey = componentOrder[activeIndex];
+
+        console.log('active', activeKey)
+
 
         if(componentView){
             if (activeKey === 'Personal Information') {
@@ -256,28 +289,7 @@ const UserOnboardings = () => {
                         <Button className="nextbutton" onClick={handleNext}>Next</Button>
                     </ButtonToolbar>
                 );
-            } else if (activeKey === 'Education') {
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            } else if(activeKey === 'Certifications') {
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if(activeKey === 'Previous Experience'){
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if( activeKey === 'Health Information'){
+            } else if (activeKey === 'Education' ||activeKey === 'Certifications'||activeKey === 'Previous Experience'|| activeKey === 'Health Information') {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>
@@ -288,6 +300,7 @@ const UserOnboardings = () => {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>
+                        <Button className="submitbutton" onClick={handleSubmit}>Submit</Button>
                     </ButtonToolbar>
                 );
             }else{
@@ -296,6 +309,7 @@ const UserOnboardings = () => {
         if(submissionStatus !== false) {
             return null;
         }
+
         if(!componentView){
             if (activeKey === 'Personal Information') {
                 return (
@@ -303,35 +317,15 @@ const UserOnboardings = () => {
                         <Button className="nextbutton" onClick={handleNext}>Next</Button>
                     </ButtonToolbar>
                 );
-            } else if (activeKey === 'Education') {
+            } else if (activeKey === 'Education' ||activeKey === 'Certifications'||activeKey === 'Previous Experience'|| activeKey === 'Health Information') {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>
                         <Button className="nextbutton" onClick={handleNext}>Next </Button>
                     </ButtonToolbar>
                 );
-            } else if(activeKey === 'Certifications') {
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if(activeKey === 'Previous Experience'){
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            }else if( activeKey === 'Health Information'){
-                return (
-                    <ButtonToolbar className="justify-content-end">
-                        <Button className="backbutton" onClick={handleBack}>Back</Button>
-                        <Button className="nextbutton" onClick={handleNext}>Next </Button>
-                    </ButtonToolbar>
-                );
-            } else if (activeKey === 'Existing Bank Information') {
+            } 
+            else if (activeKey === 'Existing Bank Information') {
                 return (
                     <ButtonToolbar className="justify-content-end">
                         <Button className="backbutton" onClick={handleBack}>Back</Button>

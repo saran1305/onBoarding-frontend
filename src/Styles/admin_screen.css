@@ -288,7 +288,7 @@ font-weight: 700;
 }
 .dropdown-content{
 width: 149px;
-height: 171px;
+height: fit-content;
 top: 80px;
 margin-left: 85%;
 border-radius: 4px;

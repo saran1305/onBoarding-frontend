@@ -254,3 +254,8 @@
 .inline {
   display: inline-flex
 }
+
+.uploadedfile {
+  width: 40px;
+  height: 40px;
+}

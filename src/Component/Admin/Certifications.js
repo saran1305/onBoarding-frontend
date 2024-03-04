@@ -2,23 +2,26 @@ import React,{ useEffect } from 'react';
 import '../../Styles/certification.css'
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
+import { FaFilePdf } from 'react-icons/fa';
 import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 
-const Certifications = ({ certifications,setCertifications,genId }) => {
+const Certifications = ({ certifications,setCertifications }) => {
+
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+
 
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setCertifications(response.data);
-                    console.log('certifications get: ',response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data:', error);
                     
                 });
-        }},[genId])
+        }},[])
 
     useEffect(() => {
         if (certifications && certifications?.length === 0) {
@@ -29,7 +32,8 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                 specialization: '',
                 duration: 0,
                 percentage: '',
-                proof:''
+                proof:'',
+                fileName: ''
             }])
         }},[certifications])
 
@@ -43,7 +47,8 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                 specialization: '',
                 duration: 0,
                 percentage: '',
-                proof:''
+                proof:'',
+                fileName: ''
             }
         ]);
     };
@@ -59,6 +64,30 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
         })
 
         setCertifications(update)
+    };
+    const handleFileGettingInput = (index, event) => {
+
+        convertToBase64(event, base64String => {
+            setCertifications(certifications?.map((data,ind) => {
+                if(ind === index){
+                    return { ...data , proof:base64String,fileName: event?.name }
+                }else return data
+            }))
+        })
+    };
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
+
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -148,13 +177,18 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
                                         </select>
                                     </td>
                                     <td>
-                                        <input
-                                            className="choosefile" 
-                                            type="file"
-                                            value={certifications?.proof || ''}
-                                            onChange={event => handleInputChange(index,'proof', event.target.files[0])}
-                                        />
-                                    </td>                            
+                                        {!certifications?.proof ? 
+                                            <input
+                                                className="choosefile" 
+                                                type="file"
+                                                onChange={event => handleFileGettingInput(index, event.target.files[0])}
+                                            /> : <div className="inline">
+                                                <a href={`data:application/pdf;base64,${certifications?.proof}`} download="certificate.pdf">
+                                                    <FaFilePdf className="uploadedfile" />
+                                                </a>
+                                                <p>{certifications?.fileName}</p>                                    
+                                            </div>}
+                                    </td>
                                 </tr>
                             )})}
 
@@ -172,8 +206,7 @@ const Certifications = ({ certifications,setCertifications,genId }) => {
 
 Certifications.propTypes = {
     certifications: propTypes.array.isRequired,
-    setCertifications:  propTypes.func.isRequired,
-    genId: propTypes.number.isRequired
+    setCertifications:  propTypes.func.isRequired
 };
 
 export default Certifications;

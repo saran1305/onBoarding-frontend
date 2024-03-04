@@ -4,20 +4,22 @@ import '../../Styles/healthInformation.css';
 import { LiaCloudUploadAltSolid } from 'react-icons/lia';
 import * as Endpoint from '../../Entities/Endpoint';
 import axios from 'axios';
+import { FaFilePdf } from 'react-icons/fa';
 import propTypes from 'prop-types';
 
-const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => {
+const HealthInformation = ({ healthInformation,setHealthInformation }) => {
 
-    const [ vaccineCertificate, setVaccineCertificate ] = useState(null);
+    const [ fileName, setFileName ] = useState({ vaccine_certificate:'',health_documents:'' })
     const [ validationErrors, setValidationErrors ] = useState({
         covidVaccine: '',
         vaccine_certificate: ''
     });
+    const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
 
-    console.log('healthInformation',healthInformation);
+
     useEffect(() => {
-        if (genId) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${genId}`)
+        if (_dashboardUserDetail) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${_dashboardUserDetail.genId}`)
                 .then(response => {
                     setHealthInformation(response.data);
                 })
@@ -33,7 +35,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
                 .catch(error => {
                     console.error('Error fetching vaccination status:', error);
                 });
-        }},[genId])
+        }},[])
 
     useEffect(() => {
         if (healthInformation) {
@@ -52,32 +54,6 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
         }
     },[])
 
-    
-
-    // const validateVaccinationStatus = () => {
-    //     if (!covidVaccine) {
-    //         setValidationErrors(prevErrors => ({
-    //             ...prevErrors,
-    //             covidVaccine: 'Please select your vaccination status.'
-    //         }));
-    //         return false;
-    //     }
-    //     setValidationErrors(prevErrors => ({ ...prevErrors, covidVaccine: '' }));
-    //     return true;
-    // };
-    
-    const validateVaccineCertificate = () => {
-        if (!vaccineCertificate) {
-            setValidationErrors(prevErrors => ({
-                ...prevErrors,
-                vaccine_certificate: 'Please upload your vaccine certificate.'
-            }));
-            return false;
-        }
-        setValidationErrors(prevErrors => ({ ...prevErrors, vaccine_certificate: '' }));
-        return true;
-    };
-
     const handleVaccinationStatusChange = value => {
         setHealthInformation(prevState => ({
             ...prevState,
@@ -90,11 +66,25 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
         }));
     };
     
-    const handleVaccineCertificateChange = event => {
-        const selectedFile = event.target.files[0];
+    const handleFileGettingInput = (field, file) => {
+
+        setFileName({ ...fileName,[field]: file.name })
         
-        setVaccineCertificate(selectedFile);
-        validateVaccineCertificate();
+        convertToBase64(file, base64String => {
+            setHealthInformation({ ...healthInformation, [field]: base64String })
+        })
+    };
+    const convertToBase64 = (file, callback) => {
+        const reader = new FileReader();
+
+        reader.onload = event => {
+            const result = event.target.result;
+
+            const base64Data = result.split(',')[1]
+
+            callback(base64Data);
+        };
+        reader.readAsDataURL(file);
     };
     
     const handleRecentSurgeryChange = event => {
@@ -305,32 +295,54 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
                 </div>
                 <div className="col-6">
                     <h6>Vaccine Certificate <span className="validation">*</span></h6>
-                    <div className="col-6">
-                        <div className="doc-box typography">
+                    <div className="col-6 doc-box typography">
+                        {healthInformation && !healthInformation?.vaccine_certificate ? (
+                            <div>
+                                <input
+                                    type="file"
+                                    onChange={event => handleFileGettingInput('vaccine_certificate', event.target.files[0])}
+                                />
+                                <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                <p>Upload</p>
+                                <p>You can drag and drop too</p>
+                            </div>
+                        ) : (
+                            <div className="inline">
+                                <a href={`data:application/pdf;base64,${healthInformation?.vaccine_certificate}`} download="vaccine_certificate.pdf">
+                                    <FaFilePdf className="uploadedfile" />
+                                </a>
+                                <p>{fileName.vaccine_certificate}</p>
+                            </div>
+                        )}
+                    </div>
+                    {healthInformation?.vaccine_certificate === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
+                </div>
+            </div>
+            <div className="col-6">
+                <h6>Health Related Documents</h6>
+                <div className="col-6 doc-box typography" >
+                    {healthInformation && (healthInformation?.health_documents === ''|| healthInformation?.health_documents === null )? (
+                        <div>
                             <input
                                 type="file"
-                                onChange={handleVaccineCertificateChange}
+                                onChange={event => handleFileGettingInput('health_documents', event.target.files[0])}
                             />
                             <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
                             <p>Upload</p>
                             <p>You can drag and drop too</p>
                         </div>
-                        <p className="filetext">File Type Accepted:doc,pdf & img</p>
-                    </div>
-                    <p className="error">{validationErrors.vaccineCertificate}</p>
-                </div>
+                    ) : (
+                        <div className="inline">
+                            <a href={`data:application/pdf;base64,${healthInformation?.health_documents}`} download="aadhar.pdf">
+                                <FaFilePdf className="uploadedfile" />
+                            </a>
+                            <p>{fileName.health_documents}</p>
+                        </div>
+                    )}
+                </div>         
+                {healthInformation?.health_documents === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}   
             </div>
-            <div className="col-6">
-                <h6>Health Related Documents</h6>
-                <div className="col-6">
-                    <div className="doc-box typography">
-                        <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
-                        <p>Upload</p>
-                        <p>You can drag and drop too</p>
-                    </div>
-                    <p className="filetext">File Type Accepted:doc,pdf & img</p>
-                </div>            
-            </div>
+
             <hr />
         </div>
     );
@@ -338,8 +350,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation,genId }) => 
 
 HealthInformation.propTypes = {
     healthInformation: propTypes.object.isRequired,
-    setHealthInformation: propTypes.object.isRequired,
-    genId: propTypes.number.isRequired
+    setHealthInformation: propTypes.object.isRequired
 };
 
 export default HealthInformation;
