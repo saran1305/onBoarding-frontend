@@ -9,11 +9,13 @@ import propTypes from 'prop-types';
 const Certifications = ({ certifications,setCertifications }) => {
 
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+    const _postedGenid = localStorage.getItem('postedGenId')
+
 
 
     useEffect(() => {
-        if (_dashboardUserDetail) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${_dashboardUserDetail.genId}`)
+        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setCertifications(response.data);
                 })

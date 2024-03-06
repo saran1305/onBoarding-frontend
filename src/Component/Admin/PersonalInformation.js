@@ -22,45 +22,46 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
         passport: ''
     })
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+    const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
-        if (_dashboardUserDetail) {
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${_dashboardUserDetail?.genId}?Id=${_dashboardUserDetail?.userId}&email=${_dashboardUserDetail?.email}`)
+        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setPersonalDetails(response.data);
                 })
                 .catch(error => {
                     console.error('Error loading data:', error);
                 });
-
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/MartialStatus`)
-                .then(response => {
-                    setMartialstatus(response.data);
-                })
-                .catch(error => {
-                    console.log('error', error)
-                    setMartialstatus([])
-                });
-
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/Gender`)
-                .then(response => {
-                    setGender(response.data);
-                })
-                .catch(error => {
-                    console.log('error', error)
-                    setGender([])
-                });
-
-            axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/BloodGroup`)
-                .then(response => {
-                    setBloodGroup(response.data);
-                })
-                .catch(error => {
-                    console.log('error', error)
-                    setBloodGroup([])
-                });
-
         }
+
+        axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/MartialStatus`)
+            .then(response => {
+                setMartialstatus(response.data);
+            })
+            .catch(error => {
+                console.log('error', error)
+                setMartialstatus([])
+            });
+
+        axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/Gender`)
+            .then(response => {
+                setGender(response.data);
+            })
+            .catch(error => {
+                console.log('error', error)
+                setGender([])
+            });
+
+        axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/BloodGroup`)
+            .then(response => {
+                setBloodGroup(response.data);
+            })
+            .catch(error => {
+                console.log('error', error)
+                setBloodGroup([])
+            });
+
     }, [])
 
     useEffect(() => {
@@ -68,7 +69,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
             setPersonalDetails({
                 result: {
                     loginId: Number(_dashboardUserDetail.loginId),
-                    genId: Number(_dashboardUserDetail.genId),
+                    genId: Number(_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid),
                     generalVM: {
                         empname: '',
                         personal_Emailid: '',

@@ -9,11 +9,12 @@ import propTypes from 'prop-types';
 const PreviousExperience = ({ previousExperience,setPreviousExperience,reference,setReference }) => {
 
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+    const _postedGenid = localStorage.getItem('postedGenId')
 
 
     useEffect(() => {
-        if (_dashboardUserDetail) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${_dashboardUserDetail.genId}`)
+        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setPreviousExperience(response.data);
                 })
@@ -21,7 +22,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                     console.error('Error saving data:', error);
                     
                 });
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${_dashboardUserDetail.genId}`)
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setReference(response.data);
                 })
