@@ -45,6 +45,7 @@ const UserOnboardings = () => {
     const [ existingbank, setExistingbank ] = useState({});
     const [ genId, setGenId ] = useState(null);
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+    const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
         if (_dashboardUserDetail) {
@@ -79,7 +80,7 @@ const UserOnboardings = () => {
                     if (activeIndex < componentOrder.length - 1) {
                         setActiveIndex(prevIndex => prevIndex + 1);
                     }
-                    console.log('Education data saved successfully:', response.data);
+                    window.localStorage.setItem('postedGenId', Number(response.data));
                 }
             }catch (error) {
                 console.error('Error in saving Education data:', error);
@@ -90,13 +91,13 @@ const UserOnboardings = () => {
             const _data  = educationinfo.filter(item => item?.fileName)
 
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId}`, _data, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, _data, 
                     { headers: { 'Content-Type': 'application/json' } });
 
                 if (activeIndex < componentOrder.length - 1) {
                     setActiveIndex(prevIndex => prevIndex + 1);
                 }
-                console.log('Education data saved successfully:', response.data);
+                window.localStorage.setItem('postedGenId', Number(response.data));
             }catch (error) {
                 console.error('Error in saving Education data:', error);
                 toast.error('Failed to save data. Please try again.');
@@ -105,14 +106,14 @@ const UserOnboardings = () => {
             const _data  = certifications.filter(item => item.fileName)
 
             try {
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${_dashboardUserDetail.genId}`, _data,
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, _data,
                     { headers: { 'Content-Type': 'application/json' } }
                 );
 
                 if (activeIndex < componentOrder.length - 1) {
                     setActiveIndex(prevIndex => prevIndex + 1);
                 }
-                console.log('Certifications Data saved successfully:', response.data);
+                window.localStorage.setItem('postedGenId', Number(response.data));
             } catch (error) {
                 console.error('Error saving data in Certification:', error);
                 toast.error('Failed to save data. Please try again.');
@@ -121,25 +122,29 @@ const UserOnboardings = () => {
             const _data  = previousExperience.filter(item => item.fileName)
 
             try {
-                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${_dashboardUserDetail.genId}`, _data);
-                await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${_dashboardUserDetail.genId}`, reference);
+                const expResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, _data);
+
+                const refResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, reference);
 
                 if (activeIndex < componentOrder.length - 1) {
                     setActiveIndex(prevIndex => prevIndex + 1);
                 }
+                window.localStorage.setItem('postedGenId', Number(expResponse.data));
+                window.localStorage.setItem('postedGenId', Number(refResponse.data));
             } catch (error) {
                 console.error('Error saving data:', error);
                 toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Health Information') {
 
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${_dashboardUserDetail.genId}`, healthInformation, 
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-health/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, healthInformation, 
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {
                     if (activeIndex < componentOrder.length - 1) {
                         setActiveIndex(prevIndex => prevIndex + 1);
                     }
-                    console.log('Data saved successfully HealthInfo:', response.data);
+                    window.localStorage.setItem('postedGenId', Number(response.data));
+
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.message || error);
@@ -161,11 +166,11 @@ const UserOnboardings = () => {
             
             delete existingbank.fileName
 
-            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${_dashboardUserDetail.genId}`,existingbank,
+            axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`,existingbank,
                 { headers: { 'Content-Type':  'application/json'    } })
                 .then(response => {    
                     setShowModal(true);
-                    console.log('Existing Bank data saved successfully:', response.data);
+                    window.localStorage.setItem('postedGenId', Number(response.data));
                 })
                 .catch(error => {
                     console.error('Error saving data:', error.message || error);

@@ -6,20 +6,21 @@ import { IoMdAdd } from 'react-icons/io';
 import propTypes from 'prop-types';
 import { FaFilePdf } from 'react-icons/fa';
 
-const Education = ({ educationinfo,setEducationinfo,genId }) => {
+const Education = ({ educationinfo,setEducationinfo }) => {
 
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+    const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
-        if (_dashboardUserDetail) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${_dashboardUserDetail.genId}`)
+        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setEducationinfo(response.data);
                 })
                 .catch(error => { 
                     console.error('Error saving data:', error);                
                 });
-        }},[genId])
+        }},[])
 
     useEffect(() => {
         

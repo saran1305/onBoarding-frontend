@@ -10,11 +10,11 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
 
     const [ fileName, setFileName ] = useState({ bank_Documents:'' })
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
-
+    const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
-        if (_dashboardUserDetail) {
-            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${_dashboardUserDetail.genId}`)
+        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+            axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setExistingbank(response.data);
                 })
