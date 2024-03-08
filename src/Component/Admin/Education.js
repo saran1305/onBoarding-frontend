@@ -12,7 +12,7 @@ const Education = ({ educationinfo,setEducationinfo }) => {
     const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
-        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+        if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-education/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setEducationinfo(response.data);

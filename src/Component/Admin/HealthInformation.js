@@ -19,7 +19,7 @@ const HealthInformation = ({ healthInformation,setHealthInformation }) => {
 
 
     useEffect(() => {
-        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+        if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-health/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setHealthInformation(response.data);

@@ -104,6 +104,7 @@ const TotalUsers = () => {
         setSelectedUsers([{ name: '', emailid: '' }]);
         setValidation({ name: '', emailid: '' });
         setSelectedOption(null);
+        setopenInviteUserModal(false)
     };    
     const handleInputChange = (index, field, value) => {
         setSelectedUsers(prevUsers => {

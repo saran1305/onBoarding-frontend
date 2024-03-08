@@ -13,7 +13,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
     const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
-        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+        if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-existing-bank/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setExistingbank(response.data);
@@ -33,7 +33,7 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
                 bank_Branch: '',
                 account_number: 0,
                 ifsC_code: '',
-                joint_Account: '',
+                joint_Account: false,
                 proofSubmitted: [],
                 fileName: ''
             })
@@ -143,14 +143,14 @@ const ExistingBankInformation = ({ existingbank,setExistingbank }) => {
                                 <div>
                                     <input type="radio" name="professionalMember" id="yes" className="radiodesign"
                                         checked={existingbank.joint_Account || '' }
-                                        onChange={event => handleCheckboxChange('joint_Account', event.target.checked)} 
+                                        onChange={() => handleCheckboxChange('joint_Account', true)} 
                                     />
                                     <h6 htmlFor="yes">Yes</h6>
                                 </div>
                                 <div>
                                     <input type="radio" name="professionalMember" id="no" className="radiodesign"
                                         checked={!existingbank.joint_Account || '' }
-                                        onChange={event => handleCheckboxChange('joint_Account', event.target.checked)}
+                                        onChange={() => handleCheckboxChange('joint_Account', false)}
                                     />
                                     <h6 htmlFor="no">No</h6>
                                 </div>

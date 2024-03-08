@@ -88,10 +88,9 @@ const UserOnboardings = () => {
             }
         }
         else if (activeKey === 'Education') {
-            const _data  = educationinfo.filter(item => item?.fileName)
 
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, _data, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, educationinfo, 
                     { headers: { 'Content-Type': 'application/json' } });
 
                 if (activeIndex < componentOrder.length - 1) {
@@ -103,10 +102,9 @@ const UserOnboardings = () => {
                 toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Certifications') {
-            const _data  = certifications.filter(item => item.fileName)
-
+ 
             try {
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, _data,
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-certificate/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, certifications,
                     { headers: { 'Content-Type': 'application/json' } }
                 );
 
@@ -119,10 +117,9 @@ const UserOnboardings = () => {
                 toast.error('Failed to save data. Please try again.');
             }
         } else if (activeKey === 'Previous Experience') {
-            const _data  = previousExperience.filter(item => item.fileName)
 
             try {
-                const expResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, _data);
+                const expResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, previousExperience);
 
                 const refResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, reference);
 

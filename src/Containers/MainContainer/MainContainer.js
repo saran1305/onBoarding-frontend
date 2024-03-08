@@ -71,6 +71,8 @@ const MainContainer = ({ Children }) => {
 
     const handleLogout = () => {
         localStorage.removeItem('userData');
+        localStorage.removeItem('dashboardUserDetail');
+        localStorage.removeItem('postedGenId');
         Navigate('/login');
     };
 
