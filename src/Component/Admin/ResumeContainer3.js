@@ -2,19 +2,25 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import '../../Styles/userdetails.css';
 import IdeassionLogo from '../../Assets/IdeassionLogo.jpg';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import * as Endpoint from '../../Entities/Endpoint';
+
 
 const Container3 = () => {
-    const [ userData, setUserData ] = useState(null);
+    const location = useLocation();
+    const [genId] = useState(location.state.genId);
+    const [ containerData, setContainerData ] = useState('')
+    const [ Certification, setCertification ] = useState([])
 
-    const fetchData = async () => {
-        const response = await fetch('your_api_endpoint');
-        const data = await response.json();
+    const GetPersonalInfo = ()=>{axios.get(Endpoint.API_ENDPOINT+'/UserDetails/GetPersonalInfo/'+genId).then(res=>{setContainerData(res.data.result)})}
+    const GetCertification = ()=>{axios.get(Endpoint.API_ENDPOINT+'/User/get-certificate/'+genId).then(res=>{setCertification(res.data)})}
 
-        setUserData(data);
-    };
 
     useEffect(() => {
-        fetchData();
+        GetPersonalInfo()
+        GetCertification()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -32,24 +38,24 @@ const Container3 = () => {
                     <tbody>
                         <tr>
                             <td>Are you a member of any professional body?</td>
-                            <td colSpan="2">{userData?.fullname}</td>
+                            <td colSpan="2">{containerData?.hobby?.professionalBody ? 'yes' : 'No'}</td>
                         </tr>
                         <tr>
                             <td>Hobbies and interests</td>
-                            <td colSpan="2"></td>
+                            <td colSpan="2">{containerData?.hobby?.hobbies}</td>
                         </tr> 
                         <tr>
                             <td rowSpan="3">Is any of your friends working/worked with Ideassion?</td>
-                            <th>Emp ID</th>
-                            <td></td>
+                            <th style={{ width:'fit-content', padding:'10px 20px' }}>Emp ID</th>
+                            <td>{containerData?.colleagues?.length > 0 ? containerData.colleagues[0].empid : ''}</td>
                         </tr>
                         <tr>
-                            <th>Name</th>
-                            <td></td>
+                            <th style={{ width:'fit-content', padding:'10px 20px' }}>Name</th>
+                            <td>{containerData?.colleagues?.length > 0 ? containerData.colleagues[0].colleague_Name : ''}</td>
                         </tr>
                         <tr>
-                            <th>Location</th>
-                            <td></td>
+                            <th style={{ width:'fit-content', padding:'10px 20px' }}>Location</th>
+                            <td>{containerData?.colleagues?.length > 0 ? containerData.colleagues[0].location : ''}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -63,47 +69,29 @@ const Container3 = () => {
                     </tr>
                     <tr>
                         <td>Have you completed any professional certifications?</td>
-                        <td colSpan="2">Yes/No</td>
+                        <td colSpan="2">{Certification.length > 0 ? 'Yes' : 'No'}</td>
                     </tr>
                     <tr>
                         <td rowSpan="10">If yes, Kindly list the details-</td>
                     </tr>
-                    <tr>
-                        <th>Name of Certification</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Issuing Authority</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Valid Till</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Name of Certification</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Issuing Authority</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Valid Till</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Name of Certification</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Issuing Authority</th>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Valid Till</th>
-                        <td></td>
-                    </tr>
+                    {Certification.length > 0 && Certification.map((el, index)=>(
+                        <tr key={index}>
+                            <th>Name of Certification</th>
+                            <td>{el.certificate_name}</td>
+                        </tr>
+                    ))}
+                    {Certification.length > 0 && Certification.map((el, index)=>(
+                        <tr key={index}>
+                            <th>Issuing Authority</th>
+                            <td>{el.issued_by}</td>
+                        </tr>
+                    ))}
+                    {Certification.length > 0 && Certification.map((el, index)=>(
+                        <tr key={index}>
+                            <th>Valid Till</th>
+                            <td>{el.valid_till}</td>
+                        </tr>
+                    ))}
                 </table>
             </div>  
             <div className="text">
