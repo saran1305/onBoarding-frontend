@@ -14,7 +14,7 @@ const Certifications = ({ certifications,setCertifications }) => {
 
 
     useEffect(() => {
-        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+        if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-certificate/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setCertifications(response.data);
@@ -30,7 +30,7 @@ const Certifications = ({ certifications,setCertifications }) => {
             setCertifications([{
                 certificate_name: '',
                 issued_by: '',
-                valid_till: '',
+                valid_till: null,
                 specialization: '',
                 duration: 0,
                 percentage: '',
@@ -45,7 +45,7 @@ const Certifications = ({ certifications,setCertifications }) => {
             {
                 certificate_name: '',
                 issued_by: '',
-                valid_till: '',
+                valid_till: null,
                 specialization: '',
                 duration: 0,
                 percentage: '',

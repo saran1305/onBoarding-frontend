@@ -37,8 +37,8 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
             setPreviousExperience([{
                 company_name: '',
                 designation: '',
-                startDate: '',
-                endDate: '',
+                startDate: null,
+                endDate: null,
                 reporting_to: '',
                 reason: '',
                 location: '',
@@ -64,8 +64,8 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
             {
                 company_name: '',
                 designation: '',
-                startDate: '',
-                endDate: '',
+                startDate: null,
+                endDate: null,
                 reporting_to: '',
                 reason: '',
                 location: '',

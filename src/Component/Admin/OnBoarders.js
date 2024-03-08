@@ -146,16 +146,16 @@ const OnBoarders = () => {
     };
     
     const handleRejectionPopup = () => {
-        if (addValidUser()) {
-            try {
-                axios.post(`${Endpoint.API_ENDPOINT}/Status/reject/${userGenId}`,
-                    { comments: comments }
-                );
-                handleClosePopup();
-            } catch (error) {
-                console.error('Error posting comments:', error);
-            }
+        // if (addValidUser()) {
+        try {
+            axios.post(`${Endpoint.API_ENDPOINT}/Status/reject/${userGenId}`,
+                { comments: comments }
+            );
+            handleClosePopup();
+        } catch (error) {
+            console.error('Error posting comments:', error);
         }
+        // }
     };
     
     

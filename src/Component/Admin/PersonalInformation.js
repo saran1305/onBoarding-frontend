@@ -25,7 +25,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
     const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
-        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+        if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
             axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetPersonalInfo/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setPersonalDetails(response.data);
@@ -78,7 +78,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                         nationality: '',
                         gender: 0,
                         maritalStatus: 0,
-                        dateOfMarriage: '',
+                        dateOfMarriage: null,
                         bloodGrp: 0,
                         profile_Pic: ''
                     },
@@ -106,7 +106,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                         {
                             relationship: '',
                             name: '',
-                            dob: '',
+                            dob: null,
                             occupation: '',
                             contact: ''
                         }
@@ -114,7 +114,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                     hobby: {
                         professionalBody: null,
                         professionalBody_name: '',
-                        hobbies: ''
+                        hobbies: false
                     },
                     colleagues: [
                         {
