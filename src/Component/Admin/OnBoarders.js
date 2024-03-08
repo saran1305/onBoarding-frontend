@@ -33,11 +33,12 @@ const OnBoarders = () => {
     const [ userGenId, setUserGenid ] = useState(0)
 
     const Navigate = useNavigate();
-    const handleNavClick = () => {
+    
+    const handleNavClick = genId => {
         const _url = 'user-details'; 
         const mainContainerURI = RoutePath.MAIN_CONTAINER.URI.replace('*', _url);
 
-        Navigate(mainContainerURI);
+        Navigate(mainContainerURI,{ state:{ genId : genId } });
     };
 
     const fetchData = async current_Status => {
@@ -256,7 +257,7 @@ const OnBoarders = () => {
                                 </td>
                                 <td className="actions">
                                     {user.current_Status === 'Pending' ? (
-                                        <RiFileUserFill className="iconuser" onClick={handleNavClick}/>
+                                        <RiFileUserFill className="iconuser" onClick={()=>{handleNavClick(user.empGen_Id)} }/>
                                     ) : (
                                         <MdMailOutline className="iconmessage" />
                                     )}

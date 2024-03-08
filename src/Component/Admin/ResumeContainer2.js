@@ -2,22 +2,37 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import '../../Styles/userdetails.css';
 import IdeassionLogo from '../../Assets/IdeassionLogo.jpg';
+import axios from 'axios';
+import * as Endpoint from '../../Entities/Endpoint';
+import { useLocation } from 'react-router-dom';
+
 
 const Container2 = () => {
 
-    const [ userData, setUserData ] = useState(null);
-    const fetchData = async () => {
-        const response = await fetch('your_api_endpoint');
-        const data = await response.json();
+    const [ ExperienceData, setExperienceData ] = useState([]);
+    const [ healthData, setHealthData ] = useState('');
+    const [ containerData, setContainerData ] = useState('')
+    const location = useLocation();
+    const [genId] = useState(location.state.genId);
 
-        setUserData(data);
-    };
 
+
+    const Getexperience = ()=>{axios.get(Endpoint.API_ENDPOINT+'/User/get-experience/'+genId).then(res=>{setExperienceData(res.data)})}
+    const GetHealth = ()=>{axios.get(Endpoint.API_ENDPOINT+'/User/get-health/'+genId).then(res=>{setHealthData(res.data)})}
+    const GetPersonalInfo = ()=>{
+        axios.get(Endpoint.API_ENDPOINT+'/UserDetails/GetPersonalInfo/'+genId)
+            .then(res=>{
+                setContainerData(res.data.result)
+            })}
+
+     
     useEffect(() => {
-        fetchData();
+        GetPersonalInfo()
+        Getexperience()
+        GetHealth()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const number =5;
+    
 
     return (
         <div className="container2">
@@ -35,13 +50,13 @@ const Container2 = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {[...Array(number)].map((_, index) => (
+                        {ExperienceData.map((el, index) => (
                             <tr key={index}>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{el.company_name}</td>
+                                <td>{el.designation}</td>
+                                <td>{el.startDate + ' - '+ el.endDate}</td>
+                                <td>{el.location}</td>
+                                <td>{el.reason}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -60,41 +75,15 @@ const Container2 = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Father</td>
-                            <td>{userData?.fullname}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Mother</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Spouse</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>child 1</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>Child 2</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        {containerData?.families?.map((el, index)=>(
+                            <tr key={index}>
+                                <td>{el.relationship}</td>
+                                <td>{el.name}</td>
+                                <td>{el.dob}</td>
+                                <td>{el.occupation}</td>
+                                <td>{el.contact}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -110,19 +99,19 @@ const Container2 = () => {
                     <tbody>
                         <tr>
                             <td>Is there any specific health condition that you may need to inform us? </td>
-                            <td></td>
+                            <td>{healthData.specific_health_condition}</td>
                         </tr>
                         <tr>
                             <td>Allergies to?</td>
-                            <td></td>
+                            <td>{healthData.allergies}</td>
                         </tr>
                         <tr>
                             <td>Have you undergone any recent major/minor surgery?</td>
-                            <td>Yes/No</td>
+                            <td>{healthData.surgery? 'Yes' : 'No'}</td>
                         </tr>
                         <tr>
                             <td>Would your health condition permit you to work in rotational/night shifts</td>
-                            <td>Yes/No</td>
+                            <td>{healthData.night_shifts? 'Yes' : 'No'}</td>
                         </tr>
                     </tbody>
                 </table>
