@@ -70,8 +70,6 @@ const UserOnboardings = () => {
 
                     const _data = personalDetails.result
 
-                    delete _data.genId
-
                     const response = await axios.post(`${Endpoint.API_ENDPOINT}/UserDetails/AddPersonalInfo`, _data, {
                         params: { directAdd: directAdd },
                         headers: { 'Content-Type': 'application/json' }
