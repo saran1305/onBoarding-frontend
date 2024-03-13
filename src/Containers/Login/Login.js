@@ -96,7 +96,7 @@ const Login = () => {
                 <Row sm={12}>
                     <Col sm={6} className="column">
                         <img src={box} alt="box" className="box" />
-                        <div>
+                        <div style={{ display:'flex', justifyContent:'center' }}>
                             <img src={IdeassionLogomini} alt="logo" className="logo" />
                         </div>
                         <div className="title">Login</div>
@@ -123,7 +123,7 @@ const Login = () => {
                                 />
                                 {/* {passwordError && <p className="error">{passwordError}</p>} */}
                             </Form.Group>
-                            <Row>
+                            <Row className="forget-pass">
                                 <Col xs={6}>
                                     <Form.Group controlId="rememberMe" className="checking">
                                         <Form.Check type="checkbox" label="Remember me" />
@@ -139,15 +139,16 @@ const Login = () => {
                         </Form>
                         <img src={group} alt="group" className="group" />
                     </Col>
-                    <Col sm={6} className="column-2">
+                    <Col sm={6} className="column-2 login-right-side">
                         <div>
                             <img src={iconcup} alt="iconcup" className="iconcup" />
-                            <div className="content" >
-
-                                <img src={iconnotepad} alt="iconnotepad" className="iconnotepad" />
-                                <p>Very good works are  waiting for you  🤞 Login Now </p>
-                                <img src={girl} alt="girl" className="girl" />
+                            <div style={{ display:'flex' }}>
+                                <div  className="content" >
+                                    <p>Very good works are  waiting for you  🤞 Login Now </p>
+                                    <img src={girl} alt="girl" className="girl" />
+                                </div>
                             </div>
+                            <img src={iconnotepad} alt="iconnotepad" className="iconnotepad" />
                         </div>
                     </Col>
                 </Row>
