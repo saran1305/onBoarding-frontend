@@ -14,6 +14,7 @@ import { MdMailOutline } from 'react-icons/md';
 import { Modal, Button } from 'react-bootstrap'; 
 import { useNavigate } from 'react-router';
 import propTypes from 'prop-types';
+import { toast } from 'react-toastify';
 
 const OnBoarders = () => {
     const [ userData, setUserData ] = useState([]);
@@ -128,6 +129,16 @@ const OnBoarders = () => {
         setShowRejection(true);
         setShowAcceptance(false);
     };
+
+    const handleinviteUser = user =>(
+        axios.post(`${Endpoint.API_ENDPOINT}/Login/LoginInvite`, [{ name: user.name, emailid: user.email_id }])
+            .then(()=>(
+                toast.success('Invite Sent Successfully')
+            ))
+            .catch(()=>(
+                toast.error('Failed to send Invite')
+            ))
+    )
 
     const handleAcceptPopup = () => {
         if (addValidUser()) {
@@ -259,7 +270,7 @@ const OnBoarders = () => {
                                     {user.current_Status === 'Pending' ? (
                                         <RiFileUserFill className="iconuser" onClick={()=>{handleNavClick(user.empGen_Id)} }/>
                                     ) : (
-                                        <MdMailOutline className="iconmessage" />
+                                        <MdMailOutline style={{ cursor:'pointer' }} onClick={()=> handleinviteUser(user) } className="iconmessage" />
                                     )}
                                     <FaRegCircleCheck
                                         onClick={() => handleAcceptance(user)}
