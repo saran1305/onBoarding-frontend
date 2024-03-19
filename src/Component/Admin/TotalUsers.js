@@ -12,6 +12,7 @@ import { FaSquareMinus } from 'react-icons/fa6';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const TotalUsers = () => {
     const [ userData, setUserData ] = useState([]);
@@ -78,11 +79,15 @@ const TotalUsers = () => {
         if (addValidUser()) {
             try {
                 const response = axios.post(`${Endpoint.API_ENDPOINT}/Login/LoginInvite`, selectedUsers, 
-                    { headers: { 'Content-Type': 'application/json' } });
+                    { headers: { 'Content-Type': 'application/json' } })
+                    .then(()=>(
+                        toast.success('Invite Sent Successfully')
+                    ))
 
                 console.log('Invite data sent successfully:', response);
                 handleClosePopup();
             } catch (error) {
+                toast.error('Failed to send Invite ')
                 console.error('Error inviting users:', error);
             }
         }

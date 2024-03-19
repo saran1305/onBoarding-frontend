@@ -90,7 +90,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                             state_Id: 0,
                             city_Id: 0,
                             pincode: '',
-                            addressType: 'present'
+                            addressType: 'Present'
                         },
                         {
                             address1: '',
@@ -166,7 +166,6 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
         })
 
         const result = { ...personalDetails, result: { ...personalDetails.result, contact: _contact } }
-
 
         setPersonalDetails(result)
     };
@@ -403,7 +402,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                 <div>
                     {personalDetails?.result?.contact?.map((contact, index) => (
                         <div key={index}>
-                            <h4>{contact.addressType === 'Present' ? 'Present Address' : 'Permanent Address'}</h4> 
+                            <h4>{contact.addressType + ' ' + 'Address'}</h4> 
                             <div className="row">
                                 <div className="col-3">
                                     <h6>Address Line 1<span className="error"> * </span></h6>
@@ -468,12 +467,29 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                             <input
                                                 type="checkbox"
                                                 className="checkbox"
-                                                checked={contact.sameAsPermanent || ''}
-                                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails,
-                                                    result: { ...prevDetails.result,
-                                                        contact: prevDetails.result.contact.map((item, idx) => idx === index ? { ...item, sameAsPermanent: event.target.checked } : item)
-                                                    }
-                                                }))}
+                                                checked={personalDetails?.result?.contact[1]?.sameAsPermanent || false}
+                                                onChange={event => {
+                                                    const isChecked = event.target.checked;
+
+                                                    setPersonalDetails(prevDetails => ({
+                                                        ...prevDetails,
+                                                        result: {
+                                                            ...prevDetails.result,
+                                                            contact: prevDetails.result.contact.map((item, idx) => {
+                                                                if (idx === 1) {
+                                                                    if (isChecked) {
+                                                                        // Copy present address to permanent address
+                                                                        return { ...item, ...prevDetails.result.contact[0], addressType: 'Permanent', sameAsPermanent: isChecked };
+                                                                    } else {
+                                                                        // Clear permanent address
+                                                                        return { ...item, address1: '', address2: '', country_Id: 0, state_Id: 0, city_Id: 0, pincode: '', addressType: 'Permanent', sameAsPermanent: isChecked };
+                                                                    }
+                                                                }
+                                                                return item;
+                                                            })
+                                                        }
+                                                    }));
+                                                }}
                                             />
                                             <span>Permanent address same as present address</span>
                                         </h6>
