@@ -13,7 +13,7 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
 
 
     useEffect(() => {
-        if (Number(_dashboardUserDetail.genId) > 0 || _postedGenid > 0) {
+        if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-experience/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
                     setPreviousExperience(response.data);
@@ -24,7 +24,14 @@ const PreviousExperience = ({ previousExperience,setPreviousExperience,reference
                 });
             axios.get(`${Endpoint.API_ENDPOINT}/User/get-reference/${_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid}`)
                 .then(response => {
-                    setReference(response.data);
+                    response.data == '' && setReference({
+                        referral_name: '',
+                        designation: '',
+                        company_name: '',
+                        contact_number: 0,
+                        email_Id:'',
+                        authorize: true
+                    });
                 })
                 .catch(error => { 
                     console.error('Error saving data:', error);

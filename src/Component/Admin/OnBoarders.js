@@ -102,6 +102,7 @@ const OnBoarders = () => {
   
     const filterTag = current_Status => {
         setActiveKey(current_Status);
+        setUserData([]);
         fetchData(current_Status);
     };
 
@@ -217,7 +218,7 @@ const OnBoarders = () => {
             </div>
             <div className="card">
                 <div className="containerone">
-                    <div className="flex-container">
+                    <div style={{ marginRight:'2rem' }} className="flex-container">
                         <div className="flex-column">
                             <p>Onboarders</p>
                             <span>All Members</span>

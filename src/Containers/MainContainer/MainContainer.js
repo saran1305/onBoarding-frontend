@@ -4,7 +4,6 @@ import '../../Styles/common.css';
 import IdeassionLogo from '../../Assets/IdeassionLogo.jpg';
 import { TbUserSquareRounded } from 'react-icons/tb';
 import { IoIosPeople } from 'react-icons/io';
-import { FaWpforms } from 'react-icons/fa';
 import { FiHome } from 'react-icons/fi';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { RiLogoutCircleLine } from 'react-icons/ri';
@@ -94,10 +93,6 @@ const MainContainer = ({ Children }) => {
                                     <p className="navIconLayout"><FiHome className="navIcon" /></p>
                                     <p className="para">Home</p>
                                 </div>
-                                <div className={`nav-item ${activeNavOption === MainContainerTypes.USER_ONBOARDINGS_TYPE ? 'active' : ''}`} onClick={() => handleClickNavOptions(MainContainerTypes.USER_ONBOARDINGS_TYPE)}>
-                                    <p className="navIconLayout"><FaWpforms className="navIcon" /></p>
-                                    <p className="para">Onboardings</p>
-                                </div>
                             </React.Fragment>
                         )}
                         {userData && userData.role === 'Admin' && (
@@ -139,7 +134,7 @@ const MainContainer = ({ Children }) => {
                                 </p></div>
                                 <div className="mailName">
                                     <p>{userData.name}</p>
-                                    <p style={{ color: '#71839B' }}>{userData.email}</p>
+                                    <p style={{ color: '#71839B', width:'150px' }}>{userData.email}</p>
                                 </div>
                             </div>
                         )}

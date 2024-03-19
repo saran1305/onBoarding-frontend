@@ -119,7 +119,7 @@ const UserOnboardings = () => {
             try {
                 const expResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-experience/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, previousExperience);
 
-                const refResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, reference);
+                const refResponse = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-reference/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, reference, { headers: { 'Content-Type': 'application/json' } });
 
                 if (activeIndex < componentOrder.length - 1) {
                     setActiveIndex(prevIndex => prevIndex + 1);
