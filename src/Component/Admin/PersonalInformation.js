@@ -23,6 +23,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
     })
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
     const _postedGenid = localStorage.getItem('postedGenId')
+    const userData = localStorage.getItem('userData')
 
     useEffect(() => {
         if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
@@ -65,10 +66,10 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
     }, [])
 
     useEffect(() => {
-        if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && _dashboardUserDetail) {
+        if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && _dashboardUserDetail || userData) {
             setPersonalDetails({
                 result: {
-                    loginId: Number(_dashboardUserDetail.loginId),
+                    loginId: Number(_dashboardUserDetail?.loginId),
                     genId: Number(_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid),
                     generalVM: {
                         empname: '',
@@ -112,9 +113,9 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                         }
                     ],
                     hobby: {
-                        professionalBody: null,
+                        professionalBody: false,
                         professionalBody_name: '',
-                        hobbies: false
+                        hobbies: ''
                     },
                     colleagues: [
                         {
@@ -303,7 +304,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                             </div>
                         </div>
                         <div className="col-4">
-                            <h6 htmlFor="nationality">nationality<span className="error"> * </span></h6>
+                            <h6 htmlFor="nationality">Nationality<span className="error"> * </span></h6>
                             <input type="text" className="textbox"
                                 value={personalDetails?.result?.generalVM?.nationality || ''}
                                 onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, nationality: event.target.value } } }))}
@@ -312,7 +313,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                     </div>
                     <div className="row">
                         <div className="col-4">
-                            <h6>gender<span className="error"> * </span></h6>
+                            <h6>Gender<span className="error"> * </span></h6>
                             <select
                                 className="textbox"
                                 value={personalDetails?.result?.generalVM?.gender || ''}
@@ -692,7 +693,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                         {personalDetails?.result?.requiredDocuments?.pan === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
                     </div>
                     <div className="col-4 ">
-                        <h6>Driver License<span className="error"> * </span></h6>
+                        <h6>Driver License</h6>
                         <div className="doc-box typography">
                             {personalDetails && (personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.driving_license || personalDetails?.result === null)? (
                                 <div>
@@ -719,7 +720,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                 </div>
                 <div className="row">
                     <div className="col-4 ">
-                        <h6>passport<span className="error"> * </span></h6>
+                        <h6>passport</h6>
                         <div className="doc-box typography">
                             {personalDetails &&(personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.passport || personalDetails?.result === null) ?  (
                                 <div>
