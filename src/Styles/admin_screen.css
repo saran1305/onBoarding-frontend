@@ -38,6 +38,7 @@
   line-height: 16px;
   letter-spacing: -0.01em;
   text-align: left;
+  margin-right: 2rem;
 }
 .containerone-one select {
   width: 154px;
@@ -51,6 +52,7 @@
   line-height: 16px;
   letter-spacing: -0.01em;
   text-align: left;
+  margin-right: 2rem;
 }
 
 .card {
