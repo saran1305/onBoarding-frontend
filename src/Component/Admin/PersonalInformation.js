@@ -23,7 +23,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
     })
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
     const _postedGenid = localStorage.getItem('postedGenId')
-    const userData = localStorage.getItem('userData')
+    const userData = JSON.parse(localStorage.getItem('userData'))
 
     useEffect(() => {
         if (Number(_dashboardUserDetail?.genId) > 0 || _postedGenid > 0) {
@@ -69,7 +69,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
         if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && _dashboardUserDetail || userData) {
             setPersonalDetails({
                 result: {
-                    loginId: Number(_dashboardUserDetail?.loginId),
+                    loginId: Number(_dashboardUserDetail?.loginId || userData?.empId),
                     genId: Number(_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid),
                     generalVM: {
                         empname: '',
