@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable max-statements */
-/* eslint no-magic-numbers: ["error", { "ignore": [0,1,2,3,4,5,6,7,8] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0,1,2,3,4,5,6,7,8,18] }] */
 import React, { useEffect, useState } from 'react';
 import '../../Styles/personalInformation.css'
 import propTypes from 'prop-types';
@@ -15,6 +15,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
     const [ martialStatus, setMartialstatus ] = useState([])
     const [ gender, setGender ] = useState([])
     const [ bloodGroup, setBloodGroup ] = useState([])
+    const [AddressDropdown] = useState({})
     const [ fileName, setFileName ] = useState({
         aadhar: '',
         pan: '',
@@ -63,13 +64,27 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                 setBloodGroup([])
             });
 
+        axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetCountries`)
+            .then(response => {
+                AddressDropdown.country = response.data
+            });
+        axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetStates`)
+            .then(response => {
+                AddressDropdown.state = response.data
+            });
+        axios.get(`${Endpoint.API_ENDPOINT}/UserDetails/GetCities`)
+            .then(response => {
+                AddressDropdown.city = response.data
+            });
+            
+
     }, [])
 
     useEffect(() => {
         if ((Object.keys(personalDetails).length === 0 || personalDetails?.result === null) && _dashboardUserDetail || userData) {
             setPersonalDetails({
                 result: {
-                    loginId: Number(_dashboardUserDetail?.loginId || userData?.empId),
+                    loginId: Number(_dashboardUserDetail?.loginId == '' ? _dashboardUserDetail?.loginId : userData.empId),
                     genId: Number(_dashboardUserDetail?.genId ? _dashboardUserDetail?.genId : _postedGenid),
                     generalVM: {
                         empname: '',
@@ -128,7 +143,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                         {
                             relationship: '',
                             relation_name: '',
-                            contact_number: '',
+                            contact_number: 0,
                             contact_address: ''
                         }
                     ],
@@ -156,6 +171,14 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
     const handleMembershipStatusChange = status => {
         setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, hobby: { ...personalDetails.result.hobby, professionalBody: status } } })
     };
+
+    const today = new Date();
+
+    const eighteenYearsAgo = new Date(today);
+
+    eighteenYearsAgo.setFullYear(today.getFullYear() - 18)
+
+    const eighteenYearsAgoFormatted = eighteenYearsAgo.toISOString().split('T')[0];
     
     const handleAddressChange = (index, fieldName,type,value) => {
         const _contact = personalDetails?.result?.contact?.map((con, idx) => {
@@ -205,15 +228,26 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
     };
     
     const handleChange = (index, field, value) => {
-        const updatedFamilies = personalDetails?.result?.families?.map((family, idx) => {
+        let updatedFamilies = personalDetails?.result?.families?.map((family, idx) => {
             if (index === idx) {
-                return { ...family, [field]: value }
-            } else {
-                return { ...family }
-            }
-        })
+                let relationship = '';
 
-        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, families: updatedFamilies } })
+                if (index === 0) {
+                    relationship = 'Father';
+                } else if (index === 1) {
+                    relationship = 'Mother';
+                } else if (index === 2) {
+                    relationship = 'Spouse';
+                } else {
+                    relationship = 'Child';
+                }
+                return { ...family, [field]: value, relationship: relationship };
+            } else {
+                return { ...family };
+            }
+        });
+    
+        setPersonalDetails({ ...personalDetails, result: { ...personalDetails.result, families: updatedFamilies } });
     };
     
     const handleAddEmployee = () => {
@@ -291,13 +325,15 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 type="text"
                                 className="textbox"
                                 value={personalDetails?.result?.generalVM?.empname ||''}
-                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, empname: event.target.value } } }))}
-                            />
+                                onChange={event => { const regex = /^[a-zA-Z\s]*$/
+
+                                    if (regex.test(event.target.value) || event.target.value === '') { setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, empname: event.target.value } } }))}
+                                }}/>
                         </div>
                         <div className="col-4">
                             <h6>Date of Birth<span className="error"> * </span></h6>
                             <div>
-                                <input type="date" className="textbox"
+                                <input type="date" className="textbox" max={eighteenYearsAgoFormatted}
                                     value={personalDetails?.result?.generalVM?.dob || ''}
                                     onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, dob: event.target.value } } }))}
                                 />
@@ -307,8 +343,9 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                             <h6 htmlFor="nationality">Nationality<span className="error"> * </span></h6>
                             <input type="text" className="textbox"
                                 value={personalDetails?.result?.generalVM?.nationality || ''}
-                                onChange={event => setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, nationality: event.target.value } } }))}
-                            />                        
+                                onChange={event => { const regex = /^[a-zA-Z\s]*$/         
+
+                                    if (regex.test(event.target.value) || event.target.value === '') { setPersonalDetails(prevDetails => ({ ...prevDetails, result: { ...prevDetails?.result, generalVM: { ...prevDetails?.result?.generalVM, nationality: event.target.value } } }))}  }}/>                        
                         </div>
                     </div>
                     <div className="row">
@@ -319,6 +356,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 value={personalDetails?.result?.generalVM?.gender || ''}
                                 onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, gender: Number(value) } } })}
                             >
+                                <option style={{ display:'none' }} value="">Select</option>
                                 {gender?.length > 0 && gender.map(gen => {
                                     return <option key={gen.id} value={gen.id}> {gen.name}</option>
                                 })}
@@ -331,6 +369,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 value={personalDetails?.result?.generalVM?.maritalStatus || ''}
                                 onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, maritalStatus: Number(value) } } })}
                             >
+                                <option style={{ display:'none' }} value="">Select</option>   
                                 {martialStatus.length > 0 && martialStatus.map(status => {
                                     return <option key={status.id} value={status.id}> {status.name}</option>
                                 })}
@@ -345,7 +384,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                 </div>
                 <div className="col-3">
                     <div className="col">
-                        <h6>Profile Picture<span className="error"> * </span></h6>
+                        <h6>Recent Passport Size Photo<span className="error"> * </span></h6>
                         {personalDetails && personalDetails?.result?.generalVM?.profile_Pic !== '' ? (
                             <img src={`data:image/jpeg;base64,${personalDetails?.result?.generalVM?.profile_Pic}`} alt="Profile" className="profile-picture" />
 
@@ -370,6 +409,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                         value={personalDetails?.result?.generalVM?.bloodGrp || ''}
                         onChange={({ target: { value } }) => setPersonalDetails({ ...personalDetails, result: { ...personalDetails?.result, generalVM: { ...personalDetails?.result?.generalVM, bloodGrp: Number(value) } } })}
                     >
+                        <option style={{ display:'none' }} value="">Select</option>
                         {bloodGroup.length > 0 && bloodGroup.map(group => {
                             return <option key={group.id} value={group.id}> {group.name}</option>
                         })}
@@ -430,7 +470,10 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                         value={contact?.country_Id || ''}
                                         onChange={event => handleAddressChange(index, 'country_Id',contact.addressType, event.target.value)}
                                     >
-                                        <option>India</option>
+                                        
+                                        {AddressDropdown?.country?.map((el, index) => (
+                                            <option value={el.id} key={index}>{el.country_Name}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="col-3">
@@ -440,7 +483,9 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                         value={contact?.state_Id || ''}
                                         onChange={event => handleAddressChange(index, 'state_Id',contact.addressType, event.target.value)}
                                     >
-                                        <option>Tamil Nadu</option>
+                                        {AddressDropdown?.state?.map((el, index) => (
+                                            <option value={el.id} key={index}>{el.state_Name}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="row">
@@ -449,9 +494,11 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                         <select
                                             className="textbox"
                                             value={contact?.city_Id || ''}
-                                            onChange={event => handleAddressChange(index, 'city_Id', contact.addressType,event.target.value)}
+                                            onChange={event => (handleAddressChange(index, 'city_Id', contact.addressType, event.target.value))}
                                         >
-                                            <option>Chennai</option>
+                                            {AddressDropdown?.city?.map((el, index) => (
+                                                <option value={el.id} key={index}>{el.city_Name}</option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="col-3">
@@ -507,11 +554,11 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
             <div className="family">
                 <table>
                     <thead>
-                        <th>Relationship</th>
-                        <th>Name</th>
-                        <th>Date of Birth</th>  
-                        <th>Occupation</th>
-                        <th>Contact No</th>
+                        <th>Relationship<span className="error"> * </span></th>
+                        <th>Name<span className="error"> * </span></th>
+                        <th>Date of Birth <span className="error"> * </span></th>  
+                        <th>Occupation <span className="error"> * </span></th>
+                        <th>Contact No <span className="error"> * </span></th>
                     </thead>
                     <tbody>
                         {personalDetails?.result?.families?.map((member, index) => (
@@ -620,6 +667,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                             <tr key={index}>
                                 <td>
                                     <select className="textbox" value={relation.relationship||''} onChange={event => handleEmergenciesChange(index, 'relationship', event.target.value)}>
+                                        <option style={{ display:'none' }} value="">Select</option>
                                         <option>Spouse/Partner</option>
                                         <option>Father</option>
                                         <option>Mother</option>
@@ -643,16 +691,17 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
             <div className="row">
                 <div className="row">
                     <div className="col-4 ">
-                        <h6>aadhar<span className="error"> * </span></h6>
+                        <h6>Aadhar<span className="error"> * </span></h6>
                         <div className="doc-box typography">
                             {personalDetails&& (personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.aadhar || personalDetails?.result === null) ? (
                                 <div>
                                     <input
                                         type="file"
-                                        accept=".doc, .pdf, .img"
+                                        accept=".pdf"
                                         onChange={event => handleFileGettingInput('aadhar', event.target.files[0])}
                                     />
-                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>                    
+                                    <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>        
+                                    <p>Upload</p>            
                                     <p>You can drag and drop too</p>
                                 </div>
                             ) : (
@@ -666,7 +715,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                             }
                         </div>
 
-                        {personalDetails?.result?.requiredDocuments?.aadhar == '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
+                        {personalDetails?.result?.requiredDocuments?.aadhar == '' && <p className="filetext">File Type Accepted: pdf </p>}
                     </div>
                     <div className="col-4 ">
                         <h6>PAN<span className="error"> * </span></h6>
@@ -675,10 +724,11 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 <div>
                                     <input
                                         type="file"
-                                        accept=".doc, .pdf, .img"
+                                        accept=".pdf"
                                         onChange={event => handleFileGettingInput('pan', event.target.files[0])}
                                     />
                                     <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
+                                    <p>Upload</p>
                                     <p>You can drag and drop too</p>
                                 </div>
                             )  : (
@@ -690,7 +740,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 </div>
                             )}
                         </div>
-                        {personalDetails?.result?.requiredDocuments?.pan === '' && <p className="filetext">File Type Accepted: doc, pdf & img</p>}
+                        {personalDetails?.result?.requiredDocuments?.pan === '' && <p className="filetext">File Type Accepted: pdf </p>}
                     </div>
                     <div className="col-4 ">
                         <h6>Driver License</h6>
@@ -699,7 +749,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 <div>
                                     <input
                                         type="file"
-                                        accept=".doc, .pdf, .img"
+                                        accept=".pdf"
                                         onChange={event => handleFileGettingInput('driving_license', event.target.files[0])}
                                     />
                                     <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
@@ -715,18 +765,18 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 </div>
                             )}
                         </div>
-                        {personalDetails?.result?.requiredDocuments?.driving_license && <p className="filetext">File Type Accepted:doc,pdf & img</p>}
+                        {personalDetails?.result?.requiredDocuments?.driving_license === '' && <p className="filetext">File Type Accepted: pdf </p>}
                     </div>
                 </div>
                 <div className="row">
                     <div className="col-4 ">
-                        <h6>passport</h6>
+                        <h6>Passport</h6>
                         <div className="doc-box typography">
                             {personalDetails &&(personalDetails?.result?.requiredDocuments === null || !personalDetails?.result?.requiredDocuments?.passport || personalDetails?.result === null) ?  (
                                 <div>
                                     <input
                                         type="file"
-                                        accept=".doc, .pdf, .img"
+                                        accept=".pdf"
                                         onChange={event => handleFileGettingInput('passport', event.target.files[0])}
                                     />
                                     <p><LiaCloudUploadAltSolid className="uploadIcon"/></p>
@@ -742,7 +792,7 @@ const PersonalInformation = ({ setPersonalDetails,personalDetails }) => {
                                 </div>
                             )}
                         </div>
-                        {personalDetails?.result?.requiredDocuments?.passport === '' && <p className="filetext">File Type Accepted:doc,pdf & img</p>}
+                        {personalDetails?.result?.requiredDocuments?.passport === '' && <p className="filetext">File Type Accepted:pdf </p>}
                     </div>
                 </div>
             </div>

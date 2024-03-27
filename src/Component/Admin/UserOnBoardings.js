@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable max-statements */
+/* eslint no-magic-numbers: ["error", { "ignore": [0,1,2,3,4,5,6,7,8,18] }] */
 import React, { useEffect, useState } from 'react';
 import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
 import { SiGoogleforms } from 'react-icons/si';
@@ -23,6 +24,7 @@ import ExistingBankInformation from './ExistingBankInformation';
 const UserOnboardings = () => {
     const [ userData, setUserData ] = useState(null);
     const [ activeIndex, setActiveIndex ] = useState(0);
+    const [ SelfDeclaration, setSelfDeclaration ] = useState({});
     const [ showModal, setShowModal ] = useState(false);
     const [ formData, setFormData ] = useState({ name: '', date: '' });
     const [ validationError, setValidationError ] = useState({});
@@ -45,6 +47,7 @@ const UserOnboardings = () => {
     const [ existingbank, setExistingbank ] = useState({});
     const [ genId, setGenId ] = useState(null);
     const _dashboardUserDetail = JSON.parse(localStorage.getItem('dashboardUserDetail'))
+    const userDataEmpId = JSON.parse(localStorage.getItem('userData'))
     const _postedGenid = localStorage.getItem('postedGenId')
 
     useEffect(() => {
@@ -52,8 +55,15 @@ const UserOnboardings = () => {
 
             setSubmissionStatus(_dashboardUserDetail?.status);
         }
+
+        GetSelfDeclaration()
         
     }, [])
+
+    const GetSelfDeclaration = () => {
+        axios.get(`${Endpoint.API_ENDPOINT}/User/GetSelfDeclaration/${_dashboardUserDetail ? _dashboardUserDetail.genId : _postedGenid}`)
+            .then( res => (setSelfDeclaration(res.data, 'resdata') ))
+    }
 
     const handleNext =async () => {
         const activeKey = componentOrder[activeIndex];
@@ -88,7 +98,7 @@ const UserOnboardings = () => {
         else if (activeKey === 'Education') {
 
             try{
-                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`, educationinfo, 
+                const response = await axios.post(`${Endpoint.API_ENDPOINT}/User/add-education/${_dashboardUserDetail ? _dashboardUserDetail.genId : _postedGenid}`, educationinfo, 
                     { headers: { 'Content-Type': 'application/json' } });
 
                 if (activeIndex < componentOrder.length - 1) {
@@ -163,8 +173,8 @@ const UserOnboardings = () => {
 
             axios.post(`${Endpoint.API_ENDPOINT}/User/add-existing-bank/${_dashboardUserDetail.genId ? _dashboardUserDetail.genId : _postedGenid}`,existingbank,
                 { headers: { 'Content-Type':  'application/json'    } })
-                .then(response => {    
-                    setShowModal(true);
+                .then(response => {   
+                    !SelfDeclaration.isSelfDeclared && setShowModal(true) 
                     window.localStorage.setItem('postedGenId', Number(response.data));
                 })
                 .catch(error => {
@@ -197,6 +207,19 @@ const UserOnboardings = () => {
         if (!formData.date) {
             setValidationError({ date: 'Please fill in the date field.' });
             return; 
+        }
+
+        if(formData.date && formData.name) {
+            const parts = formData.date.split('-')
+
+            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`
+
+            let declaration = {  
+                name: formData.name,  
+                date: formattedDate,
+                createdBy: userDataEmpId.empId  }
+            
+            axios.post(`${Endpoint.API_ENDPOINT}/User/CreateSelfDeclaration/${_dashboardUserDetail ? _dashboardUserDetail.genId : _postedGenid}`, declaration)
         }
         
         setShowModal(false);
