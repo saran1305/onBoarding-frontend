@@ -175,7 +175,7 @@ const TotalUsers = () => {
                             <p>Total Users</p>
                             <span>All Members</span>
                         </div>
-                        <div className="containerone-one">
+                        <div style={{ marginRight:'2rem' }} className="containerone-one">
                             <div className="search-container">
                                 <input
                                     type="text"
